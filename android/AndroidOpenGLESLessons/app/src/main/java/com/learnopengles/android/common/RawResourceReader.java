@@ -9,6 +9,26 @@ import android.content.Context;
 
 public class RawResourceReader
 {
+	public static String readShaderFileFromResource(String resourceName) {
+		final InputStream inputStream = RawResourceReader.class.getClassLoader().getResourceAsStream("res/raw/"+resourceName+".glsl");
+		final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+		final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+		String nextLine;
+		final StringBuilder body = new StringBuilder();
+
+		try {
+			while ((nextLine = bufferedReader.readLine()) != null) {
+				body.append(nextLine);
+				body.append('\n');
+			}
+		} catch (IOException e) {
+			return null;
+		}
+
+		return body.toString();
+	}
+
 	public static String readTextFileFromRawResource(final Context context,
 			final int resourceId)
 	{
