@@ -43,13 +43,13 @@ public class TriangleVerticesBuilderTest {
         float[] result = {
                 // X, Y, Z,
                 // R, G, B, A
-                -0.5f, -0.25f, 0.0f,
+                -0.5f, -0.28867513f, 0.0f,
                 1.0f, 0.0f, 0.0f, 1.0f,
 
-                0.5f, -0.25f, 0.0f,
+                0.5f, -0.28867513f, 0.0f,
                 0.0f, 1.0f, 0.0f, 1.0f,
 
-                0.0f, 0.559016994f, 0.0f,
+                0.0f, 0.57735026f, 0.0f,
                 0.0f, 0.0f, 1.0f, 1.0f
         };
 
