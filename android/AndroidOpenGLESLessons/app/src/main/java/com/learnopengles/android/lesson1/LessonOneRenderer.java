@@ -34,23 +34,23 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
      * of being located at the center of the universe) to world space.
      */
-    private float[] mModelMatrix = new float[16];
+    private float[] modelMatrix = new float[16];
 
     /**
      * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
      * it positions things relative to our eye.
      */
-    private float[] mViewMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
 
     /**
      * Store the projection matrix. This is used to project the scene onto a 2D viewport.
      */
-    private float[] mProjectionMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
 
     /**
      * Allocate storage for the final combined matrix. This will be passed into the shader program.
      */
-    private float[] mMVPMatrix = new float[16];
+    private float[] mvpMatrix = new float[16];
 
     private final Triangle triangle1;
     private final Triangle triangle2;
@@ -99,7 +99,7 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // Set the view matrix. This matrix can be said to represent the camera position.
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(mViewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
+        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
 
         // Create a program object and store the handle to it.
         programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
@@ -123,7 +123,7 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         final float near = 1.0f;
         final float far = 10.0f;
 
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
     @Override
@@ -135,22 +135,22 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Draw the triangle facing straight on.
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        triangle1.draw(programHandle, mMVPMatrix, mViewMatrix, mModelMatrix, mProjectionMatrix);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        triangle1.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
 
         // Draw one translated a bit down and rotated to be flat on the ground.
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, -1.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, 90.0f, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        triangle2.draw(programHandle, mMVPMatrix, mViewMatrix, mModelMatrix, mProjectionMatrix);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0.0f, -1.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, 90.0f, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        triangle2.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
 
         // Draw one translated a bit to the right and rotated to be facing to the left.
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, 90.0f, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        triangle3.draw(programHandle, mMVPMatrix, mViewMatrix, mModelMatrix, mProjectionMatrix);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, 90.0f, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        triangle3.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
     }
 }
