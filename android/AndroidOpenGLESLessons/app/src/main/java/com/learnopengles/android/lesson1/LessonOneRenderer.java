@@ -10,7 +10,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
+import static com.learnopengles.android.lesson1.Program.createProgram;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -173,90 +173,8 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
         Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
-        final String vertexShader = readShaderFileFromResource("lesson_one_vertex_shader");
-        final String fragmentShader = readShaderFileFromResource("lesson_one_fragment_shader");
-
-        // Load in the vertex shader.
-        int vertexShaderHandle = glCreateShader(GL_VERTEX_SHADER);
-
-        if (vertexShaderHandle != 0) {
-            // Pass in the shader source.
-            glShaderSource(vertexShaderHandle, vertexShader);
-
-            // Compile the shader.
-            glCompileShader(vertexShaderHandle);
-
-            // Get the compilation status.
-            final int[] compileStatus = new int[1];
-            glGetShaderiv(vertexShaderHandle, GL_COMPILE_STATUS, compileStatus, 0);
-
-            // If the compilation failed, delete the shader.
-            if (compileStatus[0] == 0) {
-                glDeleteShader(vertexShaderHandle);
-                vertexShaderHandle = 0;
-            }
-        }
-
-        if (vertexShaderHandle == 0) {
-            throw new RuntimeException("Error creating vertex shader.");
-        }
-
-        // Load in the fragment shader shader.
-        int fragmentShaderHandle = glCreateShader(GL_FRAGMENT_SHADER);
-
-        if (fragmentShaderHandle != 0) {
-            // Pass in the shader source.
-            glShaderSource(fragmentShaderHandle, fragmentShader);
-
-            // Compile the shader.
-            glCompileShader(fragmentShaderHandle);
-
-            // Get the compilation status.
-            final int[] compileStatus = new int[1];
-            glGetShaderiv(fragmentShaderHandle, GL_COMPILE_STATUS, compileStatus, 0);
-
-            // If the compilation failed, delete the shader.
-            if (compileStatus[0] == 0) {
-                glDeleteShader(fragmentShaderHandle);
-                fragmentShaderHandle = 0;
-            }
-        }
-
-        if (fragmentShaderHandle == 0) {
-            throw new RuntimeException("Error creating fragment shader.");
-        }
-
         // Create a program object and store the handle to it.
-        int programHandle = glCreateProgram();
-
-        if (programHandle != 0) {
-            // Bind the vertex shader to the program.
-            glAttachShader(programHandle, vertexShaderHandle);
-
-            // Bind the fragment shader to the program.
-            glAttachShader(programHandle, fragmentShaderHandle);
-
-            // Bind attributes
-            glBindAttribLocation(programHandle, 0, "a_Position");
-            glBindAttribLocation(programHandle, 1, "a_Color");
-
-            // Link the two shaders together into a program.
-            glLinkProgram(programHandle);
-
-            // Get the link status.
-            final int[] linkStatus = new int[1];
-            glGetProgramiv(programHandle, GL_LINK_STATUS, linkStatus, 0);
-
-            // If the link failed, delete the program.
-            if (linkStatus[0] == 0) {
-                glDeleteProgram(programHandle);
-                programHandle = 0;
-            }
-        }
-
-        if (programHandle == 0) {
-            throw new RuntimeException("Error creating program.");
-        }
+        int programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
 
         // Set program handles. These will later be used to pass in values to the program.
         mMVPMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
