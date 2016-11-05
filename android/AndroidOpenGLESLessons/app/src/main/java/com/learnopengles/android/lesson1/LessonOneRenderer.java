@@ -154,24 +154,18 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
 
         // Position the eye behind the origin.
-        final float eyeX = 0.0f;
-        final float eyeY = 0.0f;
-        final float eyeZ = 1.5f;
+        Point eye = new Point(0.0f, 0.0f, 1.5f);
 
         // We are looking toward the distance
-        final float lookX = 0.0f;
-        final float lookY = 0.0f;
-        final float lookZ = -5.0f;
+        Point look = new Point(0.0f, 0.0f, -5.0f);
 
         // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final float upX = 0.0f;
-        final float upY = 1.0f;
-        final float upZ = 0.0f;
+        Point up = new Point(0.0f, 1.0f, 0.0f);
 
         // Set the view matrix. This matrix can be said to represent the camera position.
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+        Matrix.setLookAtM(mViewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
 
         // Create a program object and store the handle to it.
         int programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
