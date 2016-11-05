@@ -4,15 +4,16 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import java.nio.FloatBuffer;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static android.opengl.GLES20.*;
+import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
+import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
+import static android.opengl.GLES20.glClear;
+import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.glUseProgram;
+import static android.opengl.GLES20.glViewport;
 import static com.learnopengles.android.lesson1.Program.createProgram;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -41,57 +42,11 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
      */
     private float[] mMVPMatrix = new float[16];
 
-    /**
-     * Store our model data in a float buffer.
-     */
-    private final FloatBuffer mTriangle1Vertices;
-    private final FloatBuffer mTriangle2Vertices;
-    private final FloatBuffer mTriangle3Vertices;
+    private final Triangle triangle1;
+    private final Triangle triangle2;
+    private final Triangle triangle3;
 
-    /**
-     * This will be used to pass in the transformation matrix.
-     */
-    private int mMVPMatrixHandle;
-
-    /**
-     * This will be used to pass in model position information.
-     */
-    private int mPositionHandle;
-
-    /**
-     * This will be used to pass in model color information.
-     */
-    private int mColorHandle;
-
-    /**
-     * How many bytes per float.
-     */
-    private final int mBytesPerFloat = 4;
-
-    /**
-     * How many elements per vertex.
-     */
-    private final int mStrideBytes = 7 * mBytesPerFloat;
-
-    /**
-     * Offset of the position data.
-     */
-    private final int mPositionOffset = 0;
-
-    /**
-     * Size of the position data in elements.
-     */
-    private final int mPositionDataSize = 3;
-
-    /**
-     * Offset of the color data.
-     */
-    private final int mColorOffset = 3;
-
-    /**
-     * Size of the color data in elements.
-     */
-    private final int mColorDataSize = 4;
+    int programHandle;
 
     /**
      * Initialize the model data.
@@ -100,7 +55,7 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // Define points for equilateral triangles.
 
         // This triangle is red, green, and blue.
-        final float[] triangle1VerticesData = {
+        triangle1 = new Triangle(new float[]{
                 // X, Y, Z,
                 // R, G, B, A
                 -0.5f, -0.25f, 0.0f,
@@ -110,10 +65,10 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
                 0.0f, 0.0f, 1.0f, 1.0f,
 
                 0.0f, 0.559016994f, 0.0f,
-                0.0f, 1.0f, 0.0f, 1.0f};
+                0.0f, 1.0f, 0.0f, 1.0f});
 
         // This triangle is yellow, cyan, and magenta.
-        final float[] triangle2VerticesData = {
+        triangle2 = new Triangle(new float[]{
                 // X, Y, Z,
                 // R, G, B, A
                 -0.5f, -0.25f, 0.0f,
@@ -123,10 +78,10 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
                 0.0f, 1.0f, 1.0f, 1.0f,
 
                 0.0f, 0.559016994f, 0.0f,
-                1.0f, 0.0f, 1.0f, 1.0f};
+                1.0f, 0.0f, 1.0f, 1.0f});
 
         // This triangle is white, gray, and black.
-        final float[] triangle3VerticesData = {
+        triangle3 = new Triangle(new float[]{
                 // X, Y, Z,
                 // R, G, B, A
                 -0.5f, -0.25f, 0.0f,
@@ -136,16 +91,7 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
                 0.5f, 0.5f, 0.5f, 1.0f,
 
                 0.0f, 0.559016994f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f};
-
-        // Initialize the buffers.
-        mTriangle1Vertices = allocateDirect(triangle1VerticesData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
-        mTriangle2Vertices = allocateDirect(triangle2VerticesData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
-        mTriangle3Vertices = allocateDirect(triangle3VerticesData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
-
-        mTriangle1Vertices.put(triangle1VerticesData).position(0);
-        mTriangle2Vertices.put(triangle2VerticesData).position(0);
-        mTriangle3Vertices.put(triangle3VerticesData).position(0);
+                0.0f, 0.0f, 0.0f, 1.0f});
     }
 
     @Override
@@ -168,12 +114,7 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         Matrix.setLookAtM(mViewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
 
         // Create a program object and store the handle to it.
-        int programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
-
-        // Set program handles. These will later be used to pass in values to the program.
-        mMVPMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        mPositionHandle = glGetAttribLocation(programHandle, "a_Position");
-        mColorHandle = glGetAttribLocation(programHandle, "a_Color");
+        programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
 
         // Tell OpenGL to use this program when rendering.
         glUseProgram(programHandle);
@@ -208,50 +149,20 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // Draw the triangle facing straight on.
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawTriangle(mTriangle1Vertices);
+        triangle1.draw(programHandle, mMVPMatrix, mViewMatrix, mModelMatrix, mProjectionMatrix);
 
         // Draw one translated a bit down and rotated to be flat on the ground.
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 0.0f, -1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, 90.0f, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawTriangle(mTriangle2Vertices);
+        triangle2.draw(programHandle, mMVPMatrix, mViewMatrix, mModelMatrix, mProjectionMatrix);
 
         // Draw one translated a bit to the right and rotated to be facing to the left.
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, 90.0f, 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawTriangle(mTriangle3Vertices);
-    }
-
-    /**
-     * Draws a triangle from the given vertex data.
-     *
-     * @param aTriangleBuffer The buffer containing the vertex data.
-     */
-    private void drawTriangle(final FloatBuffer aTriangleBuffer) {
-        // Pass in the position information
-        aTriangleBuffer.position(mPositionOffset);
-        glVertexAttribPointer(mPositionHandle, mPositionDataSize, GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
-
-        glEnableVertexAttribArray(mPositionHandle);
-
-        // Pass in the color information
-        aTriangleBuffer.position(mColorOffset);
-        glVertexAttribPointer(mColorHandle, mColorDataSize, GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
-
-        glEnableVertexAttribArray(mColorHandle);
-
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-
-        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        triangle3.draw(programHandle, mMVPMatrix, mViewMatrix, mModelMatrix, mProjectionMatrix);
     }
 }
