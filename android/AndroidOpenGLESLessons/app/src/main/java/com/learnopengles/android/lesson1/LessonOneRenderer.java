@@ -4,6 +4,9 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -52,9 +55,7 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
      */
     private float[] mvpMatrix = new float[16];
 
-    private final Triangle triangle1;
-    private final Triangle triangle2;
-    private final Triangle triangle3;
+    private final List<Triangle> triangles = new ArrayList<>();
 
     int programHandle;
 
@@ -66,27 +67,30 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
 
         // This triangle is red, green, and blue.
         // Draw the triangle facing straight on.
-        triangle1 = new Triangle(vertices()
+        Triangle triangle1 = new Triangle(vertices()
                 .createEquilateralTriangle(1, RED, GREEN, BLUE)
                 .build()
         );
+        triangles.add(triangle1);
 
         // This triangle is yellow, cyan, and magenta.
         // Draw one translated a bit down and rotated to be flat on the ground.
-        triangle2 = new Triangle(vertices()
+        Triangle triangle2 = new Triangle(vertices()
                 .createEquilateralTriangle(1, YELLOW, CYAN, MAGENTA)
                 .build()
         );
         triangle2.setPosition(new Point(0.0f, -1.0f, 0.0f));
         triangle2.setRotationX(90);
+        triangles.add(triangle2);
 
         // This triangle is white, gray, and black.
         // Draw one translated a bit to the right and rotated to be facing to the left.
-        triangle3 = new Triangle(vertices()
+        Triangle triangle3 = new Triangle(vertices()
                 .createEquilateralTriangle(1, WHITE, GREY, BLACK)
                 .build());
         triangle3.setPosition(new Point(1.0f, 0.0f, 0.0f));
         triangle3.setRotationY(90);
+        triangles.add(triangle3);
     }
 
     @Override
@@ -140,12 +144,10 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // Do a complete rotation every 10 seconds.
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-        triangle1.setRotationZ(angleInDegrees);
-        triangle2.setRotationZ(angleInDegrees);
-        triangle3.setRotationZ(angleInDegrees);
 
-        triangle1.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
-        triangle2.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
-        triangle3.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
+        for (Triangle triangle : triangles) {
+            triangle.setRotationZ(angleInDegrees);
+            triangle.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
+        }
     }
 }
