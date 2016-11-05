@@ -136,21 +136,21 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
 
         // Draw the triangle facing straight on.
         Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        triangle1.setRotationZ(angleInDegrees);
         triangle1.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
 
         // Draw one translated a bit down and rotated to be flat on the ground.
         Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 0.0f, -1.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, 90.0f, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        triangle2.setPosition(new Point(0.0f, -1.0f, 0.0f));
+        triangle2.setRotationX(90);
+        triangle2.setRotationZ(angleInDegrees);
         triangle2.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
 
         // Draw one translated a bit to the right and rotated to be facing to the left.
         Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, 90.0f, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        triangle3.setPosition(new Point(1.0f, 0.0f, 0.0f));
+        triangle3.setRotationY(90);
+        triangle3.setRotationZ(angleInDegrees);
         triangle3.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
     }
 }

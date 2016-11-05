@@ -49,6 +49,8 @@ public class Triangle {
     private static final int COLOR_DATA_SIZE = 4;
 
     private final FloatBuffer vertices;
+    private Point rotation = new Point();
+    private Point position = new Point();
 
     public Triangle(float[] verticesData) {
         vertices = allocateDirect(verticesData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
@@ -56,6 +58,11 @@ public class Triangle {
     }
 
     public void draw(int programHandle, float[] mMVPMatrix, float[] mViewMatrix, float[] mModelMatrix, float[] mProjectionMatrix) {
+
+        Matrix.translateM(mModelMatrix, 0, position.x, position.y, position.z);
+        Matrix.rotateM(mModelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(mModelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mModelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
 
         int mMVPMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
         int mPositionHandle = glGetAttribLocation(programHandle, "a_Position");
@@ -84,5 +91,21 @@ public class Triangle {
         glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+    public void setRotationX(float rotation) {
+        this.rotation.x = rotation;
+    }
+
+    public void setRotationY(float rotation) {
+        this.rotation.y = rotation;
+    }
+
+    public void setRotationZ(float rotation) {
+        this.rotation.z = rotation;
     }
 }
