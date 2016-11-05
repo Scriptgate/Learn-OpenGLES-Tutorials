@@ -65,21 +65,28 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // Define points for equilateral triangles.
 
         // This triangle is red, green, and blue.
+        // Draw the triangle facing straight on.
         triangle1 = new Triangle(vertices()
                 .createEquilateralTriangle(1, RED, GREEN, BLUE)
                 .build()
         );
 
         // This triangle is yellow, cyan, and magenta.
+        // Draw one translated a bit down and rotated to be flat on the ground.
         triangle2 = new Triangle(vertices()
                 .createEquilateralTriangle(1, YELLOW, CYAN, MAGENTA)
                 .build()
         );
+        triangle2.setPosition(new Point(0.0f, -1.0f, 0.0f));
+        triangle2.setRotationX(90);
 
         // This triangle is white, gray, and black.
+        // Draw one translated a bit to the right and rotated to be facing to the left.
         triangle3 = new Triangle(vertices()
                 .createEquilateralTriangle(1, WHITE, GREY, BLACK)
                 .build());
+        triangle3.setPosition(new Point(1.0f, 0.0f, 0.0f));
+        triangle3.setRotationY(90);
     }
 
     @Override
@@ -133,24 +140,12 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // Do a complete rotation every 10 seconds.
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-
-        // Draw the triangle facing straight on.
-        Matrix.setIdentityM(modelMatrix, 0);
         triangle1.setRotationZ(angleInDegrees);
-        triangle1.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
-
-        // Draw one translated a bit down and rotated to be flat on the ground.
-        Matrix.setIdentityM(modelMatrix, 0);
-        triangle2.setPosition(new Point(0.0f, -1.0f, 0.0f));
-        triangle2.setRotationX(90);
         triangle2.setRotationZ(angleInDegrees);
-        triangle2.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
-
-        // Draw one translated a bit to the right and rotated to be facing to the left.
-        Matrix.setIdentityM(modelMatrix, 0);
-        triangle3.setPosition(new Point(1.0f, 0.0f, 0.0f));
-        triangle3.setRotationY(90);
         triangle3.setRotationZ(angleInDegrees);
+
+        triangle1.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
+        triangle2.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
         triangle3.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
     }
 }

@@ -58,6 +58,7 @@ public class Triangle {
     }
 
     public void draw(int programHandle, float[] mMVPMatrix, float[] mViewMatrix, float[] mModelMatrix, float[] mProjectionMatrix) {
+        Matrix.setIdentityM(mModelMatrix, 0);
 
         Matrix.translateM(mModelMatrix, 0, position.x, position.y, position.z);
         Matrix.rotateM(mModelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
@@ -90,7 +91,6 @@ public class Triangle {
 
         glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
-
     }
 
     public void setPosition(Point position) {
