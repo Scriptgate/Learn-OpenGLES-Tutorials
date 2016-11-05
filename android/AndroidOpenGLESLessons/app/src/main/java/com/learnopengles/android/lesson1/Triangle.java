@@ -57,39 +57,39 @@ public class Triangle {
         vertices.put(verticesData).position(0);
     }
 
-    public void draw(int programHandle, float[] mMVPMatrix, float[] mViewMatrix, float[] mModelMatrix, float[] mProjectionMatrix) {
-        Matrix.setIdentityM(mModelMatrix, 0);
+    public void draw(int programHandle, float[] mvpMatrix, float[] viewMatrix, float[] modelMatrix, float[] projectionMatrix) {
+        Matrix.setIdentityM(modelMatrix, 0);
 
-        Matrix.translateM(mModelMatrix, 0, position.x, position.y, position.z);
-        Matrix.rotateM(mModelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(mModelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
+        Matrix.translateM(modelMatrix, 0, position.x, position.y, position.z);
+        Matrix.rotateM(modelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
 
-        int mMVPMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        int mPositionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int mColorHandle = glGetAttribLocation(programHandle, "a_Color");
+        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
+        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
+        int colorHandle = glGetAttribLocation(programHandle, "a_Color");
 
         // Pass in the position information
         vertices.position(POSITION_OFFSET);
-        glVertexAttribPointer(mPositionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
+        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
-        glEnableVertexAttribArray(mPositionHandle);
+        glEnableVertexAttribArray(positionHandle);
 
         // Pass in the color information
         vertices.position(COLOR_OFFSET);
-        glVertexAttribPointer(mColorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
+        glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
-        glEnableVertexAttribArray(mColorHandle);
+        glEnableVertexAttribArray(colorHandle);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
 
-        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 

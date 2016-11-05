@@ -97,7 +97,16 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         // Set the background clear color to gray.
         glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
+        initializeViewMatrix(viewMatrix);
 
+        // Create a program object and store the handle to it.
+        programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
+
+        // Tell OpenGL to use this program when rendering.
+        glUseProgram(programHandle);
+    }
+
+    private static void initializeViewMatrix(float[] viewMatrix) {
         // Position the eye behind the origin.
         Point eye = new Point(0.0f, 0.0f, 1.5f);
 
@@ -111,12 +120,6 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
         Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
-
-        // Create a program object and store the handle to it.
-        programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
-
-        // Tell OpenGL to use this program when rendering.
-        glUseProgram(programHandle);
     }
 
     @Override
