@@ -13,7 +13,17 @@ import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glUseProgram;
 import static android.opengl.GLES20.glViewport;
+import static com.learnopengles.android.lesson1.Color.BLACK;
+import static com.learnopengles.android.lesson1.Color.BLUE;
+import static com.learnopengles.android.lesson1.Color.CYAN;
+import static com.learnopengles.android.lesson1.Color.GREEN;
+import static com.learnopengles.android.lesson1.Color.GREY;
+import static com.learnopengles.android.lesson1.Color.MAGENTA;
+import static com.learnopengles.android.lesson1.Color.RED;
+import static com.learnopengles.android.lesson1.Color.WHITE;
+import static com.learnopengles.android.lesson1.Color.YELLOW;
 import static com.learnopengles.android.lesson1.Program.createProgram;
+import static com.learnopengles.android.lesson1.TriangleVerticesBuilder.vertices;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -55,43 +65,21 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
         // Define points for equilateral triangles.
 
         // This triangle is red, green, and blue.
-        triangle1 = new Triangle(new float[]{
-                // X, Y, Z,
-                // R, G, B, A
-                -0.5f, -0.25f, 0.0f,
-                1.0f, 0.0f, 0.0f, 1.0f,
-
-                0.5f, -0.25f, 0.0f,
-                0.0f, 0.0f, 1.0f, 1.0f,
-
-                0.0f, 0.559016994f, 0.0f,
-                0.0f, 1.0f, 0.0f, 1.0f});
+        triangle1 = new Triangle(vertices()
+                .createEquilateralTriangle(1, RED, GREEN, BLUE)
+                .build()
+        );
 
         // This triangle is yellow, cyan, and magenta.
-        triangle2 = new Triangle(new float[]{
-                // X, Y, Z,
-                // R, G, B, A
-                -0.5f, -0.25f, 0.0f,
-                1.0f, 1.0f, 0.0f, 1.0f,
-
-                0.5f, -0.25f, 0.0f,
-                0.0f, 1.0f, 1.0f, 1.0f,
-
-                0.0f, 0.559016994f, 0.0f,
-                1.0f, 0.0f, 1.0f, 1.0f});
+        triangle2 = new Triangle(vertices()
+                .createEquilateralTriangle(1, YELLOW, CYAN, MAGENTA)
+                .build()
+        );
 
         // This triangle is white, gray, and black.
-        triangle3 = new Triangle(new float[]{
-                // X, Y, Z,
-                // R, G, B, A
-                -0.5f, -0.25f, 0.0f,
-                1.0f, 1.0f, 1.0f, 1.0f,
-
-                0.5f, -0.25f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f,
-
-                0.0f, 0.559016994f, 0.0f,
-                0.0f, 0.0f, 0.0f, 1.0f});
+        triangle3 = new Triangle(vertices()
+                .createEquilateralTriangle(1, WHITE, GREY, BLACK)
+                .build());
     }
 
     @Override
