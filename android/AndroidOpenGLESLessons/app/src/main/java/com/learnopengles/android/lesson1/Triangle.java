@@ -19,9 +19,7 @@ import static java.nio.ByteOrder.nativeOrder;
 
 public class Triangle {
 
-    /**
-     * How many bytes per float.
-     */
+
     private static final int BYTES_PER_FLOAT = 4;
 
     /**
@@ -29,24 +27,10 @@ public class Triangle {
      */
     private static final int STRIDE_BYTES = 7 * BYTES_PER_FLOAT;
 
-    /**
-     * Offset of the position data.
-     */
-    private static final int POSITION_OFFSET = 0;
-
-    /**
-     * Size of the position data in elements.
-     */
+    private static final int POSITION_DATA_OFFSET = 0;
     private static final int POSITION_DATA_SIZE = 3;
 
-    /**
-     * Offset of the color data.
-     */
-    private static final int COLOR_OFFSET = 3;
-
-    /**
-     * Size of the color data in elements.
-     */
+    private static final int COLOR_DATA_OFFSET = 3;
     private static final int COLOR_DATA_SIZE = 4;
 
     private final FloatBuffer vertices;
@@ -71,13 +55,13 @@ public class Triangle {
         int colorHandle = glGetAttribLocation(programHandle, "a_Color");
 
         // Pass in the position information
-        vertices.position(POSITION_OFFSET);
+        vertices.position(POSITION_DATA_OFFSET);
         glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
         glEnableVertexAttribArray(positionHandle);
 
         // Pass in the color information
-        vertices.position(COLOR_OFFSET);
+        vertices.position(COLOR_DATA_OFFSET);
         glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
         glEnableVertexAttribArray(colorHandle);
@@ -93,6 +77,7 @@ public class Triangle {
         glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
+        glDisableVertexAttribArray(positionHandle);
         glDisableVertexAttribArray(colorHandle);
     }
 
