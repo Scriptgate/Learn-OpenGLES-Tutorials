@@ -2,6 +2,8 @@ package com.learnopengles.android.lesson1;
 
 import android.opengl.Matrix;
 
+import com.learnopengles.android.common.Point;
+
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_FLOAT;
