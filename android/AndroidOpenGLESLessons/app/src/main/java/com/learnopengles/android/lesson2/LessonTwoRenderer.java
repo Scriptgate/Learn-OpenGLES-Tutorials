@@ -3,7 +3,6 @@ package com.learnopengles.android.lesson2;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
-import android.util.Log;
 
 import com.learnopengles.android.common.Point;
 
@@ -64,54 +63,9 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer cubeNormals;
 
     /**
-     * This will be used to pass in the transformation matrix.
-     */
-    private int mvpMatrixHandle;
-
-    /**
-     * This will be used to pass in the modelview matrix.
-     */
-    private int mvMatrixHandle;
-
-    /**
-     * This will be used to pass in the light position.
-     */
-    private int lightPosHandle;
-
-    /**
-     * This will be used to pass in model position information.
-     */
-    private int positionHandle;
-
-    /**
-     * This will be used to pass in model color information.
-     */
-    private int colorHandle;
-
-    /**
-     * This will be used to pass in model normal information.
-     */
-    private int normalHandle;
-
-    /**
      * How many bytes per float.
      */
     private final int BYTES_PER_FLOAT = 4;
-
-    /**
-     * Size of the position data in elements.
-     */
-    private final int POSITION_DATA_SIZE = 3;
-
-    /**
-     * Size of the color data in elements.
-     */
-    private final int COLOR_DATA_SIZE = 4;
-
-    /**
-     * Size of the normal data in elements.
-     */
-    private final int NORMAL_DATA_SIZE = 3;
 
     /**
      * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
@@ -404,13 +358,6 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         // Set our per-vertex lighting program.
         glUseProgram(perVertexProgramHandle);
 
-        // Set program handles for cube drawing.
-        mvpMatrixHandle = glGetUniformLocation(perVertexProgramHandle, "u_MVPMatrix");
-        mvMatrixHandle = glGetUniformLocation(perVertexProgramHandle, "u_MVMatrix");
-        lightPosHandle = glGetUniformLocation(perVertexProgramHandle, "u_LightPos");
-        positionHandle = glGetAttribLocation(perVertexProgramHandle, "a_Position");
-        colorHandle = glGetAttribLocation(perVertexProgramHandle, "a_Color");
-        normalHandle = glGetAttribLocation(perVertexProgramHandle, "a_Normal");
 
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(lightModelMatrix, 0);
@@ -425,73 +372,30 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 4.0f, 0.0f, -7.0f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
-        drawCube();
+        new Cube().drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, -4.0f, 0.0f, -7.0f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
-        drawCube();
+        new Cube().drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 0.0f, 4.0f, -7.0f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawCube();
+        new Cube().drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 0.0f, -4.0f, -7.0f);
-        drawCube();
+        new Cube().drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -5.0f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
-        drawCube();
+        new Cube().drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         // Draw a point to indicate the light.
         glUseProgram(pointProgramHandle);
         drawLight();
-    }
-
-    /**
-     * Draws a cube.
-     */
-    private void drawCube() {
-        // Pass in the position information
-        cubePositions.position(0);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
-
-        glEnableVertexAttribArray(positionHandle);
-
-        // Pass in the color information
-        cubeColors.position(0);
-        glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, 0, cubeColors);
-
-        glEnableVertexAttribArray(colorHandle);
-
-        // Pass in the normal information
-        cubeNormals.position(0);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, cubeNormals);
-
-        glEnableVertexAttribArray(normalHandle);
-
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-
-        // Pass in the modelview matrix.
-        glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
-
-        // Pass in the combined matrix.
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // Pass in the light position in eye space.        
-        glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
-
-        // Draw the cube.
-        glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
     /**
