@@ -12,6 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
+import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -516,42 +517,6 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
 
         // Draw the point.
         glDrawArrays(GL_POINTS, 0, 1);
-    }
-
-    /**
-     * Helper function to compile a shader.
-     *
-     * @param shaderType   The shader type.
-     * @param shaderSource The shader source code.
-     * @return An OpenGL handle to the shader.
-     */
-    private int compileShader(final int shaderType, final String shaderSource) {
-        int shaderHandle = glCreateShader(shaderType);
-
-        if (shaderHandle != 0) {
-            // Pass in the shader source.
-            glShaderSource(shaderHandle, shaderSource);
-
-            // Compile the shader.
-            glCompileShader(shaderHandle);
-
-            // Get the compilation status.
-            final int[] compileStatus = new int[1];
-            glGetShaderiv(shaderHandle, GL_COMPILE_STATUS, compileStatus, 0);
-
-            // If the compilation failed, delete the shader.
-            if (compileStatus[0] == 0) {
-                Log.e(TAG, "Error compiling shader: " + glGetShaderInfoLog(shaderHandle));
-                glDeleteShader(shaderHandle);
-                shaderHandle = 0;
-            }
-        }
-
-        if (shaderHandle == 0) {
-            throw new RuntimeException("Error creating shader.");
-        }
-
-        return shaderHandle;
     }
 
     /**
