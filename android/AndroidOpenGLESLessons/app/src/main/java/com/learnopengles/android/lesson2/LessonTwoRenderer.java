@@ -15,6 +15,7 @@ import javax.microedition.khronos.opengles.GL10;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
+import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -513,53 +514,5 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
 
         // Draw the point.
         glDrawArrays(GL_POINTS, 0, 1);
-    }
-
-    /**
-     * Helper function to compile and link a program.
-     *
-     * @param vertexShaderHandle   An OpenGL handle to an already-compiled vertex shader.
-     * @param fragmentShaderHandle An OpenGL handle to an already-compiled fragment shader.
-     * @param attributes           Attributes that need to be bound to the program.
-     * @return An OpenGL handle to the program.
-     */
-    private int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes) {
-        int programHandle = glCreateProgram();
-
-        if (programHandle != 0) {
-            // Bind the vertex shader to the program.
-            glAttachShader(programHandle, vertexShaderHandle);
-
-            // Bind the fragment shader to the program.
-            glAttachShader(programHandle, fragmentShaderHandle);
-
-            // Bind attributes
-            if (attributes != null) {
-                final int size = attributes.length;
-                for (int i = 0; i < size; i++) {
-                    glBindAttribLocation(programHandle, i, attributes[i]);
-                }
-            }
-
-            // Link the two shaders together into a program.
-            glLinkProgram(programHandle);
-
-            // Get the link status.
-            final int[] linkStatus = new int[1];
-            glGetProgramiv(programHandle, GL_LINK_STATUS, linkStatus, 0);
-
-            // If the link failed, delete the program.
-            if (linkStatus[0] == 0) {
-                Log.e(TAG, "Error compiling program: " + glGetProgramInfoLog(programHandle));
-                glDeleteProgram(programHandle);
-                programHandle = 0;
-            }
-        }
-
-        if (programHandle == 0) {
-            throw new RuntimeException("Error creating program.");
-        }
-
-        return programHandle;
     }
 }
