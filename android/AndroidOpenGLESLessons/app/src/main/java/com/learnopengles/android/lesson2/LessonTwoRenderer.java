@@ -149,53 +149,57 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
                         // the back. OpenGL has an optimization where all back-facing triangles are culled, since they
                         // usually represent the backside of an object and aren't visible anyways.
 
+                        //@formatter:off
+
                         // Front face
-                        -1.0f, 1.0f, 1.0f,
-                        -1.0f, -1.0f, 1.0f,
-                        1.0f, 1.0f, 1.0f,
-                        -1.0f, -1.0f, 1.0f,
-                        1.0f, -1.0f, 1.0f,
-                        1.0f, 1.0f, 1.0f,
+                        -1.0f,  1.0f,  1.0f,
+                        -1.0f, -1.0f,  1.0f,
+                         1.0f,  1.0f,  1.0f,
+                        -1.0f, -1.0f,  1.0f,
+                         1.0f, -1.0f,  1.0f,
+                         1.0f,  1.0f,  1.0f,
 
                         // Right face
-                        1.0f, 1.0f, 1.0f,
-                        1.0f, -1.0f, 1.0f,
-                        1.0f, 1.0f, -1.0f,
-                        1.0f, -1.0f, 1.0f,
-                        1.0f, -1.0f, -1.0f,
-                        1.0f, 1.0f, -1.0f,
+                         1.0f,  1.0f,  1.0f,
+                         1.0f, -1.0f,  1.0f,
+                         1.0f,  1.0f, -1.0f,
+                         1.0f, -1.0f,  1.0f,
+                         1.0f, -1.0f, -1.0f,
+                         1.0f,  1.0f, -1.0f,
 
                         // Back face
-                        1.0f, 1.0f, -1.0f,
-                        1.0f, -1.0f, -1.0f,
-                        -1.0f, 1.0f, -1.0f,
-                        1.0f, -1.0f, -1.0f,
+                         1.0f,  1.0f, -1.0f,
+                         1.0f, -1.0f, -1.0f,
+                        -1.0f,  1.0f, -1.0f,
+                         1.0f, -1.0f, -1.0f,
                         -1.0f, -1.0f, -1.0f,
-                        -1.0f, 1.0f, -1.0f,
+                        -1.0f,  1.0f, -1.0f,
 
                         // Left face
-                        -1.0f, 1.0f, -1.0f,
+                        -1.0f,  1.0f, -1.0f,
                         -1.0f, -1.0f, -1.0f,
-                        -1.0f, 1.0f, 1.0f,
+                        -1.0f,  1.0f,  1.0f,
                         -1.0f, -1.0f, -1.0f,
-                        -1.0f, -1.0f, 1.0f,
-                        -1.0f, 1.0f, 1.0f,
+                        -1.0f, -1.0f,  1.0f,
+                        -1.0f,  1.0f,  1.0f,
 
                         // Top face
-                        -1.0f, 1.0f, -1.0f,
-                        -1.0f, 1.0f, 1.0f,
-                        1.0f, 1.0f, -1.0f,
-                        -1.0f, 1.0f, 1.0f,
-                        1.0f, 1.0f, 1.0f,
-                        1.0f, 1.0f, -1.0f,
+                        -1.0f,  1.0f, -1.0f,
+                        -1.0f,  1.0f,  1.0f,
+                         1.0f,  1.0f, -1.0f,
+                        -1.0f,  1.0f,  1.0f,
+                         1.0f,  1.0f,  1.0f,
+                         1.0f,  1.0f, -1.0f,
 
                         // Bottom face
-                        1.0f, -1.0f, -1.0f,
-                        1.0f, -1.0f, 1.0f,
+                         1.0f, -1.0f, -1.0f,
+                         1.0f, -1.0f,  1.0f,
                         -1.0f, -1.0f, -1.0f,
-                        1.0f, -1.0f, 1.0f,
-                        -1.0f, -1.0f, 1.0f,
+                         1.0f, -1.0f,  1.0f,
+                        -1.0f, -1.0f,  1.0f,
                         -1.0f, -1.0f, -1.0f,
+                        //@formatter:on
+
                 };
 
         // R, G, B, A
