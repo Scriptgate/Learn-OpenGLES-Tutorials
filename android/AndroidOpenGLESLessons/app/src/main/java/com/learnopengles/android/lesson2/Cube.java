@@ -2,6 +2,8 @@ package com.learnopengles.android.lesson2;
 
 import android.opengl.Matrix;
 
+import com.learnopengles.android.common.Point;
+
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_FLOAT;
@@ -16,25 +18,24 @@ import static android.opengl.GLES20.glVertexAttribPointer;
 
 public class Cube {
 
-    /**
-     * Size of the position data in elements.
-     */
-    private final int POSITION_DATA_SIZE = 3;
+    private static final int POSITION_DATA_SIZE = 3;
+    private static final int COLOR_DATA_SIZE = 4;
+    private static final int NORMAL_DATA_SIZE = 3;
 
-    /**
-     * Size of the color data in elements.
-     */
-    private final int COLOR_DATA_SIZE = 4;
+    private Point position = new Point();
+    private Point rotation = new Point();
 
-    /**
-     * Size of the normal data in elements.
-     */
-    private final int NORMAL_DATA_SIZE = 3;
 
     /**
      * Draws a cube.
      */
     public void drawCube(int perVertexProgramHandle, FloatBuffer cubePositions, FloatBuffer cubeNormals, FloatBuffer cubeColors, float[] mvpMatrix, float[] modelMatrix, float[] viewMatrix, float[] projectionMatrix, float[] lightPosInEyeSpace) {
+        Matrix.setIdentityM(modelMatrix, 0);
+
+        Matrix.translateM(modelMatrix, 0, position.x, position.y, position.z);
+        Matrix.rotateM(modelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
 
         // Set program handles for cube drawing.
         int mvpMatrixHandle = glGetUniformLocation(perVertexProgramHandle, "u_MVPMatrix");
@@ -83,4 +84,19 @@ public class Cube {
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
+    public void setRotationX(float rotation) {
+        this.rotation.x = rotation;
+    }
+
+    public void setRotationY(float rotation) {
+        this.rotation.y = rotation;
+    }
+
+    public void setRotationZ(float rotation) {
+        this.rotation.z = rotation;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
 }
