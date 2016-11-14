@@ -93,6 +93,12 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
      */
     private int pointProgramHandle;
 
+    private Cube cube1;
+    private Cube cube2;
+    private Cube cube3;
+    private Cube cube4;
+    private Cube cube5;
+
     /**
      * Initialize the model data.
      */
@@ -276,6 +282,18 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
 
         cubeNormals = allocateDirect(cubeNormalData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         cubeNormals.put(cubeNormalData).position(0);
+
+        cube1 = new Cube();
+        cube2 = new Cube();
+        cube3 = new Cube();
+        cube4 = new Cube();
+        cube5 = new Cube();
+
+        cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));
+        cube2.setPosition(new Point(-4.0f, 0.0f, -7.0f));
+        cube3.setPosition(new Point(0.0f, 4.0f, -7.0f));
+        cube4.setPosition(new Point(0.0f, -4.0f, -7.0f));
+        cube5.setPosition(new Point(0.0f, 0.0f, -5.0f));
     }
 
     protected String getVertexShader() {
@@ -368,30 +386,17 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
         Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
 
-        // Draw some cubes.        
-        Cube cube1 = new Cube();
-        cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));
+        // Draw some cubes.
         cube1.setRotationX(angleInDegrees);
-        cube1.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-
-        Cube cube2 = new Cube();
-        cube2.setPosition(new Point(-4.0f, 0.0f, -7.0f));
         cube2.setRotationY(angleInDegrees);
-        cube2.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-
-        Cube cube3 = new Cube();
-        cube3.setPosition(new Point(0.0f, 4.0f, -7.0f));
         cube3.setRotationZ(angleInDegrees);
-        cube3.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-
-        Cube cube4 = new Cube();
-        cube4.setPosition(new Point(0.0f, -4.0f, -7.0f));
-        cube4.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-
-        Cube cube5 = new Cube();
-        cube5.setPosition(new Point(0.0f, 0.0f, -5.0f));
         cube5.setRotationX(angleInDegrees);
         cube5.setRotationY(angleInDegrees);
+
+        cube1.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+        cube2.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+        cube3.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+        cube4.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
         cube5.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         // Draw a point to indicate the light.
