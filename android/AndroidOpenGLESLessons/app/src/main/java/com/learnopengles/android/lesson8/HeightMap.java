@@ -1,17 +1,30 @@
 package com.learnopengles.android.lesson8;
 
-import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+import static android.opengl.GLES20.GL_ARRAY_BUFFER;
+import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_STATIC_DRAW;
+import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
+import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
+import static android.opengl.GLES20.glBindBuffer;
+import static android.opengl.GLES20.glBufferData;
+import static android.opengl.GLES20.glDeleteBuffers;
+import static android.opengl.GLES20.glDrawElements;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glGenBuffers;
+import static android.opengl.GLES20.glGetAttribLocation;
+import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.lesson8.LessonEightRenderer.COLOR_ATTRIBUTE;
 import static com.learnopengles.android.lesson8.LessonEightRenderer.NORMAL_ATTRIBUTE;
 import static com.learnopengles.android.lesson8.LessonEightRenderer.POSITION_ATTRIBUTE;
+import static java.nio.ByteBuffer.allocateDirect;
+import static java.nio.ByteOrder.nativeOrder;
 
 public class HeightMap {
 
@@ -86,7 +99,8 @@ public class HeightMap {
                     final float[] normalVector = {
                             (planeVectorX[1] * planeVectorY[2]) - (planeVectorX[2] * planeVectorY[1]),
                             (planeVectorX[2] * planeVectorY[0]) - (planeVectorX[0] * planeVectorY[2]),
-                            (planeVectorX[0] * planeVectorY[1]) - (planeVectorX[1] * planeVectorY[0])};
+                            (planeVectorX[0] * planeVectorY[1]) - (planeVectorX[1] * planeVectorY[0])
+                    };
 
                     // Normalize the normal
                     final float length = Matrix.length(normalVector[0], normalVector[1], normalVector[2]);
@@ -132,30 +146,24 @@ public class HeightMap {
 
             indexCount = heightMapIndexData.length;
 
-            final FloatBuffer heightMapVertexDataBuffer = ByteBuffer
-                    .allocateDirect(heightMapVertexData.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder())
-                    .asFloatBuffer();
+            final FloatBuffer heightMapVertexDataBuffer = allocateDirect(heightMapVertexData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
             heightMapVertexDataBuffer.put(heightMapVertexData).position(0);
 
-            final ShortBuffer heightMapIndexDataBuffer = ByteBuffer
-                    .allocateDirect(heightMapIndexData.length * BYTES_PER_SHORT).order(ByteOrder.nativeOrder())
-                    .asShortBuffer();
+            final ShortBuffer heightMapIndexDataBuffer = allocateDirect(heightMapIndexData.length * BYTES_PER_SHORT).order(nativeOrder()).asShortBuffer();
             heightMapIndexDataBuffer.put(heightMapIndexData).position(0);
 
-            GLES20.glGenBuffers(1, vbo, 0);
-            GLES20.glGenBuffers(1, ibo, 0);
+            glGenBuffers(1, vbo, 0);
+            glGenBuffers(1, ibo, 0);
 
             if (vbo[0] > 0 && ibo[0] > 0) {
-                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vbo[0]);
-                GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT,
-                        heightMapVertexDataBuffer, GLES20.GL_STATIC_DRAW);
+                glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+                glBufferData(GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT, heightMapVertexDataBuffer, GL_STATIC_DRAW);
 
-                GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-                GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, heightMapIndexDataBuffer.capacity()
-                        * BYTES_PER_SHORT, heightMapIndexDataBuffer, GLES20.GL_STATIC_DRAW);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, heightMapIndexDataBuffer.capacity() * BYTES_PER_SHORT, heightMapIndexDataBuffer, GL_STATIC_DRAW);
 
-                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-                GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             } else {
                 errorHandler.handleError(ErrorHandler.ErrorType.BUFFER_CREATION_ERROR, "glGenBuffers");
             }
@@ -168,39 +176,39 @@ public class HeightMap {
     void render(int program) {
         if (vbo[0] > 0 && ibo[0] > 0) {
 
-            positionAttribute = GLES20.glGetAttribLocation(program, POSITION_ATTRIBUTE);
-            normalAttribute = GLES20.glGetAttribLocation(program, NORMAL_ATTRIBUTE);
-            colorAttribute = GLES20.glGetAttribLocation(program, COLOR_ATTRIBUTE);
+            positionAttribute = glGetAttribLocation(program, POSITION_ATTRIBUTE);
+            normalAttribute = glGetAttribLocation(program, NORMAL_ATTRIBUTE);
+            colorAttribute = glGetAttribLocation(program, COLOR_ATTRIBUTE);
 
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vbo[0]);
+            glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 
             // Bind Attributes
-            GLES20.glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GLES20.GL_FLOAT, false, STRIDE, 0);
-            GLES20.glEnableVertexAttribArray(positionAttribute);
+            glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
+            glEnableVertexAttribArray(positionAttribute);
 
-            GLES20.glVertexAttribPointer(normalAttribute, NORMAL_DATA_SIZE_IN_ELEMENTS, GLES20.GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
-            GLES20.glEnableVertexAttribArray(normalAttribute);
+            glVertexAttribPointer(normalAttribute, NORMAL_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
+            glEnableVertexAttribArray(normalAttribute);
 
-            GLES20.glVertexAttribPointer(colorAttribute, COLOR_DATA_SIZE_IN_ELEMENTS, GLES20.GL_FLOAT, false, STRIDE, (POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT);
-            GLES20.glEnableVertexAttribArray(colorAttribute);
+            glVertexAttribPointer(colorAttribute, COLOR_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, (POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT);
+            glEnableVertexAttribArray(colorAttribute);
 
             // Draw
-            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-            GLES20.glDrawElements(GLES20.GL_TRIANGLE_STRIP, indexCount, GLES20.GL_UNSIGNED_SHORT, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+            glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_SHORT, 0);
 
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-            GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
     }
 
     void release() {
         if (vbo[0] > 0) {
-            GLES20.glDeleteBuffers(vbo.length, vbo, 0);
+            glDeleteBuffers(vbo.length, vbo, 0);
             vbo[0] = 0;
         }
 
         if (ibo[0] > 0) {
-            GLES20.glDeleteBuffers(ibo.length, ibo, 0);
+            glDeleteBuffers(ibo.length, ibo, 0);
             ibo[0] = 0;
         }
     }
