@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson2;
 
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.PointBuilder;
+import com.learnopengles.android.lesson1.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,75 +12,205 @@ public class CubeVerticesBuilder {
         return new CubeVerticesBuilder();
     }
 
+    float width = 1f;
+    float height = 1f;
+    private Point frontA = new Point(-width, height, 1.0f);
+    private Point frontB = new Point(-width, -height, 1.0f);
+    private Point frontC = new Point(width, height, 1.0f);
+    private Point frontD = new Point(width, -height, 1.0f);
+
+    private Point backE = new Point(width, height, -1.0f);
+    private Point backF = new Point(width, -height, -1.0f);
+    private Point backG = new Point(-width, height, -1.0f);
+    private Point backH = new Point(-width, -height, -1.0f);
+
     private CubeVerticesBuilder() {
 
     }
 
-    public CubeVerticesBuilder position() {
-        return this;
+    public float[] color() {
+        List<Color> colors = new ArrayList<>();
+        // R, G, B, frontA
+
+        // Front face
+        colors.add(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 0.0f, 1.0f));
+
+        // Right face
+        colors.add(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 0.0f, 1.0f));
+
+        // Back face
+        colors.add(new Color(0.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 0.0f, 1.0f, 1.0f));
+
+        // Left face
+        colors.add(new Color(1.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 0.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 0.0f, 1.0f));
+
+        // Top face
+        colors.add(new Color(0.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(0.0f, 1.0f, 1.0f, 1.0f));
+
+        // Bottom face
+        colors.add(new Color(1.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 0.0f, 1.0f, 1.0f));
+
+
+        float[] result = new float[colors.size() * 4];
+        for (int i = 0; i < colors.size(); i++) {
+            Color point = colors.get(i);
+            result[i * 4] = point.red;
+            result[i * 4 + 1] = point.green;
+            result[i * 4 + 2] = point.blue;
+            result[i * 4 + 3] = point.alpha;
+        }
+        return result;
+    }
+    public float[] white() {
+        List<Color> colors = new ArrayList<>();
+        // R, G, B, frontA
+
+        // Front face
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+        // Right face
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+        // Back face
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+        // Left face
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+        // Top face
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+        // Bottom face
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        colors.add(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+
+        float[] result = new float[colors.size() * 4];
+        for (int i = 0; i < colors.size(); i++) {
+            Color point = colors.get(i);
+            result[i * 4] = point.red;
+            result[i * 4 + 1] = point.green;
+            result[i * 4 + 2] = point.blue;
+            result[i * 4 + 3] = point.alpha;
+        }
+        return result;
     }
 
-    public float[] build() {
+    public float[] position() {
         List<Point> points = new ArrayList<>();
 
         // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
         // if the points are counter-clockwise we are looking at the "front". If not we are looking at
         // the back. OpenGL has an optimization where all back-facing triangles are culled, since they
         // usually represent the backside of an object and aren't visible anyways.
-        Point A = new Point(1.0f, 1.0f, 0.0f);
-        Point B = new Point(1.0f, -1.0f, 0.0f);
-        Point C = new Point(-1.0f, -1.0f, 0.0f);
-        Point D = new Point(-1.0f, 1.0f, 0.0f);
 
-        PointBuilder frontFace = new PointBuilder(new Point(0.0f, 0.0f, 1.0f));
-        //        points.add(A);
-        points.add(frontFace.xy(D.x, D.y));
-        points.add(frontFace.xy(C.x, C.y));
-        points.add(frontFace.xy(A.x, A.y));
-        points.add(frontFace.xy(C.x, C.y));
-        points.add(frontFace.xy(B.x, B.y));
-        points.add(frontFace.xy(A.x, A.y));
+        // Front face
+        points.add(frontA);
+        points.add(frontB);
+        points.add(frontC);
+        points.add(frontB);
+        points.add(frontD);
+        points.add(frontC);
 
-        PointBuilder rightFace = new PointBuilder(new Point(1.0f, 0.0f, 0.0f));
+        // Right face
+        points.add(frontC);
+        points.add(frontD);
+        points.add(backE);
+        points.add(frontD);
+        points.add(backF);
+        points.add(backE);
 
-        points.add(rightFace.yz(A.x, A.y));
-        points.add(rightFace.yz(D.x, D.y));
-        points.add(rightFace.yz(B.x, B.y));
-        points.add(rightFace.yz(D.x, D.y));
-        points.add(rightFace.yz(C.x, C.y));
-        points.add(rightFace.yz(B.x, B.y));
+        // Back face
+        points.add(backE);
+        points.add(backF);
+        points.add(backG);
+        points.add(backF);
+        points.add(backH);
+        points.add(backG);
 
-        PointBuilder backFace = new PointBuilder(new Point(0.0f, 0.0f, -1.0f));
-        points.add(backFace.xy(A.x, A.y));
-        points.add(backFace.xy(B.x, B.y));
-        points.add(backFace.xy(D.x, D.y));
-        points.add(backFace.xy(B.x, B.y));
-        points.add(backFace.xy(C.x, C.y));
-        points.add(backFace.xy(D.x, D.y));
+        // Left face
+        points.add(backG);
+        points.add(backH);
+        points.add(frontA);
+        points.add(backH);
+        points.add(frontB);
+        points.add(frontA);
 
-        PointBuilder leftFace = new PointBuilder(new Point(-1.0f, 0.0f, 0.0f));
-        points.add(leftFace.yz(B.x, B.y));
-        points.add(leftFace.yz(C.x, C.y));
-        points.add(leftFace.yz(A.x, A.y));
-        points.add(leftFace.yz(C.x, C.y));
-        points.add(leftFace.yz(D.x, D.y));
-        points.add(leftFace.yz(A.x, A.y));
+        // Top face
+        points.add(backG);
+        points.add(frontA);
+        points.add(backE);
+        points.add(frontA);
+        points.add(frontC);
+        points.add(backE);
 
-        PointBuilder topFace = new PointBuilder(new Point(0.0f, 1.0f, 0.0f));
-        points.add(topFace.xz(C.x, C.y));
-        points.add(topFace.xz(D.x, D.y));
-        points.add(topFace.xz(B.x, B.y));
-        points.add(topFace.xz(D.x, D.y));
-        points.add(topFace.xz(A.x, A.y));
-        points.add(topFace.xz(B.x, B.y));
+        // Bottom face
+        points.add(backF);
+        points.add(frontD);
+        points.add(backH);
+        points.add(frontD);
+        points.add(frontB);
+        points.add(backH);
 
-        PointBuilder bottomFace = new PointBuilder(new Point(0.0f, -1.0f, 0.0f));
-        points.add(bottomFace.xz(B.x, B.y));
-        points.add(bottomFace.xz(A.x, A.y));
-        points.add(bottomFace.xz(C.x, C.y));
-        points.add(bottomFace.xz(A.x, A.y));
-        points.add(bottomFace.xz(D.x, D.y));
-        points.add(bottomFace.xz(C.x, C.y));
 
         float[] result = new float[points.size() * 3];
         for (int i = 0; i < points.size(); i++) {

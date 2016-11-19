@@ -15,6 +15,7 @@ import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
+import static com.learnopengles.android.lesson2.CubeVerticesBuilder.vertices;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -106,117 +107,10 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         // Define points for a cube.
 
         // X, Y, Z
-        final float[] cubePositionData =
-                {
-                        // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
-                        // if the points are counter-clockwise we are looking at the "front". If not we are looking at
-                        // the back. OpenGL has an optimization where all back-facing triangles are culled, since they
-                        // usually represent the backside of an object and aren't visible anyways.
-
-                        //@formatter:off
-
-                        // Front face
-                        -1.0f,  1.0f,  1.0f,
-                        -1.0f, -1.0f,  1.0f,
-                         1.0f,  1.0f,  1.0f,
-                        -1.0f, -1.0f,  1.0f,
-                         1.0f, -1.0f,  1.0f,
-                         1.0f,  1.0f,  1.0f,
-
-                        // Right face
-                         1.0f,  1.0f,  1.0f,
-                         1.0f, -1.0f,  1.0f,
-                         1.0f,  1.0f, -1.0f,
-                         1.0f, -1.0f,  1.0f,
-                         1.0f, -1.0f, -1.0f,
-                         1.0f,  1.0f, -1.0f,
-
-                        // Back face
-                         1.0f,  1.0f, -1.0f,
-                         1.0f, -1.0f, -1.0f,
-                        -1.0f,  1.0f, -1.0f,
-                         1.0f, -1.0f, -1.0f,
-                        -1.0f, -1.0f, -1.0f,
-                        -1.0f,  1.0f, -1.0f,
-
-                        // Left face
-                        -1.0f,  1.0f, -1.0f,
-                        -1.0f, -1.0f, -1.0f,
-                        -1.0f,  1.0f,  1.0f,
-                        -1.0f, -1.0f, -1.0f,
-                        -1.0f, -1.0f,  1.0f,
-                        -1.0f,  1.0f,  1.0f,
-
-                        // Top face
-                        -1.0f,  1.0f, -1.0f,
-                        -1.0f,  1.0f,  1.0f,
-                         1.0f,  1.0f, -1.0f,
-                        -1.0f,  1.0f,  1.0f,
-                         1.0f,  1.0f,  1.0f,
-                         1.0f,  1.0f, -1.0f,
-
-                        // Bottom face
-                         1.0f, -1.0f, -1.0f,
-                         1.0f, -1.0f,  1.0f,
-                        -1.0f, -1.0f, -1.0f,
-                         1.0f, -1.0f,  1.0f,
-                        -1.0f, -1.0f,  1.0f,
-                        -1.0f, -1.0f, -1.0f,
-                        //@formatter:on
-
-                };
+        final float[] cubePositionData = vertices().position();
 
         // R, G, B, A
-        final float[] cubeColorData =
-                {
-                        // Front face (red)
-                        1.0f, 0.0f, 0.0f, 1.0f,
-                        1.0f, 0.0f, 0.0f, 1.0f,
-                        1.0f, 0.0f, 0.0f, 1.0f,
-                        1.0f, 0.0f, 0.0f, 1.0f,
-                        1.0f, 0.0f, 0.0f, 1.0f,
-                        1.0f, 0.0f, 0.0f, 1.0f,
-
-                        // Right face (green)
-                        0.0f, 1.0f, 0.0f, 1.0f,
-                        0.0f, 1.0f, 0.0f, 1.0f,
-                        0.0f, 1.0f, 0.0f, 1.0f,
-                        0.0f, 1.0f, 0.0f, 1.0f,
-                        0.0f, 1.0f, 0.0f, 1.0f,
-                        0.0f, 1.0f, 0.0f, 1.0f,
-
-                        // Back face (blue)
-                        0.0f, 0.0f, 1.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f, 1.0f,
-
-                        // Left face (yellow)
-                        1.0f, 1.0f, 0.0f, 1.0f,
-                        1.0f, 1.0f, 0.0f, 1.0f,
-                        1.0f, 1.0f, 0.0f, 1.0f,
-                        1.0f, 1.0f, 0.0f, 1.0f,
-                        1.0f, 1.0f, 0.0f, 1.0f,
-                        1.0f, 1.0f, 0.0f, 1.0f,
-
-                        // Top face (cyan)
-                        0.0f, 1.0f, 1.0f, 1.0f,
-                        0.0f, 1.0f, 1.0f, 1.0f,
-                        0.0f, 1.0f, 1.0f, 1.0f,
-                        0.0f, 1.0f, 1.0f, 1.0f,
-                        0.0f, 1.0f, 1.0f, 1.0f,
-                        0.0f, 1.0f, 1.0f, 1.0f,
-
-                        // Bottom face (magenta)
-                        1.0f, 0.0f, 1.0f, 1.0f,
-                        1.0f, 0.0f, 1.0f, 1.0f,
-                        1.0f, 0.0f, 1.0f, 1.0f,
-                        1.0f, 0.0f, 1.0f, 1.0f,
-                        1.0f, 0.0f, 1.0f, 1.0f,
-                        1.0f, 0.0f, 1.0f, 1.0f
-                };
+        final float[] cubeColorData = vertices().color();
 
         // X, Y, Z
         // The normal is used in light calculations and is a vector which points
