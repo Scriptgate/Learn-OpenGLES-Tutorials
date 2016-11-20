@@ -210,19 +210,7 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         // Enable depth testing
         glEnable(GL_DEPTH_TEST);
 
-        // Position the eye in front of the origin.
-        final Point eye = new Point(0.0f, 0.0f, -0.5f);
-
-        // We are looking toward the distance
-        final Point look = new Point(0.0f, 0.0f, -5.0f);
-
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final Point up = new Point(0.0f, 1.0f, 0.0f);
-
-        // Set the view matrix. This matrix can be said to represent the camera position.
-        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
+        initializeViewMatrix(viewMatrix);
 
         final String vertexShader = getVertexShader();
         final String fragmentShader = getFragmentShader();
@@ -239,6 +227,22 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         final int pointVertexShaderHandle = compileShader(GL_VERTEX_SHADER, pointVertexShader);
         final int pointFragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, pointFragmentShader);
         pointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle, new String[]{"a_Position"});
+    }
+
+    private static void initializeViewMatrix(float[] viewMatrix) {
+        // Position the eye in front of the origin.
+        final Point eye = new Point(0.0f, 0.0f, -0.5f);
+
+        // We are looking toward the distance
+        final Point look = new Point(0.0f, 0.0f, -5.0f);
+
+        // Set our up vector. This is where our head would be pointing were we holding the camera.
+        final Point up = new Point(0.0f, 1.0f, 0.0f);
+
+        // Set the view matrix. This matrix can be said to represent the camera position.
+        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
+        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
+        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
     }
 
     @Override
@@ -267,8 +271,6 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
-        // Set our per-vertex lighting program.
-        glUseProgram(perVertexProgramHandle);
 
 
         // Calculate position of the light. Rotate and then push into the distance.
@@ -279,6 +281,9 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
 
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
         Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
+
+        // Set our per-vertex lighting program.
+        glUseProgram(perVertexProgramHandle);
 
         // Draw some cubes.
         cube1.setRotationX(angleInDegrees);
@@ -295,28 +300,6 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
 
         // Draw a point to indicate the light.
         glUseProgram(pointProgramHandle);
-        drawLight();
-    }
-
-    /**
-     * Draws a point representing the position of the light.
-     */
-    private void drawLight() {
-        final int pointMVPMatrixHandle = glGetUniformLocation(pointProgramHandle, "u_MVPMatrix");
-        final int pointPositionHandle = glGetAttribLocation(pointProgramHandle, "a_Position");
-
-        // Pass in the position.
-        glVertexAttrib3f(pointPositionHandle, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2]);
-
-        // Since we are not using a buffer object, disable vertex arrays for this attribute.
-        glDisableVertexAttribArray(pointPositionHandle);
-
-        // Pass in the transformation matrix.
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, lightModelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
-        glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // Draw the point.
-        glDrawArrays(GL_POINTS, 0, 1);
+        new Light().drawLight(pointProgramHandle, lightPosInModelSpace, mvpMatrix, lightModelMatrix, viewMatrix, projectionMatrix);
     }
 }
