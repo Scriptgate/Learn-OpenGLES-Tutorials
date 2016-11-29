@@ -7,8 +7,6 @@ import android.os.SystemClock;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.RawResourceReader;
-import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.common.TextureHelper;
 
 import java.nio.FloatBuffer;
@@ -17,6 +15,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -119,11 +118,6 @@ public class LessonSixRenderer implements GLSurfaceView.Renderer {
      * This will be used to pass in model texture coordinate information.
      */
     private int mTextureCoordinateHandle;
-
-    /**
-     * How many bytes per float.
-     */
-    private final int mBytesPerFloat = 4;
 
     /**
      * Size of the position data in elements.
@@ -415,16 +409,16 @@ public class LessonSixRenderer implements GLSurfaceView.Renderer {
                 };
 
         // Initialize the buffers.
-        mCubePositions = allocateDirect(cubePositionData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubePositions = allocateDirect(cubePositionData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubePositions.put(cubePositionData).position(0);
 
-        mCubeNormals = allocateDirect(cubeNormalData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubeNormals = allocateDirect(cubeNormalData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubeNormals.put(cubeNormalData).position(0);
 
-        mCubeTextureCoordinates = allocateDirect(cubeTextureCoordinateData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubeTextureCoordinates = allocateDirect(cubeTextureCoordinateData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubeTextureCoordinates.put(cubeTextureCoordinateData).position(0);
 
-        mCubeTextureCoordinatesForPlane = allocateDirect(cubeTextureCoordinateDataForPlane.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubeTextureCoordinatesForPlane = allocateDirect(cubeTextureCoordinateDataForPlane.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubeTextureCoordinatesForPlane.put(cubeTextureCoordinateDataForPlane).position(0);
     }
 

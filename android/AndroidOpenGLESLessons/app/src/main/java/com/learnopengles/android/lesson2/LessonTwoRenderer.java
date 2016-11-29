@@ -13,6 +13,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -63,11 +64,6 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer cubePositions;
     private final FloatBuffer cubeColors;
     private final FloatBuffer cubeNormals;
-
-    /**
-     * How many bytes per float.
-     */
-    private final int BYTES_PER_FLOAT = 4;
 
     /**
      * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when

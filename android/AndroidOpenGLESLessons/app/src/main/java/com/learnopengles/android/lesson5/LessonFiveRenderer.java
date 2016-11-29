@@ -17,6 +17,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
@@ -77,11 +78,6 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer {
     private int mColorHandle;
 
     /**
-     * How many bytes per float.
-     */
-    private final int mBytesPerFloat = 4;
-
-    /**
      * Size of the position data in elements.
      */
     private final int mPositionDataSize = 3;
@@ -134,10 +130,10 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer {
         final float[] cubeColorData = ShapeBuilder.generateCubeData(p1c, p2c, p3c, p4c, p5c, p6c, p7c, p8c);
 
         // Initialize the buffers.
-        mCubePositions = allocateDirect(cubePositionData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubePositions = allocateDirect(cubePositionData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubePositions.put(cubePositionData).position(0);
 
-        mCubeColors = allocateDirect(cubeColorData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubeColors = allocateDirect(cubeColorData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubeColors.put(cubeColorData).position(0);
     }
 

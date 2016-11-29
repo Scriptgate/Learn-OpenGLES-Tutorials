@@ -11,6 +11,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -105,11 +106,6 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer {
      * This will be used to pass in model texture coordinate information.
      */
     private int mTextureCoordinateHandle;
-
-    /**
-     * How many bytes per float.
-     */
-    private final int mBytesPerFloat = 4;
 
     /**
      * Size of the position data in elements.
@@ -391,16 +387,16 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer {
                 };
 
         // Initialize the buffers.
-        mCubePositions = allocateDirect(cubePositionData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubePositions = allocateDirect(cubePositionData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubePositions.put(cubePositionData).position(0);
 
-        mCubeColors = allocateDirect(cubeColorData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubeColors = allocateDirect(cubeColorData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubeColors.put(cubeColorData).position(0);
 
-        mCubeNormals = allocateDirect(cubeNormalData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubeNormals = allocateDirect(cubeNormalData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubeNormals.put(cubeNormalData).position(0);
 
-        mCubeTextureCoordinates = allocateDirect(cubeTextureCoordinateData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
+        mCubeTextureCoordinates = allocateDirect(cubeTextureCoordinateData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
         mCubeTextureCoordinates.put(cubeTextureCoordinateData).position(0);
     }
 
