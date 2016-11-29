@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.ShapeBuilder;
 
 import java.nio.FloatBuffer;
 
@@ -107,7 +108,7 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         // Define points for a cube.
 
         // X, Y, Z
-        final float[] cubePositionData = vertices().position();
+        final float[] cubePositionData = ShapeBuilder.generateCubeData(1.0f, 1.0f, 1.0f);
 
         // R, G, B, A
         final float[] cubeColorData = vertices().color();
