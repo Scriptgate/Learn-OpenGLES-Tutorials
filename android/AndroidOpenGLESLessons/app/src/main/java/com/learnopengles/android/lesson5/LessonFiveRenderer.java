@@ -1,32 +1,34 @@
 package com.learnopengles.android.lesson5;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import android.content.Context;
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
+import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.RawResourceReader;
 import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.common.ShapeBuilder;
-import com.learnopengles.android.common.Color;
+
+import java.nio.FloatBuffer;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
+import static java.nio.ByteBuffer.allocateDirect;
+import static java.nio.ByteOrder.nativeOrder;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class LessonFiveRenderer implements GLSurfaceView.Renderer
-{
-	/** Used for debug logs. */
+public class LessonFiveRenderer implements GLSurfaceView.Renderer {
+    /**
+     * Used for debug logs.
+     */
     private static final String TAG = "LessonFiveRenderer";
 
     private final Context mActivityContext;
@@ -43,38 +45,60 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer
      */
     private float[] mViewMatrix = new float[16];
 
-	/** Store the projection matrix. This is used to project the scene onto a 2D viewport. */
+    /**
+     * Store the projection matrix. This is used to project the scene onto a 2D viewport.
+     */
     private float[] mProjectionMatrix = new float[16];
 
-	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
+    /**
+     * Allocate storage for the final combined matrix. This will be passed into the shader program.
+     */
     private float[] mMVPMatrix = new float[16];
 
-	/** Store our model data in a float buffer. */
+    /**
+     * Store our model data in a float buffer.
+     */
     private final FloatBuffer mCubePositions;
     private final FloatBuffer mCubeColors;
 
-	/** This will be used to pass in the transformation matrix. */
+    /**
+     * This will be used to pass in the transformation matrix.
+     */
     private int mMVPMatrixHandle;
 
-	/** This will be used to pass in model position information. */
+    /**
+     * This will be used to pass in model position information.
+     */
     private int mPositionHandle;
 
-	/** This will be used to pass in model color information. */
+    /**
+     * This will be used to pass in model color information.
+     */
     private int mColorHandle;
 
-	/** How many bytes per float. */
+    /**
+     * How many bytes per float.
+     */
     private final int mBytesPerFloat = 4;
 
-	/** Size of the position data in elements. */
+    /**
+     * Size of the position data in elements.
+     */
     private final int mPositionDataSize = 3;
 
-	/** Size of the color data in elements. */
+    /**
+     * Size of the color data in elements.
+     */
     private final int mColorDataSize = 4;
 
-	/** This is a handle to our cube shading program. */
+    /**
+     * This is a handle to our cube shading program.
+     */
     private int mProgramHandle;
 
-	/** This will be used to switch between blending mode and regular mode. */
+    /**
+     * This will be used to switch between blending mode and regular mode.
+     */
     private boolean mBlending = true;
 
     /**
@@ -110,21 +134,19 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer
         final float[] cubeColorData = ShapeBuilder.generateCubeData(p1c, p2c, p3c, p4c, p5c, p6c, p7c, p8c);
 
         // Initialize the buffers.
-        mCubePositions = ByteBuffer.allocateDirect(cubePositionData.length * mBytesPerFloat)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mCubePositions = allocateDirect(cubePositionData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
         mCubePositions.put(cubePositionData).position(0);
 
-        mCubeColors = ByteBuffer.allocateDirect(cubeColorData.length * mBytesPerFloat)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mCubeColors = allocateDirect(cubeColorData.length * mBytesPerFloat).order(nativeOrder()).asFloatBuffer();
         mCubeColors.put(cubeColorData).position(0);
     }
 
     protected String getVertexShader() {
-        return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.color_vertex_shader);
+        return readTextFileFromRawResource(mActivityContext, R.raw.color_vertex_shader);
     }
 
     protected String getFragmentShader() {
-        return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.color_fragment_shader);
+        return readTextFileFromRawResource(mActivityContext, R.raw.color_fragment_shader);
     }
 
     public void switchMode() {
@@ -132,76 +154,69 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer
 
         if (mBlending) {
             // No culling of back faces
-            GLES20.glDisable(GLES20.GL_CULL_FACE);
+            glDisable(GL_CULL_FACE);
 
             // No depth testing
-            GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+            glDisable(GL_DEPTH_TEST);
 
             // Enable blending
-            GLES20.glEnable(GLES20.GL_BLEND);
-            GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_ONE, GL_ONE);
         } else {
             // Cull back faces
-            GLES20.glEnable(GLES20.GL_CULL_FACE);
+            glEnable(GL_CULL_FACE);
 
             // Enable depth testing
-            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+            glEnable(GL_DEPTH_TEST);
 
             // Disable blending
-            GLES20.glDisable(GLES20.GL_BLEND);
+            glDisable(GL_BLEND);
         }
     }
 
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         // Set the background clear color to black.
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
         // No culling of back faces
-        GLES20.glDisable(GLES20.GL_CULL_FACE);
+        glDisable(GL_CULL_FACE);
 
         // No depth testing
-        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        glDisable(GL_DEPTH_TEST);
 
         // Enable blending
-        GLES20.glEnable(GLES20.GL_BLEND);
-        GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE);
-//		GLES20.glBlendEquation(GLES20.GL_FUNC_ADD);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE);
+//		glBlendEquation(GL_FUNC_ADD);
 
         // Position the eye in front of the origin.
-        final float eyeX = 0.0f;
-        final float eyeY = 0.0f;
-        final float eyeZ = -0.5f;
+        final Point eye = new Point(0.0f, 0.0f, -0.5f);
 
         // We are looking toward the distance
-        final float lookX = 0.0f;
-        final float lookY = 0.0f;
-        final float lookZ = -5.0f;
+        final Point look = new Point(0.0f, 0.0f, -5.0f);
 
         // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final float upX = 0.0f;
-        final float upY = 1.0f;
-        final float upZ = 0.0f;
+        final Point up = new Point(0.0f, 1.0f, 0.0f);
 
         // Set the view matrix. This matrix can be said to represent the camera position.
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+        Matrix.setLookAtM(mViewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
 
         final String vertexShader = getVertexShader();
         final String fragmentShader = getFragmentShader();
 
-        final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+        final int vertexShaderHandle = ShaderHelper.compileShader(GL_VERTEX_SHADER, vertexShader);
+        final int fragmentShaderHandle = ShaderHelper.compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-        mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
-                new String[]{"a_Position", "a_Color"});
+        mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color"});
     }
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
         // Set the OpenGL viewport to the same size as the surface.
-        GLES20.glViewport(0, 0, width, height);
+        glViewport(0, 0, width, height);
 
         // Create a new perspective projection matrix. The height will stay the same
         // while the width will vary as per aspect ratio.
@@ -219,9 +234,9 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer
     @Override
     public void onDrawFrame(GL10 glUnused) {
         if (mBlending) {
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT);
         } else {
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
         // Do a complete rotation every 10 seconds.
@@ -229,12 +244,12 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Set our program
-        GLES20.glUseProgram(mProgramHandle);
+        glUseProgram(mProgramHandle);
 
         // Set program handles for cube drawing.
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
-        mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
-        mColorHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Color");
+        mMVPMatrixHandle = glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
+        mPositionHandle = glGetAttribLocation(mProgramHandle, "a_Position");
+        mColorHandle = glGetAttribLocation(mProgramHandle, "a_Color");
 
         // Draw some cubes.        
         Matrix.setIdentityM(mModelMatrix, 0);
@@ -268,17 +283,17 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer
     private void drawCube() {
         // Pass in the position information
         mCubePositions.position(0);
-        GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize, GLES20.GL_FLOAT, false,
+        glVertexAttribPointer(mPositionHandle, mPositionDataSize, GL_FLOAT, false,
                 0, mCubePositions);
 
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
+        glEnableVertexAttribArray(mPositionHandle);
 
         // Pass in the color information
         mCubeColors.position(0);
-        GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize, GLES20.GL_FLOAT, false,
+        glVertexAttribPointer(mColorHandle, mColorDataSize, GL_FLOAT, false,
                 0, mCubeColors);
 
-        GLES20.glEnableVertexAttribArray(mColorHandle);
+        glEnableVertexAttribArray(mColorHandle);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
@@ -289,9 +304,9 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
 
         // Pass in the combined matrix.
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
 
         // Draw the cube.
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 }

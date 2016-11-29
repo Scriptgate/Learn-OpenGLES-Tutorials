@@ -1,15 +1,17 @@
 package com.learnopengles.android.lesson8;
 
-import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.RawResourceReader;
+import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.ShaderHelper;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter
@@ -114,41 +116,32 @@ public class LessonEightRenderer implements GLSurfaceView.Renderer {
 		heightMap.initialize();
 
 		// Set the background clear color to black.
-		GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		// Enable depth testing
-		GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
 
 		// Position the eye in front of the origin.
-		final float eyeX = 0.0f;
-		final float eyeY = 0.0f;
-		final float eyeZ = -0.5f;
+		final Point eye = new Point(0.0f,0.0f,-0.5f);
 
 		// We are looking toward the distance
-		final float lookX = 0.0f;
-		final float lookY = 0.0f;
-		final float lookZ = -5.0f;
+		final Point look = new Point(0.0f,0.0f,-5.0f);
 
 		// Set our up vector. This is where our head would be pointing were we
 		// holding the camera.
-		final float upX = 0.0f;
-		final float upY = 1.0f;
-		final float upZ = 0.0f;
+		final Point up = new Point(0.0f,1.0f, 0.0f);
 
-		// Set the view matrix. This matrix can be said to represent the camera
-		// position.
+		// Set the view matrix. This matrix can be said to represent the camera position.
 		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination
 		// of a model and view matrix. In OpenGL 2, we can keep track of these
 		// matrices separately if we choose.
-		Matrix.setLookAtM(viewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+		Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
 
-		final String vertexShader = RawResourceReader.readTextFileFromRawResource(lessonEightActivity,
-				R.raw.per_pixel_vertex_shader_no_tex);
-		final String fragmentShader = RawResourceReader.readTextFileFromRawResource(lessonEightActivity,
-				R.raw.per_pixel_fragment_shader_no_tex);
+		final String vertexShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_vertex_shader_no_tex);
+		final String fragmentShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_fragment_shader_no_tex);
 
-		final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
-		final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+		final int vertexShaderHandle = ShaderHelper.compileShader(GL_VERTEX_SHADER, vertexShader);
+		final int fragmentShaderHandle = ShaderHelper.compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
 		program = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[] {POSITION_ATTRIBUTE, NORMAL_ATTRIBUTE, COLOR_ATTRIBUTE });
 
@@ -159,7 +152,7 @@ public class LessonEightRenderer implements GLSurfaceView.Renderer {
 	@Override
 	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
 		// Set the OpenGL viewport to the same size as the surface.
-		GLES20.glViewport(0, 0, width, height);
+		glViewport(0, 0, width, height);
 
 		// Create a new perspective projection matrix. The height will stay the
 		// same while the width will vary as per aspect ratio.
@@ -176,15 +169,15 @@ public class LessonEightRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onDrawFrame(GL10 glUnused) {
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Set our per-vertex lighting program.
-		GLES20.glUseProgram(program);
+		glUseProgram(program);
 
 		// Set program handles for cube drawing.
-		mvpMatrixUniform = GLES20.glGetUniformLocation(program, MVP_MATRIX_UNIFORM);
-		mvMatrixUniform = GLES20.glGetUniformLocation(program, MV_MATRIX_UNIFORM);
-		lightPosUniform = GLES20.glGetUniformLocation(program, LIGHT_POSITION_UNIFORM);
+		mvpMatrixUniform = glGetUniformLocation(program, MVP_MATRIX_UNIFORM);
+		mvMatrixUniform = glGetUniformLocation(program, MV_MATRIX_UNIFORM);
+		lightPosUniform = glGetUniformLocation(program, LIGHT_POSITION_UNIFORM);
 
 
 		// Calculate position of the light. Push into the distance.
@@ -221,7 +214,7 @@ public class LessonEightRenderer implements GLSurfaceView.Renderer {
 		Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
 		// Pass in the modelview matrix.
-		GLES20.glUniformMatrix4fv(mvMatrixUniform, 1, false, mvpMatrix, 0);
+		glUniformMatrix4fv(mvMatrixUniform, 1, false, mvpMatrix, 0);
 
 		// This multiplies the modelview matrix by the projection matrix,
 		// and stores the result in the MVP matrix
@@ -230,10 +223,10 @@ public class LessonEightRenderer implements GLSurfaceView.Renderer {
 		System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
 
 		// Pass in the combined matrix.
-		GLES20.glUniformMatrix4fv(mvpMatrixUniform, 1, false, mvpMatrix, 0);
+		glUniformMatrix4fv(mvpMatrixUniform, 1, false, mvpMatrix, 0);
 
 		// Pass in the light position in eye space.
-		GLES20.glUniform3f(lightPosUniform, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+		glUniform3f(lightPosUniform, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 
 		// Render the heightmap.
 		heightMap.render(program);
