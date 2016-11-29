@@ -1,81 +1,171 @@
 package com.learnopengles.android.common;
 
-public class ShapeBuilder 
-{
-	public static float[] generateCubeData(float[] point1,
-			float[] point2,
-			float[] point3,
-			float[] point4,
-			float[] point5,
-			float[] point6,
-			float[] point7,
-			float[] point8,
-			int elementsPerPoint)
-	{
-		// Given a cube with the points defined as follows:
-		// front left top, front right top, front left bottom, front right bottom,
-		// back left top, back right top, back left bottom, back right bottom,		
-		// return an array of 6 sides, 2 triangles per side, 3 vertices per triangle, and 4 floats per vertex.
-		final int FRONT = 0;
-		final int RIGHT = 1;
-		final int BACK = 2;
-		final int LEFT = 3;
-		final int TOP = 4;
-		final int BOTTOM = 5;
+import com.learnopengles.android.lesson1.Color;
 
-		final int size = elementsPerPoint * 6 * 6;
-		final float[] cubeData = new float[size];		
+import java.util.ArrayList;
+import java.util.List;
 
-		for (int face = 0; face < 6; face ++)
-		{
-			// Relative to the side, p1 = top left, p2 = top right, p3 = bottom left, p4 = bottom right
-			final float[] p1, p2, p3, p4;
+public class ShapeBuilder {
 
-			// Select the points for this face
-			if (face == FRONT)
-			{
-				p1 = point1; p2 = point2; p3 = point3; p4 = point4; 
-			}
-			else if (face == RIGHT)
-			{
-				p1 = point2; p2 = point6; p3 = point4; p4 = point8;
-			}
-			else if (face == BACK)
-			{
-				p1 = point6; p2 = point5; p3 = point8; p4 = point7;
-			}
-			else if (face == LEFT)
-			{
-				p1 = point5; p2 = point1; p3 = point7; p4 = point3;
-			}
-			else if (face == TOP)
-			{
-				p1 = point5; p2 = point6; p3 = point1; p4 = point2;
-			}
-			else // if (side == BOTTOM)
-			{
-				p1 = point8; p2 = point7; p3 = point4; p4 = point3;								
-			}
-			
-			// In OpenGL counter-clockwise winding is default. This means that when we look at a triangle, 
-			// if the points are counter-clockwise we are looking at the "front". If not we are looking at
-			// the back. OpenGL has an optimization where all back-facing triangles are culled, since they
-			// usually represent the backside of an object and aren't visible anyways.
+    public static float[] generateCubeData(Color frontA,
+                                           Color frontB,
+                                           Color frontC,
+                                           Color frontD,
+                                           Color backA,
+                                           Color backB,
+                                           Color backC,
+                                           Color backD) {
+        List<Face> faces = new ArrayList<>();
+        //@formatter:off
+        ColorFace FRONT  = new ColorFace(frontA, frontB, frontC, frontD);
+        ColorFace RIGHT  = new ColorFace(frontB,  backB, frontD,  backD);
+        ColorFace BACK   = new ColorFace( backB,  backA,  backD,  backC);
+        ColorFace LEFT   = new ColorFace( backA, frontA,  backC, frontC);
+        ColorFace TOP    = new ColorFace( backA,  backB, frontA, frontB);
+        ColorFace BOTTOM = new ColorFace( backD,  backC, frontD, frontC);
+        //@formatter:on
 
-			// Build the triangles
-			//  1---3,6
-			//  | / |
-			// 2,4--5
-			int offset = face * elementsPerPoint * 6;
+        faces.add(FRONT);
+        faces.add(RIGHT);
+        faces.add(BACK);
+        faces.add(LEFT);
+        faces.add(TOP);
+        faces.add(BOTTOM);
 
-			for (int i = 0; i < elementsPerPoint; i++) { cubeData[offset++] = p1[i]; }
-			for (int i = 0; i < elementsPerPoint; i++) { cubeData[offset++] = p3[i]; }
-			for (int i = 0; i < elementsPerPoint; i++) { cubeData[offset++] = p2[i]; }
-			for (int i = 0; i < elementsPerPoint; i++) { cubeData[offset++] = p3[i]; }
-			for (int i = 0; i < elementsPerPoint; i++) { cubeData[offset++] = p4[i]; }
-			for (int i = 0; i < elementsPerPoint; i++) { cubeData[offset++] = p2[i]; }
-		}
+        return generateCubeData(faces);
+    }
 
-		return cubeData;
-	}
+    public static float[] generateCubeData(Point frontA,
+                                           Point frontB,
+                                           Point frontC,
+                                           Point frontD,
+                                           Point backA,
+                                           Point backB,
+                                           Point backC,
+                                           Point backD) {
+        List<Face> faces = new ArrayList<>();
+        //@formatter:off
+        PointFace FRONT  = new PointFace(frontA, frontB, frontC, frontD);
+        PointFace RIGHT  = new PointFace(frontB,  backB, frontD,  backD);
+        PointFace BACK   = new PointFace( backB,  backA,  backD,  backC);
+        PointFace LEFT   = new PointFace( backA, frontA,  backC, frontC);
+        PointFace TOP    = new PointFace( backA,  backB, frontA, frontB);
+        PointFace BOTTOM = new PointFace( backD,  backC, frontD, frontC);
+        //@formatter:on
+
+        faces.add(FRONT);
+        faces.add(RIGHT);
+        faces.add(BACK);
+        faces.add(LEFT);
+        faces.add(TOP);
+        faces.add(BOTTOM);
+
+        return generateCubeData(faces);
+    }
+
+
+    private static float[] generateCubeData(List<Face> faces) {
+        final int size = faces.iterator().next().getNumberOfElements() * 6 * 6;
+        final float[] cubeData = new float[size];
+
+        for (int faceIndex = 0; faceIndex < 6; faceIndex++) {
+            final Face face = faces.get(faceIndex);
+            int offset = faceIndex * face.getNumberOfElements() * 6;
+
+            face.addFaceToArray(cubeData, offset);
+        }
+
+        return cubeData;
+    }
+
+    public static float[] generateCubeData(float width, float height, float depth) {
+        //@formatter:off
+        final Point frontA = new Point(-width,  height,  depth);
+        final Point frontB = new Point( width,  height,  depth);
+        final Point frontC = new Point(-width, -height,  depth);
+        final Point frontD = new Point( width, -height,  depth);
+        final Point backA  = new Point(-width,  height, -depth);
+        final Point backB  = new Point( width,  height, -depth);
+        final Point backC  = new Point(-width, -height, -depth);
+        final Point backD  = new Point( width, -height, -depth);
+        //@formatter:on
+        return generateCubeData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
+    }
+
+    private abstract static class Face<T> {
+        private final T p1;
+        private final T p2;
+        private final T p3;
+        private final T p4;
+
+        private Face(T p1, T p2, T p3, T p4) {
+            this.p1 = p1;
+            this.p2 = p2;
+            this.p3 = p3;
+            this.p4 = p4;
+        }
+
+        void addFaceToArray(float[] data, int offset) {
+            // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
+            // if the points are counter-clockwise we are looking at the "front". If not we are looking at
+            // the back. OpenGL has an optimization where all back-facing triangles are culled, since they
+            // usually represent the backside of an object and aren't visible anyways.
+
+            int numberOfElements = getNumberOfElements();
+
+            // Build the triangles
+            //  1---3,6
+            //  | / |
+            // 2,4--5
+            addToArray(p1, data, offset);
+            addToArray(p3, data, offset + numberOfElements);
+            addToArray(p2, data, offset + numberOfElements * 2);
+            addToArray(p3, data, offset + numberOfElements * 3);
+            addToArray(p4, data, offset + numberOfElements * 4);
+            addToArray(p2, data, offset + numberOfElements * 5);
+        }
+
+        abstract int getNumberOfElements();
+
+        abstract void addToArray(T element, float[] data, int offset);
+    }
+
+    private static class PointFace extends Face<Point> {
+
+        private PointFace(Point p1, Point p2, Point p3, Point p4) {
+            super(p1, p2, p3, p4);
+        }
+
+        @Override
+        int getNumberOfElements() {
+            return 3;
+        }
+
+        @Override
+        void addToArray(Point element, float[] data, int offset) {
+            data[offset] = element.x;
+            data[offset + 1] = element.y;
+            data[offset + 2] = element.z;
+        }
+
+    }
+
+    private static class ColorFace extends Face<Color> {
+        public ColorFace(Color p1, Color p2, Color p3, Color p4) {
+            super(p1, p2, p3, p4);
+        }
+
+        @Override
+        int getNumberOfElements() {
+            return 4;
+        }
+
+        @Override
+        void addToArray(Color element, float[] data, int offset) {
+            data[offset] = element.red;
+            data[offset + 1] = element.green;
+            data[offset + 2] = element.blue;
+            data[offset + 2] = element.alpha;
+        }
+    }
 }
