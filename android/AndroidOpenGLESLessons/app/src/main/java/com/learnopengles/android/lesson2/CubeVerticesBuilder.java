@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson2;
 
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.lesson1.Color;
+import com.learnopengles.android.common.Color;
 
 import java.util.ArrayList;
 import java.util.List;

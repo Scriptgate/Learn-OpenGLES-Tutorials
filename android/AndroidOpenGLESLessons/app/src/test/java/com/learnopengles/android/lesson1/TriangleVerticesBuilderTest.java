@@ -5,9 +5,9 @@ import com.learnopengles.android.common.Point;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.learnopengles.android.lesson1.Color.BLUE;
-import static com.learnopengles.android.lesson1.Color.GREEN;
-import static com.learnopengles.android.lesson1.Color.RED;
+import static com.learnopengles.android.common.Color.BLUE;
+import static com.learnopengles.android.common.Color.GREEN;
+import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.lesson1.TriangleVerticesBuilder.vertices;
 
 public class TriangleVerticesBuilderTest {

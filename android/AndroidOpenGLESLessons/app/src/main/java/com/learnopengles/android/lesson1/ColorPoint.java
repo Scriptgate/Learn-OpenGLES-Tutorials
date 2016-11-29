@@ -1,5 +1,6 @@
 package com.learnopengles.android.lesson1;
 
+import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point;
 
 public class ColorPoint {

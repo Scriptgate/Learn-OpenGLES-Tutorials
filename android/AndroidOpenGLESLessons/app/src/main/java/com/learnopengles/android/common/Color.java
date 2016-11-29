@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson1;
+package com.learnopengles.android.common;
 
 public class Color {
 

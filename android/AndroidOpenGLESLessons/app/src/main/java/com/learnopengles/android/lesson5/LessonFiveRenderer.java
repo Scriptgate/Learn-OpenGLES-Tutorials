@@ -18,7 +18,7 @@ import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.RawResourceReader;
 import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.common.ShapeBuilder;
-import com.learnopengles.android.lesson1.Color;
+import com.learnopengles.android.common.Color;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
