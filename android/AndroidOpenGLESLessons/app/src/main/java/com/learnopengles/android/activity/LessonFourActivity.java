@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson1;
+package com.learnopengles.android.activity;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -7,7 +7,9 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
-public class LessonOneActivity extends Activity 
+import com.learnopengles.android.lesson4.LessonFourRenderer;
+
+public class LessonFourActivity extends Activity 
 {
 	/** Hold a reference to our GLSurfaceView */
 	private GLSurfaceView mGLSurfaceView;
@@ -30,7 +32,7 @@ public class LessonOneActivity extends Activity
 			mGLSurfaceView.setEGLContextClientVersion(2);
 
 			// Set the renderer to our demo renderer, defined below.
-			mGLSurfaceView.setRenderer(new LessonOneRenderer());
+			mGLSurfaceView.setRenderer(new LessonFourRenderer(this));
 		} 
 		else 
 		{

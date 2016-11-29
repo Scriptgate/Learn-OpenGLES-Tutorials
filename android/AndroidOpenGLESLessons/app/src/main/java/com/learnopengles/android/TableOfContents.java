@@ -15,14 +15,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
-import com.learnopengles.android.lesson1.LessonOneActivity;
-import com.learnopengles.android.lesson2.LessonTwoActivity;
-import com.learnopengles.android.lesson3.LessonThreeActivity;
-import com.learnopengles.android.lesson4.LessonFourActivity;
-import com.learnopengles.android.lesson5.LessonFiveActivity;
-import com.learnopengles.android.lesson6.LessonSixActivity;
-import com.learnopengles.android.lesson7.LessonSevenActivity;
-import com.learnopengles.android.lesson8.LessonEightActivity;
+import com.learnopengles.android.activity.LessonOneActivity;
+import com.learnopengles.android.activity.LessonTwoActivity;
+import com.learnopengles.android.activity.LessonThreeActivity;
+import com.learnopengles.android.activity.LessonFourActivity;
+import com.learnopengles.android.activity.LessonFiveActivity;
+import com.learnopengles.android.activity.LessonSixActivity;
+import com.learnopengles.android.activity.LessonSevenActivity;
+import com.learnopengles.android.activity.LessonEightActivity;
 
 public class TableOfContents extends ListActivity 
 {

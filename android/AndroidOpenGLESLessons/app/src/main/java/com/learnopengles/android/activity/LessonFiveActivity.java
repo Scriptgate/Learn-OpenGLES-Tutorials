@@ -1,23 +1,29 @@
-package com.learnopengles.android.lesson2;
+package com.learnopengles.android.activity;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.widget.Toast;
 
-public class LessonTwoActivity extends Activity 
+import com.learnopengles.android.R;
+import com.learnopengles.android.lesson5.LessonFiveGLSurfaceView;
+import com.learnopengles.android.lesson5.LessonFiveRenderer;
+
+public class LessonFiveActivity extends Activity 
 {
 	/** Hold a reference to our GLSurfaceView */
-	private GLSurfaceView mGLSurfaceView;
+	private LessonFiveGLSurfaceView mGLSurfaceView;
+	
+	private static final String SHOWED_TOAST = "showed_toast";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
 		
-		mGLSurfaceView = new GLSurfaceView(this);
+		mGLSurfaceView = new LessonFiveGLSurfaceView(this);
 
 		// Check if the system supports OpenGL ES 2.0.
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -30,7 +36,7 @@ public class LessonTwoActivity extends Activity
 			mGLSurfaceView.setEGLContextClientVersion(2);
 
 			// Set the renderer to our demo renderer, defined below.
-			mGLSurfaceView.setRenderer(new LessonTwoRenderer());
+			mGLSurfaceView.setRenderer(new LessonFiveRenderer(this));
 		} 
 		else 
 		{
@@ -40,6 +46,12 @@ public class LessonTwoActivity extends Activity
 		}
 
 		setContentView(mGLSurfaceView);
+		
+		// Show a short help message to the user.
+		if (savedInstanceState == null || !savedInstanceState.getBoolean(SHOWED_TOAST, false))
+		{
+			Toast.makeText(this, R.string.lesson_five_startup_toast, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override
@@ -57,4 +69,10 @@ public class LessonTwoActivity extends Activity
 		super.onPause();
 		mGLSurfaceView.onPause();
 	}	
+	
+	@Override
+	protected void onSaveInstanceState (Bundle outState)
+	{
+		outState.putBoolean(SHOWED_TOAST, true);
+	}
 }

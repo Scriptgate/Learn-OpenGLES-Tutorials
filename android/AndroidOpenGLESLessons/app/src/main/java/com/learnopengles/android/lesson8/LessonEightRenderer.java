@@ -4,6 +4,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
+import com.learnopengles.android.activity.LessonEightActivity;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.ShaderHelper;
 

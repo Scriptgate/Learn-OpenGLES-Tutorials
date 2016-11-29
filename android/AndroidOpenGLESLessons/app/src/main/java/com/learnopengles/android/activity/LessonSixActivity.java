@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson6;
+package com.learnopengles.android.activity;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.learnopengles.android.R;
+import com.learnopengles.android.lesson6.LessonSixGLSurfaceView;
+import com.learnopengles.android.lesson6.LessonSixRenderer;
 
 public class LessonSixActivity extends Activity 
 {

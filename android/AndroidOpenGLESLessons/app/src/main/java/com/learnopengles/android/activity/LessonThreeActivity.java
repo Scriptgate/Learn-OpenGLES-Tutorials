@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson3;
+package com.learnopengles.android.activity;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+
+import com.learnopengles.android.lesson3.LessonThreeRenderer;
 
 public class LessonThreeActivity extends Activity 
 {

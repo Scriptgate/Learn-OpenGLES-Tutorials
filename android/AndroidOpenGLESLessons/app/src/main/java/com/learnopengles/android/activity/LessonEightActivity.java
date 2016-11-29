@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson8;
+package com.learnopengles.android.activity;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+
+import com.learnopengles.android.lesson8.LessonEightGLSurfaceView;
+import com.learnopengles.android.lesson8.LessonEightRenderer;
 
 public class LessonEightActivity extends Activity {	
 	private LessonEightGLSurfaceView glSurfaceView;
