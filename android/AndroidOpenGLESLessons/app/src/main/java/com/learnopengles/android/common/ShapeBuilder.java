@@ -5,6 +5,23 @@ import java.util.List;
 
 public class ShapeBuilder {
 
+    public static float[] generateCubeData(Color front,
+                                           Color right,
+                                           Color back,
+                                           Color left,
+                                           Color top,
+                                           Color bottom) {
+        List<Face> faces = new ArrayList<>();
+        faces.add(new ColorFace(front));
+        faces.add(new ColorFace(right));
+        faces.add(new ColorFace(back));
+        faces.add(new ColorFace(left));
+        faces.add(new ColorFace(top));
+        faces.add(new ColorFace(bottom));
+
+        return generateCubeData(faces);
+    }
+
     public static float[] generateCubeData(Color frontA,
                                            Color frontB,
                                            Color frontC,
@@ -153,6 +170,10 @@ public class ShapeBuilder {
             super(p1, p2, p3, p4);
         }
 
+        public ColorFace(Color face) {
+            super(face, face, face, face);
+        }
+
         @Override
         int getNumberOfElements() {
             return 4;
@@ -163,7 +184,7 @@ public class ShapeBuilder {
             data[offset] = element.red;
             data[offset + 1] = element.green;
             data[offset + 2] = element.blue;
-            data[offset + 2] = element.alpha;
+            data[offset + 3] = element.alpha;
         }
     }
 }

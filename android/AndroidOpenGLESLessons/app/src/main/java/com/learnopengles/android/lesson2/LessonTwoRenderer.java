@@ -13,11 +13,16 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.Color.BLUE;
+import static com.learnopengles.android.common.Color.CYAN;
+import static com.learnopengles.android.common.Color.GREEN;
+import static com.learnopengles.android.common.Color.MAGENTA;
+import static com.learnopengles.android.common.Color.RED;
+import static com.learnopengles.android.common.Color.YELLOW;
 import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
-import static com.learnopengles.android.lesson2.CubeVerticesBuilder.vertices;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -107,7 +112,7 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         final float[] cubePositionData = ShapeBuilder.generateCubeData(1.0f, 1.0f, 1.0f);
 
         // R, G, B, A
-        final float[] cubeColorData = vertices().color();
+        final float[] cubeColorData = ShapeBuilder.generateCubeData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
 
         // X, Y, Z
         // The normal is used in light calculations and is a vector which points
@@ -175,15 +180,18 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         cubeNormals.put(cubeNormalData).position(0);
 
         cube1 = new Cube();
-        cube2 = new Cube();
-        cube3 = new Cube();
-        cube4 = new Cube();
-        cube5 = new Cube();
-
         cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));
+
+        cube2 = new Cube();
         cube2.setPosition(new Point(-4.0f, 0.0f, -7.0f));
+
+        cube3 = new Cube();
         cube3.setPosition(new Point(0.0f, 4.0f, -7.0f));
+
+        cube4 = new Cube();
         cube4.setPosition(new Point(0.0f, -4.0f, -7.0f));
+
+        cube5 = new Cube();
         cube5.setPosition(new Point(0.0f, 0.0f, -5.0f));
     }
 

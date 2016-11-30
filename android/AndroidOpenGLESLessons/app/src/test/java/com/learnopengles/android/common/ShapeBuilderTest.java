@@ -3,8 +3,12 @@ package com.learnopengles.android.common;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.learnopengles.android.lesson2.CubeVerticesBuilder.vertices;
-import static org.junit.Assert.*;
+import static com.learnopengles.android.common.Color.BLUE;
+import static com.learnopengles.android.common.Color.CYAN;
+import static com.learnopengles.android.common.Color.GREEN;
+import static com.learnopengles.android.common.Color.MAGENTA;
+import static com.learnopengles.android.common.Color.RED;
+import static com.learnopengles.android.common.Color.YELLOW;
 
 public class ShapeBuilderTest {
 
@@ -67,13 +71,59 @@ public class ShapeBuilderTest {
 
     // R, G, B, A
     //@formatter:off
-    private static final float[] COLOR = {
+    final float[] COLOR = {
+            // Front face (red)
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
 
+            // Right face (green)
+            0.0f, 1.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
+
+            // Back face (blue)
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+
+            // Left face (yellow)
+            1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 1.0f,
+
+            // Top face (cyan)
+            0.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 1.0f, 1.0f,
+
+            // Bottom face (magenta)
+            1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 1.0f
     };
     //@formatter:on
 
     @Test
-    public void generateCubeData() throws Exception {
+    public void generateCubeData_position() throws Exception {
         //@formatter:off
         final Point frontA = new Point(-1.0f,  1.0f,  1.0f);
         final Point frontB = new Point( 1.0f,  1.0f,  1.0f);
@@ -91,7 +141,7 @@ public class ShapeBuilderTest {
     }
 
     @Test
-    public void generateCubeData_fromDimensions() throws Exception {
+    public void generateCubeData_positionFromDimensions() throws Exception {
         float width = 1;
         float height = 1;
         float depth = 1;
@@ -99,5 +149,12 @@ public class ShapeBuilderTest {
         float[] cubeVertices = ShapeBuilder.generateCubeData(width, height, depth);
 
         Assert.assertArrayEquals(cubeVertices, POSITION, 0.000000001f);
+    }
+
+    @Test
+    public void generateCubeData_colorPerFace() throws Exception {
+        float[] cubeVertices = ShapeBuilder.generateCubeData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
+
+        Assert.assertArrayEquals(cubeVertices, COLOR, 0.000000001f);
     }
 }
