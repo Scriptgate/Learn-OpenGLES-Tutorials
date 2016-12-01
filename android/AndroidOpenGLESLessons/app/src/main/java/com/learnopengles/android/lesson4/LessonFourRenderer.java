@@ -1,24 +1,22 @@
 package com.learnopengles.android.lesson4;
 
-import java.nio.FloatBuffer;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
-import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
-
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.RawResourceReader;
 import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.common.TextureHelper;
+
+import java.nio.FloatBuffer;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
+
+import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -387,17 +385,10 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer {
                 };
 
         // Initialize the buffers.
-        mCubePositions = allocateDirect(cubePositionData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubePositions.put(cubePositionData).position(0);
-
-        mCubeColors = allocateDirect(cubeColorData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubeColors.put(cubeColorData).position(0);
-
-        mCubeNormals = allocateDirect(cubeNormalData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubeNormals.put(cubeNormalData).position(0);
-
-        mCubeTextureCoordinates = allocateDirect(cubeTextureCoordinateData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubeTextureCoordinates.put(cubeTextureCoordinateData).position(0);
+        mCubePositions = allocateBuffer(cubePositionData);
+        mCubeColors = allocateBuffer(cubeColorData);
+        mCubeNormals = allocateBuffer(cubeNormalData);
+        mCubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
     }
 
     protected String getVertexShader() {

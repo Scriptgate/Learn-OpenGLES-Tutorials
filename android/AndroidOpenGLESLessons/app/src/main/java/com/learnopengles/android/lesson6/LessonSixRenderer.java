@@ -15,12 +15,10 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -409,17 +407,10 @@ public class LessonSixRenderer implements GLSurfaceView.Renderer {
                 };
 
         // Initialize the buffers.
-        mCubePositions = allocateDirect(cubePositionData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubePositions.put(cubePositionData).position(0);
-
-        mCubeNormals = allocateDirect(cubeNormalData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubeNormals.put(cubeNormalData).position(0);
-
-        mCubeTextureCoordinates = allocateDirect(cubeTextureCoordinateData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubeTextureCoordinates.put(cubeTextureCoordinateData).position(0);
-
-        mCubeTextureCoordinatesForPlane = allocateDirect(cubeTextureCoordinateDataForPlane.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubeTextureCoordinatesForPlane.put(cubeTextureCoordinateDataForPlane).position(0);
+        mCubePositions = allocateBuffer(cubePositionData);
+        mCubeNormals = allocateBuffer(cubeNormalData);
+        mCubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
+        mCubeTextureCoordinatesForPlane = allocateBuffer(cubeTextureCoordinateDataForPlane);
     }
 
     @Override

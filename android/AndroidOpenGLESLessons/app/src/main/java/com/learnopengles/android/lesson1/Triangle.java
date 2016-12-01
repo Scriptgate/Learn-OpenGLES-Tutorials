@@ -15,9 +15,8 @@ import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
+import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 
 
 public class Triangle {
@@ -39,8 +38,7 @@ public class Triangle {
     private Point position = new Point();
 
     public Triangle(float[] verticesData) {
-        vertices = allocateDirect(verticesData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        vertices.put(verticesData).position(0);
+        vertices = allocateBuffer(verticesData);
     }
 
     public void draw(int programHandle, float[] mvpMatrix, float[] viewMatrix, float[] modelMatrix, float[] projectionMatrix) {

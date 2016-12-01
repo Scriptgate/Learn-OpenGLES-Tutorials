@@ -9,7 +9,7 @@ import com.learnopengles.android.R;
 import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.ShaderHelper;
-import com.learnopengles.android.common.ShapeBuilder;
+import com.learnopengles.android.common.CubeBuilder;
 
 import java.nio.FloatBuffer;
 
@@ -17,10 +17,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -114,7 +112,7 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer {
         final Point p7p = new Point(-1.0f, -1.0f, -1.0f);
         final Point p8p = new Point(1.0f, -1.0f, -1.0f);
 
-        final float[] cubePositionData = ShapeBuilder.generateCubeData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
+        final float[] cubePositionData = CubeBuilder.generatePositionData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
 
         // Points of the cube: color information
         // R, G, B, A
@@ -127,14 +125,11 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer {
         final Color p7c = new Color(0.0f, 1.0f, 0.0f, 1.0f);        // green
         final Color p8c = new Color(0.0f, 1.0f, 1.0f, 1.0f);        // cyan
 
-        final float[] cubeColorData = ShapeBuilder.generateCubeData(p1c, p2c, p3c, p4c, p5c, p6c, p7c, p8c);
+        final float[] cubeColorData = CubeBuilder.generateColorData(p1c, p2c, p3c, p4c, p5c, p6c, p7c, p8c);
 
         // Initialize the buffers.
-        mCubePositions = allocateDirect(cubePositionData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubePositions.put(cubePositionData).position(0);
-
-        mCubeColors = allocateDirect(cubeColorData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        mCubeColors.put(cubeColorData).position(0);
+        mCubePositions = allocateBuffer(cubePositionData);
+        mCubeColors = allocateBuffer(cubeColorData);
     }
 
     protected String getVertexShader() {
@@ -279,15 +274,13 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer {
     private void drawCube() {
         // Pass in the position information
         mCubePositions.position(0);
-        glVertexAttribPointer(mPositionHandle, mPositionDataSize, GL_FLOAT, false,
-                0, mCubePositions);
+        glVertexAttribPointer(mPositionHandle, mPositionDataSize, GL_FLOAT, false, 0, mCubePositions);
 
         glEnableVertexAttribArray(mPositionHandle);
 
         // Pass in the color information
         mCubeColors.position(0);
-        glVertexAttribPointer(mColorHandle, mColorDataSize, GL_FLOAT, false,
-                0, mCubeColors);
+        glVertexAttribPointer(mColorHandle, mColorDataSize, GL_FLOAT, false, 0, mCubeColors);
 
         glEnableVertexAttribArray(mColorHandle);
 

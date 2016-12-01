@@ -5,7 +5,6 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.CubeBuilder;
 
 import java.nio.FloatBuffer;
 
@@ -22,12 +21,10 @@ import static com.learnopengles.android.common.Color.YELLOW;
 import static com.learnopengles.android.common.CubeBuilder.generateColorData;
 import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
 import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
-import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -125,14 +122,9 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         );
 
         // Initialize the buffers.
-        cubePositions = allocateDirect(cubePositionData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        cubePositions.put(cubePositionData).position(0);
-
-        cubeColors = allocateDirect(cubeColorData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        cubeColors.put(cubeColorData).position(0);
-
-        cubeNormals = allocateDirect(cubeNormalData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        cubeNormals.put(cubeNormalData).position(0);
+        cubePositions = allocateBuffer(cubePositionData);
+        cubeColors = allocateBuffer(cubeColorData);
+        cubeNormals = allocateBuffer(cubeNormalData);
 
         cube1 = new Cube();
         cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));

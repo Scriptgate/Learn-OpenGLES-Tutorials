@@ -18,7 +18,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static java.nio.ByteBuffer.allocateDirect;
@@ -568,8 +569,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 			final FloatBuffer cubeNormalsBuffer;
 			final FloatBuffer cubeTextureCoordinatesBuffer;
 			
-			cubePositionsBuffer = allocateDirect(cubePositions.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-			cubePositionsBuffer.put(cubePositions).position(0);
+			cubePositionsBuffer = allocateBuffer(cubePositions);
 			
             int generatedCubeFactorToPowerThree = generatedCubeFactor * generatedCubeFactor * generatedCubeFactor;
 			cubeNormalsBuffer = allocateDirect(cubeNormals.length * BYTES_PER_FLOAT * generatedCubeFactorToPowerThree).order(nativeOrder()).asFloatBuffer();
