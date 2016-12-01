@@ -1,6 +1,5 @@
 package com.learnopengles.android.common;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static com.learnopengles.android.common.Color.BLUE;
@@ -9,8 +8,14 @@ import static com.learnopengles.android.common.Color.GREEN;
 import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.YELLOW;
+import static com.learnopengles.android.common.CubeBuilder.generateColorData;
+import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
+import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
+import static org.junit.Assert.assertArrayEquals;
 
 public class CubeBuilderTest {
+
+    public static final float DELTA = 0.000000001f;
 
     // X, Y, Z
     // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
@@ -122,6 +127,64 @@ public class CubeBuilderTest {
     };
     //@formatter:on
 
+
+    // X, Y, Z
+    // The normal is used in light calculations and is a vector which points
+    // orthogonal to the plane of the surface. For a cube model, the normals
+    // should be orthogonal to the points of each face.
+    //@formatter:off
+    final float[] NORMAL =
+            {
+            // Front face
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            // Right face
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            // Back face
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            // Left face
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            // Top face
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            // Bottom face
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f
+    };
+    //@formatter:on
+
     @Test
     public void generatePositionData_givenPoints() throws Exception {
         //@formatter:off
@@ -135,9 +198,9 @@ public class CubeBuilderTest {
         final Point backD  = new Point( 1.0f, -1.0f, -1.0f);
         //@formatter:on
 
-        float[] cubeVertices = CubeBuilder.generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
+        float[] positionData = generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
 
-        Assert.assertArrayEquals(cubeVertices, POSITION, 0.000000001f);
+        assertArrayEquals(positionData, POSITION, DELTA);
     }
 
     @Test
@@ -146,15 +209,29 @@ public class CubeBuilderTest {
         float height = 1;
         float depth = 1;
 
-        float[] cubeVertices = CubeBuilder.generatePositionData(width, height, depth);
+        float[] positionData = generatePositionData(width, height, depth);
 
-        Assert.assertArrayEquals(cubeVertices, POSITION, 0.000000001f);
+        assertArrayEquals(positionData, POSITION, DELTA);
     }
 
     @Test
     public void generateColorData_perFace() throws Exception {
-        float[] cubeVertices = CubeBuilder.generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
+        float[] colorData = generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
 
-        Assert.assertArrayEquals(cubeVertices, COLOR, 0.000000001f);
+        assertArrayEquals(colorData, COLOR, DELTA);
+    }
+
+    @Test
+    public void generateNormalData_perFace() throws Exception {
+        Point front = new Point(0.0f, 0.0f, 1.0f);
+        Point right = new Point(1.0f, 0.0f, 0.0f);
+        Point back = new Point(0.0f, 0.0f, -1.0f);
+        Point left = new Point(-1.0f, 0.0f, 0.0f);
+        Point top = new Point(0.0f, 1.0f, 0.0f);
+        Point bottom = new Point(0.0f, -1.0f, 0.0f);
+
+        float[] normalData = generateNormalData(front, right, back, left, top, bottom);
+
+        assertArrayEquals(normalData, NORMAL, DELTA);
     }
 }

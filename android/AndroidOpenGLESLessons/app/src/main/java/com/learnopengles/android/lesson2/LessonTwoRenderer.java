@@ -19,6 +19,9 @@ import static com.learnopengles.android.common.Color.GREEN;
 import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.YELLOW;
+import static com.learnopengles.android.common.CubeBuilder.generateColorData;
+import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
+import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
 import static com.learnopengles.android.common.FloatBufferConstants.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
@@ -108,66 +111,18 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
     public LessonTwoRenderer() {
         // Define points for a cube.
 
-        // X, Y, Z
-        final float[] cubePositionData = CubeBuilder.generatePositionData(1.0f, 1.0f, 1.0f);
+        final float[] cubePositionData = generatePositionData(1.0f, 1.0f, 1.0f);
 
-        // R, G, B, A
-        final float[] cubeColorData = CubeBuilder.generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
+        final float[] cubeColorData = generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
 
-        // X, Y, Z
-        // The normal is used in light calculations and is a vector which points
-        // orthogonal to the plane of the surface. For a cube model, the normals
-        // should be orthogonal to the points of each face.
-        final float[] cubeNormalData =
-                {
-                        // Front face
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-                        0.0f, 0.0f, 1.0f,
-
-                        // Right face
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-                        1.0f, 0.0f, 0.0f,
-
-                        // Back face
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-                        0.0f, 0.0f, -1.0f,
-
-                        // Left face
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-                        -1.0f, 0.0f, 0.0f,
-
-                        // Top face
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-
-                        // Bottom face
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f,
-                        0.0f, -1.0f, 0.0f
-                };
+        float[] cubeNormalData = generateNormalData(
+                new Point(0.0f, 0.0f, 1.0f),
+                new Point(1.0f, 0.0f, 0.0f),
+                new Point(0.0f, 0.0f, -1.0f),
+                new Point(-1.0f, 0.0f, 0.0f),
+                new Point(0.0f, 1.0f, 0.0f),
+                new Point(0.0f, -1.0f, 0.0f)
+        );
 
         // Initialize the buffers.
         cubePositions = allocateDirect(cubePositionData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
@@ -275,7 +230,6 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         // Do a complete rotation every 10 seconds.
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-
 
 
         // Calculate position of the light. Rotate and then push into the distance.

@@ -50,6 +50,23 @@ public class CubeBuilder {
         return generateData(faces);
     }
 
+    public static float[] generateNormalData(Point front,
+                                            Point right,
+                                            Point back,
+                                            Point left,
+                                            Point top,
+                                            Point bottom) {
+        List<Face> faces = new ArrayList<>();
+        faces.add(new PointFace(front));
+        faces.add(new PointFace(right));
+        faces.add(new PointFace(back));
+        faces.add(new PointFace(left));
+        faces.add(new PointFace(top));
+        faces.add(new PointFace(bottom));
+
+        return generateData(faces);
+    }
+
     public static float[] generatePositionData(Point frontA,
                                                Point frontB,
                                                Point frontC,
@@ -151,6 +168,10 @@ public class CubeBuilder {
             super(p1, p2, p3, p4);
         }
 
+        private PointFace(Point face) {
+            this(face, face, face, face);
+        }
+
         @Override
         int getNumberOfElements() {
             return 3;
@@ -162,7 +183,6 @@ public class CubeBuilder {
             data[offset + 1] = element.y;
             data[offset + 2] = element.z;
         }
-
     }
 
     private static class ColorFace extends Face<Color> {
@@ -171,7 +191,7 @@ public class CubeBuilder {
         }
 
         public ColorFace(Color face) {
-            super(face, face, face, face);
+            this(face, face, face, face);
         }
 
         @Override
