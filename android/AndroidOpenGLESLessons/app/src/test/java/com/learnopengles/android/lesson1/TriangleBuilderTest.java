@@ -1,24 +1,29 @@
 package com.learnopengles.android.lesson1;
 
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.lesson2.Light;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.learnopengles.android.common.Color.BLUE;
 import static com.learnopengles.android.common.Color.GREEN;
 import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.lesson1.TriangleVerticesBuilder.vertices;
+import static com.learnopengles.android.lesson1.TriangleBuilder.generateData;
+import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
 
-public class TriangleVerticesBuilderTest {
+public class TriangleBuilderTest {
 
     @Test
     public void addColorPoints() throws Exception {
-        float[] triangleVertices = vertices()
-                .addColorPoint(new Point(-0.5f, -0.25f, 0.0f), RED)
-                .addColorPoint(new Point(0.5f, -0.25f, 0.0f), GREEN)
-                .addColorPoint(new Point(0.0f, 0.559016994f, 0.0f), BLUE)
-                .build();
+        List<ColorPoint> points = new ArrayList<>();
+        points.add(new ColorPoint(new Point(-0.5f, -0.25f, 0.0f), RED));
+        points.add(new ColorPoint(new Point(0.5f, -0.25f, 0.0f), GREEN));
+        points.add(new ColorPoint(new Point(0.0f, 0.559016994f, 0.0f), BLUE));
+        float[] triangleVertices = generateData(points);
 
         float[] result = {
                 // X, Y, Z,
@@ -38,9 +43,7 @@ public class TriangleVerticesBuilderTest {
 
     @Test
     public void createEquilateralTriangle() throws Exception {
-        float[] triangleVertices = vertices()
-                .createEquilateralTriangle(1, RED, GREEN, BLUE)
-                .build();
+        float[] triangleVertices = generateData(triangle().createEquilateralTriangle(1, RED, GREEN, BLUE));
 
         float[] result = {
                 // X, Y, Z,

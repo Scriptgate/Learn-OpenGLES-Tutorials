@@ -28,7 +28,8 @@ import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.WHITE;
 import static com.learnopengles.android.common.Color.YELLOW;
 import static com.learnopengles.android.lesson1.Program.createProgram;
-import static com.learnopengles.android.lesson1.TriangleVerticesBuilder.vertices;
+import static com.learnopengles.android.lesson1.TriangleBuilder.createEquilateralTriangle;
+import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -69,30 +70,25 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
 
         // This triangle is red, green, and blue.
         // Draw the triangle facing straight on.
-        Triangle triangle1 = new Triangle(vertices()
-                .createEquilateralTriangle(1, RED, GREEN, BLUE)
-                .build()
-        );
-        triangles.add(triangle1);
+        triangles.add(triangle()
+                .equilateral(1, RED, GREEN, BLUE)
+                .build());
 
         // This triangle is yellow, cyan, and magenta.
         // Draw one translated a bit down and rotated to be flat on the ground.
-        Triangle triangle2 = new Triangle(vertices()
-                .createEquilateralTriangle(1, YELLOW, CYAN, MAGENTA)
-                .build()
-        );
-        triangle2.setPosition(new Point(0.0f, -1.0f, 0.0f));
-        triangle2.setRotationX(90);
-        triangles.add(triangle2);
+        triangles.add(triangle()
+                .equilateral(1, YELLOW, CYAN, MAGENTA)
+                .position(new Point(0.0f, -1.0f, 0.0f))
+                .rotateX(90)
+                .build());
 
         // This triangle is white, gray, and black.
         // Draw one translated a bit to the right and rotated to be facing to the left.
-        Triangle triangle3 = new Triangle(vertices()
-                .createEquilateralTriangle(1, WHITE, GREY, BLACK)
+        triangles.add(triangle()
+                .equilateral(1, WHITE, GREY, BLACK)
+                .position(new Point(1.0f, 0.0f, 0.0f))
+                .rotateY(90)
                 .build());
-        triangle3.setPosition(new Point(1.0f, 0.0f, 0.0f));
-        triangle3.setRotationY(90);
-        triangles.add(triangle3);
     }
 
     @Override
