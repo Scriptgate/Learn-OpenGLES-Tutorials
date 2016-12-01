@@ -25,6 +25,10 @@ public class Cube {
     private Point position = new Point();
     private Point rotation = new Point();
 
+    public Cube(Point point) {
+        this.position = point;
+    }
+
 
     /**
      * Draws a cube.

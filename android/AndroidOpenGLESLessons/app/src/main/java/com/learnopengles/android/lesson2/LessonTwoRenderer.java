@@ -7,6 +7,8 @@ import android.os.SystemClock;
 import com.learnopengles.android.common.Point;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -96,11 +98,7 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
      */
     private int pointProgramHandle;
 
-    private Cube cube1;
-    private Cube cube2;
-    private Cube cube3;
-    private Cube cube4;
-    private Cube cube5;
+    private List<Cube> cubes;
 
     /**
      * Initialize the model data.
@@ -126,20 +124,12 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         cubeColors = allocateBuffer(cubeColorData);
         cubeNormals = allocateBuffer(cubeNormalData);
 
-        cube1 = new Cube();
-        cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));
-
-        cube2 = new Cube();
-        cube2.setPosition(new Point(-4.0f, 0.0f, -7.0f));
-
-        cube3 = new Cube();
-        cube3.setPosition(new Point(0.0f, 4.0f, -7.0f));
-
-        cube4 = new Cube();
-        cube4.setPosition(new Point(0.0f, -4.0f, -7.0f));
-
-        cube5 = new Cube();
-        cube5.setPosition(new Point(0.0f, 0.0f, -5.0f));
+        cubes = new ArrayList<>();
+        cubes.add(new Cube(new Point(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(new Point(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, 0.0f, -5.0f)));
     }
 
     protected String getVertexShader() {
@@ -237,17 +227,15 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         glUseProgram(perVertexProgramHandle);
 
         // Draw some cubes.
-        cube1.setRotationX(angleInDegrees);
-        cube2.setRotationY(angleInDegrees);
-        cube3.setRotationZ(angleInDegrees);
-        cube5.setRotationX(angleInDegrees);
-        cube5.setRotationY(angleInDegrees);
+        cubes.get(0).setRotationX(angleInDegrees);
+        cubes.get(1).setRotationY(angleInDegrees);
+        cubes.get(2).setRotationZ(angleInDegrees);
+        cubes.get(4).setRotationX(angleInDegrees);
+        cubes.get(4).setRotationY(angleInDegrees);
 
-        cube1.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-        cube2.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-        cube3.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-        cube4.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-        cube5.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+        for (Cube cube : cubes) {
+            cube.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+        }
 
         // Draw a point to indicate the light.
         glUseProgram(pointProgramHandle);
