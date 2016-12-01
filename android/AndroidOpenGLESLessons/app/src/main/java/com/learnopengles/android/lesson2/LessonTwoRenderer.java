@@ -5,7 +5,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.ShapeBuilder;
+import com.learnopengles.android.common.CubeBuilder;
 
 import java.nio.FloatBuffer;
 
@@ -109,10 +109,10 @@ public class LessonTwoRenderer implements GLSurfaceView.Renderer {
         // Define points for a cube.
 
         // X, Y, Z
-        final float[] cubePositionData = ShapeBuilder.generateCubeData(1.0f, 1.0f, 1.0f);
+        final float[] cubePositionData = CubeBuilder.generatePositionData(1.0f, 1.0f, 1.0f);
 
         // R, G, B, A
-        final float[] cubeColorData = ShapeBuilder.generateCubeData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
+        final float[] cubeColorData = CubeBuilder.generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
 
         // X, Y, Z
         // The normal is used in light calculations and is a vector which points

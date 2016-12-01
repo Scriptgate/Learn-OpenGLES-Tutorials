@@ -3,14 +3,14 @@ package com.learnopengles.android.common;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShapeBuilder {
+public class CubeBuilder {
 
-    public static float[] generateCubeData(Color front,
-                                           Color right,
-                                           Color back,
-                                           Color left,
-                                           Color top,
-                                           Color bottom) {
+    public static float[] generateColorData(Color front,
+                                            Color right,
+                                            Color back,
+                                            Color left,
+                                            Color top,
+                                            Color bottom) {
         List<Face> faces = new ArrayList<>();
         faces.add(new ColorFace(front));
         faces.add(new ColorFace(right));
@@ -19,17 +19,17 @@ public class ShapeBuilder {
         faces.add(new ColorFace(top));
         faces.add(new ColorFace(bottom));
 
-        return generateCubeData(faces);
+        return generateData(faces);
     }
 
-    public static float[] generateCubeData(Color frontA,
-                                           Color frontB,
-                                           Color frontC,
-                                           Color frontD,
-                                           Color backA,
-                                           Color backB,
-                                           Color backC,
-                                           Color backD) {
+    public static float[] generateColorData(Color frontA,
+                                            Color frontB,
+                                            Color frontC,
+                                            Color frontD,
+                                            Color backA,
+                                            Color backB,
+                                            Color backC,
+                                            Color backD) {
         List<Face> faces = new ArrayList<>();
         //@formatter:off
         ColorFace FRONT  = new ColorFace(frontA, frontB, frontC, frontD);
@@ -47,17 +47,17 @@ public class ShapeBuilder {
         faces.add(TOP);
         faces.add(BOTTOM);
 
-        return generateCubeData(faces);
+        return generateData(faces);
     }
 
-    public static float[] generateCubeData(Point frontA,
-                                           Point frontB,
-                                           Point frontC,
-                                           Point frontD,
-                                           Point backA,
-                                           Point backB,
-                                           Point backC,
-                                           Point backD) {
+    public static float[] generatePositionData(Point frontA,
+                                               Point frontB,
+                                               Point frontC,
+                                               Point frontD,
+                                               Point backA,
+                                               Point backB,
+                                               Point backC,
+                                               Point backD) {
         List<Face> faces = new ArrayList<>();
         //@formatter:off
         PointFace FRONT  = new PointFace(frontA, frontB, frontC, frontD);
@@ -75,11 +75,11 @@ public class ShapeBuilder {
         faces.add(TOP);
         faces.add(BOTTOM);
 
-        return generateCubeData(faces);
+        return generateData(faces);
     }
 
 
-    private static float[] generateCubeData(List<Face> faces) {
+    private static float[] generateData(List<Face> faces) {
         final int size = faces.iterator().next().getNumberOfElements() * 6 * 6;
         final float[] cubeData = new float[size];
 
@@ -93,7 +93,7 @@ public class ShapeBuilder {
         return cubeData;
     }
 
-    public static float[] generateCubeData(float width, float height, float depth) {
+    public static float[] generatePositionData(float width, float height, float depth) {
         //@formatter:off
         final Point frontA = new Point(-width,  height,  depth);
         final Point frontB = new Point( width,  height,  depth);
@@ -104,7 +104,7 @@ public class ShapeBuilder {
         final Point backC  = new Point(-width, -height, -depth);
         final Point backD  = new Point( width, -height, -depth);
         //@formatter:on
-        return generateCubeData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
+        return generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
     }
 
     private abstract static class Face<T> {

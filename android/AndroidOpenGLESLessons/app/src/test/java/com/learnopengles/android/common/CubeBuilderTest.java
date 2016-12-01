@@ -10,7 +10,7 @@ import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.YELLOW;
 
-public class ShapeBuilderTest {
+public class CubeBuilderTest {
 
     // X, Y, Z
     // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
@@ -123,7 +123,7 @@ public class ShapeBuilderTest {
     //@formatter:on
 
     @Test
-    public void generateCubeData_position() throws Exception {
+    public void generatePositionData_givenPoints() throws Exception {
         //@formatter:off
         final Point frontA = new Point(-1.0f,  1.0f,  1.0f);
         final Point frontB = new Point( 1.0f,  1.0f,  1.0f);
@@ -135,25 +135,25 @@ public class ShapeBuilderTest {
         final Point backD  = new Point( 1.0f, -1.0f, -1.0f);
         //@formatter:on
 
-        float[] cubeVertices = ShapeBuilder.generateCubeData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
+        float[] cubeVertices = CubeBuilder.generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
 
         Assert.assertArrayEquals(cubeVertices, POSITION, 0.000000001f);
     }
 
     @Test
-    public void generateCubeData_positionFromDimensions() throws Exception {
+    public void generatePositionData_givenDimensions() throws Exception {
         float width = 1;
         float height = 1;
         float depth = 1;
 
-        float[] cubeVertices = ShapeBuilder.generateCubeData(width, height, depth);
+        float[] cubeVertices = CubeBuilder.generatePositionData(width, height, depth);
 
         Assert.assertArrayEquals(cubeVertices, POSITION, 0.000000001f);
     }
 
     @Test
-    public void generateCubeData_colorPerFace() throws Exception {
-        float[] cubeVertices = ShapeBuilder.generateCubeData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
+    public void generateColorData_perFace() throws Exception {
+        float[] cubeVertices = CubeBuilder.generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
 
         Assert.assertArrayEquals(cubeVertices, COLOR, 0.000000001f);
     }

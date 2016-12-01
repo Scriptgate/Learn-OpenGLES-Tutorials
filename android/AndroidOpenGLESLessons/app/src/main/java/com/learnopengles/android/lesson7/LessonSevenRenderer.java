@@ -7,7 +7,7 @@ import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonSevenActivity;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.ShaderHelper;
-import com.learnopengles.android.common.ShapeBuilder;
+import com.learnopengles.android.common.CubeBuilder;
 import com.learnopengles.android.common.TextureHelper;
 
 import java.nio.FloatBuffer;
@@ -302,7 +302,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 							final Point p7p = new Point(x1, y1, z1 );
 							final Point p8p = new Point(x2, y1, z1 );
 
-							final float[] thisCubePositionData = ShapeBuilder.generateCubeData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
+							final float[] thisCubePositionData = CubeBuilder.generatePositionData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
 							
 							System.arraycopy(thisCubePositionData, 0, cubePositionData, cubePositionDataOffset, thisCubePositionData.length);
 							cubePositionDataOffset += thisCubePositionData.length;
