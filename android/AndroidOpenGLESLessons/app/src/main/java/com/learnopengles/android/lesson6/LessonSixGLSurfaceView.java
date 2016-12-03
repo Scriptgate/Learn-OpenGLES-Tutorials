@@ -7,7 +7,7 @@ import android.view.MotionEvent;
 
 public class LessonSixGLSurfaceView extends GLSurfaceView 
 {	
-	private LessonSixRenderer mRenderer;
+	private TextureFilteringRenderer mRenderer;
 	
 	// Offsets for touch events	 
     private float mPreviousX;
@@ -57,7 +57,7 @@ public class LessonSixGLSurfaceView extends GLSurfaceView
 	}
 
 	// Hides superclass method.
-	public void setRenderer(LessonSixRenderer renderer, float density) 
+	public void setRenderer(TextureFilteringRenderer renderer, float density)
 	{
 		mRenderer = renderer;
 		mDensity = density;

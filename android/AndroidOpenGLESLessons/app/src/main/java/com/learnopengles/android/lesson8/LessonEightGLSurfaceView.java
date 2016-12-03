@@ -10,7 +10,7 @@ import com.learnopengles.android.R;
 
 public class LessonEightGLSurfaceView extends GLSurfaceView implements ErrorHandler
 {	
-	private LessonEightRenderer renderer;
+	private IndexBufferObjectRenderer renderer;
 	
 	// Offsets for touch events	 
     private float previousX;
@@ -86,7 +86,7 @@ public class LessonEightGLSurfaceView extends GLSurfaceView implements ErrorHand
 	}
 
 	// Hides superclass method.
-	public void setRenderer(LessonEightRenderer renderer, float density) 
+	public void setRenderer(IndexBufferObjectRenderer renderer, float density)
 	{
 		this.renderer = renderer;
 		this.density = density;

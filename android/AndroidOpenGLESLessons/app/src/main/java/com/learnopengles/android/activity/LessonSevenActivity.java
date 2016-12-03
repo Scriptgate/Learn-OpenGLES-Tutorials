@@ -12,12 +12,12 @@ import android.widget.Button;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.lesson7.LessonSevenGLSurfaceView;
-import com.learnopengles.android.lesson7.LessonSevenRenderer;
+import com.learnopengles.android.lesson7.VertexBufferObjectRenderer;
 
 public class LessonSevenActivity extends Activity {
 	/** Hold a reference to our GLSurfaceView */
 	private LessonSevenGLSurfaceView mGLSurfaceView;
-	private LessonSevenRenderer mRenderer;
+	private VertexBufferObjectRenderer mRenderer;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class LessonSevenActivity extends Activity {
 			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
 			// Set the renderer to our demo renderer, defined below.
-			mRenderer = new LessonSevenRenderer(this, mGLSurfaceView);
+			mRenderer = new VertexBufferObjectRenderer(this, mGLSurfaceView);
 			mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
 		} else {
 			// This is where you could create an OpenGL ES 1.x compatible

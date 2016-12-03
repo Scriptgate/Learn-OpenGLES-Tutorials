@@ -22,11 +22,11 @@ import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class LessonFourRenderer implements GLSurfaceView.Renderer {
+public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     /**
      * Used for debug logs.
      */
-    private static final String TAG = "LessonFourRenderer";
+    private static final String TAG = "BasicTexturingRenderer";
 
     private final Context mActivityContext;
 
@@ -159,7 +159,7 @@ public class LessonFourRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public LessonFourRenderer(final Context activityContext) {
+    public BasicTexturingRenderer(final Context activityContext) {
         mActivityContext = activityContext;
 
         // Define points for a cube.

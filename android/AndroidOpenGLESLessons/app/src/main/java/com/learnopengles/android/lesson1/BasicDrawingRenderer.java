@@ -28,14 +28,13 @@ import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.WHITE;
 import static com.learnopengles.android.common.Color.YELLOW;
 import static com.learnopengles.android.lesson1.Program.createProgram;
-import static com.learnopengles.android.lesson1.TriangleBuilder.createEquilateralTriangle;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class LessonOneRenderer implements GLSurfaceView.Renderer {
+public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
      * of being located at the center of the universe) to world space.
@@ -65,16 +64,14 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public LessonOneRenderer() {
+    public BasicDrawingRenderer() {
         // Define points for equilateral triangles.
 
-        // This triangle is red, green, and blue.
         // Draw the triangle facing straight on.
         triangles.add(triangle()
                 .equilateral(1, RED, GREEN, BLUE)
                 .build());
 
-        // This triangle is yellow, cyan, and magenta.
         // Draw one translated a bit down and rotated to be flat on the ground.
         triangles.add(triangle()
                 .equilateral(1, YELLOW, CYAN, MAGENTA)
@@ -82,7 +79,6 @@ public class LessonOneRenderer implements GLSurfaceView.Renderer {
                 .rotateX(90)
                 .build());
 
-        // This triangle is white, gray, and black.
         // Draw one translated a bit to the right and rotated to be facing to the left.
         triangles.add(triangle()
                 .equilateral(1, WHITE, GREY, BLACK)

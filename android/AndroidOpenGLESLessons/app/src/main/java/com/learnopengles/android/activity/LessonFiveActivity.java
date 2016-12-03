@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.learnopengles.android.R;
+import com.learnopengles.android.lesson5.BlendingRenderer;
 import com.learnopengles.android.lesson5.LessonFiveGLSurfaceView;
-import com.learnopengles.android.lesson5.LessonFiveRenderer;
 
 public class LessonFiveActivity extends Activity 
 {
@@ -36,7 +36,7 @@ public class LessonFiveActivity extends Activity
 			mGLSurfaceView.setEGLContextClientVersion(2);
 
 			// Set the renderer to our demo renderer, defined below.
-			mGLSurfaceView.setRenderer(new LessonFiveRenderer(this));
+			mGLSurfaceView.setRenderer(new BlendingRenderer(this));
 		} 
 		else 
 		{

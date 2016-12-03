@@ -19,7 +19,7 @@ import static com.learnopengles.android.common.RawResourceReader.readTextFileFro
  * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
  * used instead.
  */
-public class LessonEightRenderer implements GLSurfaceView.Renderer {
+public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	/** References to other main objects. */
 	private final LessonEightActivity lessonEightActivity;
@@ -107,7 +107,7 @@ public class LessonEightRenderer implements GLSurfaceView.Renderer {
 	/**
 	 * Initialize the model data.
 	 */
-	public LessonEightRenderer(final LessonEightActivity lessonEightActivity, ErrorHandler errorHandler) {
+	public IndexBufferObjectRenderer(final LessonEightActivity lessonEightActivity, ErrorHandler errorHandler) {
 		this.lessonEightActivity = lessonEightActivity;
 		heightMap = new HeightMap(errorHandler);
 	}

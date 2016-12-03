@@ -24,11 +24,11 @@ import static com.learnopengles.android.common.RawResourceReader.readTextFileFro
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class LessonFiveRenderer implements GLSurfaceView.Renderer {
+public class BlendingRenderer implements GLSurfaceView.Renderer {
     /**
      * Used for debug logs.
      */
-    private static final String TAG = "LessonFiveRenderer";
+    private static final String TAG = "BlendingRenderer";
 
     private final Context mActivityContext;
 
@@ -98,7 +98,7 @@ public class LessonFiveRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public LessonFiveRenderer(final Context activityContext) {
+    public BlendingRenderer(final Context activityContext) {
         mActivityContext = activityContext;
 
         // Define points for a cube.

@@ -15,13 +15,13 @@ import android.view.View.OnClickListener;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.lesson6.LessonSixGLSurfaceView;
-import com.learnopengles.android.lesson6.LessonSixRenderer;
+import com.learnopengles.android.lesson6.TextureFilteringRenderer;
 
 public class LessonSixActivity extends Activity 
 {
 	/** Hold a reference to our GLSurfaceView */
 	private LessonSixGLSurfaceView mGLSurfaceView;
-	private LessonSixRenderer mRenderer;
+	private TextureFilteringRenderer mRenderer;
 	
 	private static final int MIN_DIALOG = 1;
 	private static final int MAG_DIALOG = 2;
@@ -55,7 +55,7 @@ public class LessonSixActivity extends Activity
 			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
 			// Set the renderer to our demo renderer, defined below.
-			mRenderer = new LessonSixRenderer(this);
+			mRenderer = new TextureFilteringRenderer(this);
 			mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);					
 		} 
 		else 

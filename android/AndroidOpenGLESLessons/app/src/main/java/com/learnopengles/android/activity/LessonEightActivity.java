@@ -8,11 +8,11 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 
 import com.learnopengles.android.lesson8.LessonEightGLSurfaceView;
-import com.learnopengles.android.lesson8.LessonEightRenderer;
+import com.learnopengles.android.lesson8.IndexBufferObjectRenderer;
 
 public class LessonEightActivity extends Activity {	
 	private LessonEightGLSurfaceView glSurfaceView;
-	private LessonEightRenderer renderer;
+	private IndexBufferObjectRenderer renderer;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class LessonEightActivity extends Activity {
 			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
 			// Set the renderer to our demo renderer, defined below.
-			renderer = new LessonEightRenderer(this, glSurfaceView);
+			renderer = new IndexBufferObjectRenderer(this, glSurfaceView);
 			glSurfaceView.setRenderer(renderer, displayMetrics.density);
 		} else {
 			// This is where you could create an OpenGL ES 1.x compatible

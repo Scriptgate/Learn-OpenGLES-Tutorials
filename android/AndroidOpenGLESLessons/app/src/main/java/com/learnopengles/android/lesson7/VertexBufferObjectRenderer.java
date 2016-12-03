@@ -30,9 +30,9 @@ import static java.nio.ByteOrder.nativeOrder;
  * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
  * used instead.
  */
-public class LessonSevenRenderer implements GLSurfaceView.Renderer {
+public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	/** Used for debug logs. */
-	private static final String TAG = "LessonSevenRenderer";
+	private static final String TAG = "VertexBufferObjectRenderer";
 
 	private final LessonSevenActivity mLessonSevenActivity;
 	private final GLSurfaceView mGlSurfaceView;
@@ -138,7 +138,7 @@ public class LessonSevenRenderer implements GLSurfaceView.Renderer {
 	/**
 	 * Initialize the model data.
 	 */
-	public LessonSevenRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
+	public VertexBufferObjectRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
 		mLessonSevenActivity = lessonSevenActivity;	
 		mGlSurfaceView = glSurfaceView;
 	}

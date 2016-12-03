@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 
 public class LessonFiveGLSurfaceView extends GLSurfaceView 
 {
-	private LessonFiveRenderer mRenderer;
+	private BlendingRenderer mRenderer;
 	
 	public LessonFiveGLSurfaceView(Context context) 
 	{
@@ -42,7 +42,7 @@ public class LessonFiveGLSurfaceView extends GLSurfaceView
 	}
 
 	// Hides superclass method.
-	public void setRenderer(LessonFiveRenderer renderer) 
+	public void setRenderer(BlendingRenderer renderer)
 	{
 		mRenderer = renderer;
 		super.setRenderer(renderer);

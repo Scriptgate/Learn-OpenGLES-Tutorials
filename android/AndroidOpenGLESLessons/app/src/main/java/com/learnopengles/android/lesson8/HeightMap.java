@@ -20,16 +20,16 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGenBuffers;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.lesson8.LessonEightRenderer.COLOR_ATTRIBUTE;
-import static com.learnopengles.android.lesson8.LessonEightRenderer.NORMAL_ATTRIBUTE;
-import static com.learnopengles.android.lesson8.LessonEightRenderer.POSITION_ATTRIBUTE;
+import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.COLOR_ATTRIBUTE;
+import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.NORMAL_ATTRIBUTE;
+import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.POSITION_ATTRIBUTE;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
 public class HeightMap {
 
     /** Used for debug logs. */
-    private static final String TAG = "LessonEightRenderer";
+    private static final String TAG = "IndexBufferObjectRenderer";
 
     /** Additional constants. */
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;

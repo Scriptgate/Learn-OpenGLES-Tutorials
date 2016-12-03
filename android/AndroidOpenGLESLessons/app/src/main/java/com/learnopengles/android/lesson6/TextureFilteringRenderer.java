@@ -24,11 +24,11 @@ import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class LessonSixRenderer implements GLSurfaceView.Renderer {
+public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     /**
      * Used for debug logs.
      */
-    private static final String TAG = "LessonSixRenderer";
+    private static final String TAG = "TextureFilteringRenderer";
 
     private final Context mActivityContext;
 
@@ -177,7 +177,7 @@ public class LessonSixRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public LessonSixRenderer(final Context activityContext) {
+    public TextureFilteringRenderer(final Context activityContext) {
         mActivityContext = activityContext;
 
         // Define points for a cube.
