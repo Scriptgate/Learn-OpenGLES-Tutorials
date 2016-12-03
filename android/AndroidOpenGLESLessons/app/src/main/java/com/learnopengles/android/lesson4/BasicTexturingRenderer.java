@@ -6,8 +6,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.RawResourceReader;
-import com.learnopengles.android.common.ShaderHelper;
+import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.TextureHelper;
 
 import java.nio.FloatBuffer;
@@ -17,6 +16,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
+import static com.learnopengles.android.common.ShaderHelper.compileShader;
+import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
+import static com.learnopengles.android.common.TextureHelper.loadTexture;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -28,139 +31,139 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
      */
     private static final String TAG = "BasicTexturingRenderer";
 
-    private final Context mActivityContext;
+    private final Context activityContext;
 
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
      * of being located at the center of the universe) to world space.
      */
-    private float[] mModelMatrix = new float[16];
+    private float[] modelMatrix = new float[16];
 
     /**
      * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
      * it positions things relative to our eye.
      */
-    private float[] mViewMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
 
     /**
      * Store the projection matrix. This is used to project the scene onto a 2D viewport.
      */
-    private float[] mProjectionMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
 
     /**
      * Allocate storage for the final combined matrix. This will be passed into the shader program.
      */
-    private float[] mMVPMatrix = new float[16];
+    private float[] mvpMatrix = new float[16];
 
     /**
      * Stores a copy of the model matrix specifically for the light position.
      */
-    private float[] mLightModelMatrix = new float[16];
+    private float[] lightModelMatrix = new float[16];
 
     /**
      * Store our model data in a float buffer.
      */
-    private final FloatBuffer mCubePositions;
-    private final FloatBuffer mCubeColors;
-    private final FloatBuffer mCubeNormals;
-    private final FloatBuffer mCubeTextureCoordinates;
+    private final FloatBuffer cubePositions;
+    private final FloatBuffer cubeColors;
+    private final FloatBuffer cubeNormals;
+    private final FloatBuffer cubeTextureCoordinates;
 
     /**
      * This will be used to pass in the transformation matrix.
      */
-    private int mMVPMatrixHandle;
+    private int mvpMatrixHandle;
 
     /**
      * This will be used to pass in the modelview matrix.
      */
-    private int mMVMatrixHandle;
+    private int mvMatrixHandle;
 
     /**
      * This will be used to pass in the light position.
      */
-    private int mLightPosHandle;
+    private int lightPosHandle;
 
     /**
      * This will be used to pass in the texture.
      */
-    private int mTextureUniformHandle;
+    private int textureUniformHandle;
 
     /**
      * This will be used to pass in model position information.
      */
-    private int mPositionHandle;
+    private int positionHandle;
 
     /**
      * This will be used to pass in model color information.
      */
-    private int mColorHandle;
+    private int colorHandle;
 
     /**
      * This will be used to pass in model normal information.
      */
-    private int mNormalHandle;
+    private int normalHandle;
 
     /**
      * This will be used to pass in model texture coordinate information.
      */
-    private int mTextureCoordinateHandle;
+    private int textureCoordinateHandle;
 
     /**
      * Size of the position data in elements.
      */
-    private final int mPositionDataSize = 3;
+    private final int positionDataSize = 3;
 
     /**
      * Size of the color data in elements.
      */
-    private final int mColorDataSize = 4;
+    private final int colorDataSize = 4;
 
     /**
      * Size of the normal data in elements.
      */
-    private final int mNormalDataSize = 3;
+    private final int normalDataSize = 3;
 
     /**
      * Size of the texture coordinate data in elements.
      */
-    private final int mTextureCoordinateDataSize = 2;
+    private final int textureCoordinateDataSize = 2;
 
     /**
      * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      * we multiply this by our transformation matrices.
      */
-    private final float[] mLightPosInModelSpace = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+    private final float[] lightPosInModelSpace = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
 
     /**
      * Used to hold the current position of the light in world space (after transformation via model matrix).
      */
-    private final float[] mLightPosInWorldSpace = new float[4];
+    private final float[] lightPosInWorldSpace = new float[4];
 
     /**
      * Used to hold the transformed position of the light in eye space (after transformation via modelview matrix)
      */
-    private final float[] mLightPosInEyeSpace = new float[4];
+    private final float[] lightPosInEyeSpace = new float[4];
 
     /**
      * This is a handle to our cube shading program.
      */
-    private int mProgramHandle;
+    private int programHandle;
 
     /**
      * This is a handle to our light point program.
      */
-    private int mPointProgramHandle;
+    private int pointProgramHandle;
 
     /**
      * This is a handle to our texture data.
      */
-    private int mTextureDataHandle;
+    private int textureDataHandle;
 
     /**
      * Initialize the model data.
      */
     public BasicTexturingRenderer(final Context activityContext) {
-        mActivityContext = activityContext;
+        this.activityContext = activityContext;
 
         // Define points for a cube.
 
@@ -385,18 +388,18 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
                 };
 
         // Initialize the buffers.
-        mCubePositions = allocateBuffer(cubePositionData);
-        mCubeColors = allocateBuffer(cubeColorData);
-        mCubeNormals = allocateBuffer(cubeNormalData);
-        mCubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
+        cubePositions = allocateBuffer(cubePositionData);
+        cubeColors = allocateBuffer(cubeColorData);
+        cubeNormals = allocateBuffer(cubeNormalData);
+        cubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
     }
 
     protected String getVertexShader() {
-        return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.per_pixel_vertex_shader);
+        return readTextFileFromRawResource(activityContext, R.raw.per_pixel_vertex_shader);
     }
 
     protected String getFragmentShader() {
-        return RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.per_pixel_fragment_shader);
+        return readTextFileFromRawResource(activityContext, R.raw.per_pixel_fragment_shader);
     }
 
     @Override
@@ -415,43 +418,37 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         // glEnable(GL_TEXTURE_2D);
 
         // Position the eye in front of the origin.
-        final float eyeX = 0.0f;
-        final float eyeY = 0.0f;
-        final float eyeZ = -0.5f;
+        final Point eye = new Point(0.0f, 0.0f,-0.5f);
 
         // We are looking toward the distance
-        final float lookX = 0.0f;
-        final float lookY = 0.0f;
-        final float lookZ = -5.0f;
+        final Point look = new Point(0.0f, 0.0f,-5.0f);
 
         // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final float upX = 0.0f;
-        final float upY = 1.0f;
-        final float upZ = 0.0f;
+        final Point up = new Point(0.0f, 1.0f, 0.0f);
 
         // Set the view matrix. This matrix can be said to represent the camera position.
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
 
         final String vertexShader = getVertexShader();
         final String fragmentShader = getFragmentShader();
 
-        final int vertexShaderHandle = ShaderHelper.compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = ShaderHelper.compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
+        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-        mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color", "a_Normal", "a_TexCoordinate"});
+        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color", "a_Normal", "a_TexCoordinate"});
 
         // Define a simple shader program for our point.
-        final String pointVertexShader = RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.point_vertex_shader);
-        final String pointFragmentShader = RawResourceReader.readTextFileFromRawResource(mActivityContext, R.raw.point_fragment_shader);
+        final String pointVertexShader = readTextFileFromRawResource(activityContext, R.raw.point_vertex_shader);
+        final String pointFragmentShader = readTextFileFromRawResource(activityContext, R.raw.point_fragment_shader);
 
-        final int pointVertexShaderHandle = ShaderHelper.compileShader(GL_VERTEX_SHADER, pointVertexShader);
-        final int pointFragmentShaderHandle = ShaderHelper.compileShader(GL_FRAGMENT_SHADER, pointFragmentShader);
-        mPointProgramHandle = ShaderHelper.createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle, new String[]{"a_Position"});
+        final int pointVertexShaderHandle = compileShader(GL_VERTEX_SHADER, pointVertexShader);
+        final int pointFragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, pointFragmentShader);
+        pointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle, new String[]{"a_Position"});
 
         // Load the texture
-        mTextureDataHandle = TextureHelper.loadTexture(mActivityContext, R.drawable.bumpy_bricks_public_domain);
+        textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
     }
 
     @Override
@@ -469,7 +466,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         final float near = 1.0f;
         final float far = 10.0f;
 
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
     @Override
@@ -481,63 +478,63 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Set our per-vertex lighting program.
-        glUseProgram(mProgramHandle);
+        glUseProgram(programHandle);
 
         // Set program handles for cube drawing.
-        mMVPMatrixHandle = glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
-        mMVMatrixHandle = glGetUniformLocation(mProgramHandle, "u_MVMatrix");
-        mLightPosHandle = glGetUniformLocation(mProgramHandle, "u_LightPos");
-        mTextureUniformHandle = glGetUniformLocation(mProgramHandle, "u_Texture");
-        mPositionHandle = glGetAttribLocation(mProgramHandle, "a_Position");
-        mColorHandle = glGetAttribLocation(mProgramHandle, "a_Color");
-        mNormalHandle = glGetAttribLocation(mProgramHandle, "a_Normal");
-        mTextureCoordinateHandle = glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
+        mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
+        mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
+        lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
+        textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
+        positionHandle = glGetAttribLocation(programHandle, "a_Position");
+        colorHandle = glGetAttribLocation(programHandle, "a_Color");
+        normalHandle = glGetAttribLocation(programHandle, "a_Normal");
+        textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
 
         // Set the active texture unit to texture unit 0.
         glActiveTexture(GL_TEXTURE0);
 
         // Bind the texture to this unit.
-        glBindTexture(GL_TEXTURE_2D, mTextureDataHandle);
+        glBindTexture(GL_TEXTURE_2D, textureDataHandle);
 
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(mTextureUniformHandle, 0);
+        glUniform1i(textureUniformHandle, 0);
 
         // Calculate position of the light. Rotate and then push into the distance.
-        Matrix.setIdentityM(mLightModelMatrix, 0);
-        Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(mLightModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
-        Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, 2.0f);
+        Matrix.setIdentityM(lightModelMatrix, 0);
+        Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, -5.0f);
+        Matrix.rotateM(lightModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
+        Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, 2.0f);
 
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
+        Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
+        Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
 
         // Draw some cubes.        
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 4.0f, 0.0f, -7.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
         drawCube();
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, -4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, -4.0f, 0.0f, -7.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
         drawCube();
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 4.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0.0f, 4.0f, -7.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
         drawCube();
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, -4.0f, -7.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0.0f, -4.0f, -7.0f);
         drawCube();
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -5.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
         drawCube();
 
         // Draw a point to indicate the light.
-        glUseProgram(mPointProgramHandle);
+        glUseProgram(pointProgramHandle);
         drawLight();
     }
 
@@ -546,45 +543,45 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
      */
     private void drawCube() {
         // Pass in the position information
-        mCubePositions.position(0);
-        glVertexAttribPointer(mPositionHandle, mPositionDataSize, GL_FLOAT, false, 0, mCubePositions);
+        cubePositions.position(0);
+        glVertexAttribPointer(positionHandle, positionDataSize, GL_FLOAT, false, 0, cubePositions);
 
-        glEnableVertexAttribArray(mPositionHandle);
+        glEnableVertexAttribArray(positionHandle);
 
         // Pass in the color information
-        mCubeColors.position(0);
-        glVertexAttribPointer(mColorHandle, mColorDataSize, GL_FLOAT, false, 0, mCubeColors);
+        cubeColors.position(0);
+        glVertexAttribPointer(colorHandle, colorDataSize, GL_FLOAT, false, 0, cubeColors);
 
-        glEnableVertexAttribArray(mColorHandle);
+        glEnableVertexAttribArray(colorHandle);
 
         // Pass in the normal information
-        mCubeNormals.position(0);
-        glVertexAttribPointer(mNormalHandle, mNormalDataSize, GL_FLOAT, false, 0, mCubeNormals);
+        cubeNormals.position(0);
+        glVertexAttribPointer(normalHandle, normalDataSize, GL_FLOAT, false, 0, cubeNormals);
 
-        glEnableVertexAttribArray(mNormalHandle);
+        glEnableVertexAttribArray(normalHandle);
 
         // Pass in the texture coordinate information
-        mCubeTextureCoordinates.position(0);
-        glVertexAttribPointer(mTextureCoordinateHandle, mTextureCoordinateDataSize, GL_FLOAT, false, 0, mCubeTextureCoordinates);
+        cubeTextureCoordinates.position(0);
+        glVertexAttribPointer(textureCoordinateHandle, textureCoordinateDataSize, GL_FLOAT, false, 0, cubeTextureCoordinates);
 
-        glEnableVertexAttribArray(mTextureCoordinateHandle);
+        glEnableVertexAttribArray(textureCoordinateHandle);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
         // Pass in the modelview matrix.
-        glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
+        glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
 
         // Pass in the combined matrix.
-        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Pass in the light position in eye space.        
-        glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
+        glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 
         // Draw the cube.
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -594,19 +591,19 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
      * Draws a point representing the position of the light.
      */
     private void drawLight() {
-        final int pointMVPMatrixHandle = glGetUniformLocation(mPointProgramHandle, "u_MVPMatrix");
-        final int pointPositionHandle = glGetAttribLocation(mPointProgramHandle, "a_Position");
+        final int pointMVPMatrixHandle = glGetUniformLocation(pointProgramHandle, "u_MVPMatrix");
+        final int pointPositionHandle = glGetAttribLocation(pointProgramHandle, "a_Position");
 
         // Pass in the position.
-        glVertexAttrib3f(pointPositionHandle, mLightPosInModelSpace[0], mLightPosInModelSpace[1], mLightPosInModelSpace[2]);
+        glVertexAttrib3f(pointPositionHandle, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2]);
 
         // Since we are not using a buffer object, disable vertex arrays for this attribute.
         glDisableVertexAttribArray(pointPositionHandle);
 
         // Pass in the transformation matrix.
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mLightModelMatrix, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-        glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, lightModelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the point.
         glDrawArrays(GL_POINTS, 0, 1);

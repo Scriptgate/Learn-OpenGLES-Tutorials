@@ -6,9 +6,7 @@ import android.opengl.Matrix;
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonSevenActivity;
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.common.CubeBuilder;
-import com.learnopengles.android.common.TextureHelper;
 
 import java.nio.FloatBuffer;
 import java.util.concurrent.ExecutorService;
@@ -22,6 +20,8 @@ import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
+import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
+import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -34,71 +34,71 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	/** Used for debug logs. */
 	private static final String TAG = "VertexBufferObjectRenderer";
 
-	private final LessonSevenActivity mLessonSevenActivity;
-	private final GLSurfaceView mGlSurfaceView;
+	private final LessonSevenActivity lessonSevenActivity;
+	private final GLSurfaceView glSurfaceView;
 	
 	/**
 	 * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
 	 * of being located at the center of the universe) to world space.
 	 */
-	private float[] mModelMatrix = new float[16];
+	private float[] modelMatrix = new float[16];
 
 	/**
 	 * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
 	 * it positions things relative to our eye.
 	 */
-	private float[] mViewMatrix = new float[16];
+	private float[] viewMatrix = new float[16];
 
 	/** Store the projection matrix. This is used to project the scene onto a 2D viewport. */
-	private float[] mProjectionMatrix = new float[16];
+	private float[] projectionMatrix = new float[16];
 	
 	/** Allocate storage for the final combined matrix. This will be passed into the shader program. */
-	private float[] mMVPMatrix = new float[16];
+	private float[] mvpMatrix = new float[16];
 	
 	/** Store the accumulated rotation. */
-	private final float[] mAccumulatedRotation = new float[16];
+	private final float[] accumulatedRotation = new float[16];
 	
 	/** Store the current rotation. */
-	private final float[] mCurrentRotation = new float[16];
+	private final float[] currentRotation = new float[16];
 	
 	/** A temporary matrix. */
-	private float[] mTemporaryMatrix = new float[16];
+	private float[] temporaryMatrix = new float[16];
 	
 	/** 
 	 * Stores a copy of the model matrix specifically for the light position.
 	 */
-	private float[] mLightModelMatrix = new float[16];		
+	private float[] lightModelMatrix = new float[16];
 	
 	/** This will be used to pass in the transformation matrix. */
-	private int mMVPMatrixHandle;
+	private int mvpMatrixHandle;
 	
 	/** This will be used to pass in the modelview matrix. */
-	private int mMVMatrixHandle;
+	private int mvMatrixHandle;
 	
 	/** This will be used to pass in the light position. */
-	private int mLightPosHandle;
+	private int lightPosHandle;
 	
 	/** This will be used to pass in the texture. */
-	private int mTextureUniformHandle;
+	private int textureUniformHandle;
 	
 	/** This will be used to pass in model position information. */
-	private int mPositionHandle;
+	private int positionHandle;
 	
 	/** This will be used to pass in model normal information. */
-	private int mNormalHandle;
+	private int normalHandle;
 	
 	/** This will be used to pass in model texture coordinate information. */
-	private int mTextureCoordinateHandle;
+	private int textureCoordinateHandle;
 	
 	/** Additional info for cube generation. */
-	private int mLastRequestedCubeFactor;
-	private int mActualCubeFactor;
+	private int lastRequestedCubeFactor;
+	private int actualCubeFactor;
 	
 	/** Control whether vertex buffer objects or client-side memory will be used for rendering. */
-	private boolean mUseVBOs = true;	
+	private boolean useVBOs = true;
 	
 	/** Control whether strides will be used. */
-	private boolean mUseStride = true;
+	private boolean useStride = true;
 	
 	/** Size of the position data in elements. */
 	static final int POSITION_DATA_SIZE = 3;	
@@ -111,51 +111,51 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	
 	/** Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
 	 *  we multiply this by our transformation matrices. */
-	private final float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+	private final float[] lightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
 	
 	/** Used to hold the current position of the light in world space (after transformation via model matrix). */
-	private final float[] mLightPosInWorldSpace = new float[4];
+	private final float[] lightPosInWorldSpace = new float[4];
 	
 	/** Used to hold the transformed position of the light in eye space (after transformation via modelview matrix) */
-	private final float[] mLightPosInEyeSpace = new float[4];
+	private final float[] lightPosInEyeSpace = new float[4];
 	
 	/** This is a handle to our cube shading program. */
-	private int mProgramHandle;
+	private int programHandle;
 	
 	/** These are handles to our texture data. */
-	private int mAndroidDataHandle;		
+	private int androidDataHandle;
 	
 	// These still work without volatile, but refreshes are not guaranteed to happen.					
-	public volatile float mDeltaX;					
-	public volatile float mDeltaY;	
+	public volatile float deltaX;
+	public volatile float deltaY;
 	
 	/** Thread executor for generating cube data in the background. */
-	private final ExecutorService mSingleThreadedExecutor = Executors.newSingleThreadExecutor();
+	private final ExecutorService singleThreadedExecutor = Executors.newSingleThreadExecutor();
 	
 	/** The current cubes object. */
-	private Cubes mCubes;
+	private Cubes cubes;
 
 	/**
 	 * Initialize the model data.
 	 */
 	public VertexBufferObjectRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
-		mLessonSevenActivity = lessonSevenActivity;	
-		mGlSurfaceView = glSurfaceView;
+		this.lessonSevenActivity = lessonSevenActivity;
+		this.glSurfaceView = glSurfaceView;
 	}
 
 	private void generateCubes(int cubeFactor, boolean toggleVbos, boolean toggleStride) {
-		mSingleThreadedExecutor.submit(new GenDataRunnable(cubeFactor, toggleVbos, toggleStride));		
+		singleThreadedExecutor.submit(new GenDataRunnable(cubeFactor, toggleVbos, toggleStride));
 	}
 	
 	class GenDataRunnable implements Runnable {
-		final int mRequestedCubeFactor;
-		final boolean mToggleVbos;
-		final boolean mToggleStride;
+		final int requestedCubeFactor;
+		final boolean toggleVBOs;
+		final boolean toggleStride;
 		
-		GenDataRunnable(int requestedCubeFactor, boolean toggleVbos, boolean toggleStride) {
-			mRequestedCubeFactor = requestedCubeFactor; 
-			mToggleVbos = toggleVbos;	
-			mToggleStride = toggleStride;
+		GenDataRunnable(int requestedCubeFactor, boolean toggleVBOs, boolean toggleStride) {
+			this.requestedCubeFactor = requestedCubeFactor;
+			this.toggleVBOs = toggleVBOs;
+			this.toggleStride = toggleStride;
 		}
 		
 		@Override
@@ -272,17 +272,17 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 						1.0f, 0.0f
 				};		
 							
-				final float[] cubePositionData = new float[108 * mRequestedCubeFactor * mRequestedCubeFactor * mRequestedCubeFactor];
+				final float[] cubePositionData = new float[108 * requestedCubeFactor * requestedCubeFactor * requestedCubeFactor];
 				int cubePositionDataOffset = 0;
 									
-				final int segments = mRequestedCubeFactor + (mRequestedCubeFactor - 1);
+				final int segments = requestedCubeFactor + (requestedCubeFactor - 1);
 				final float minPosition = -1.0f;
 				final float maxPosition = 1.0f;
 				final float positionRange = maxPosition - minPosition;
 				
-				for (int x = 0; x < mRequestedCubeFactor; x++) {
-					for (int y = 0; y < mRequestedCubeFactor; y++) {
-						for (int z = 0; z < mRequestedCubeFactor; z++) {
+				for (int x = 0; x < requestedCubeFactor; x++) {
+					for (int y = 0; y < requestedCubeFactor; y++) {
+						for (int z = 0; z < requestedCubeFactor; z++) {
 							final float x1 = minPosition + ((positionRange / segments) * (x * 2));
 							final float x2 = minPosition + ((positionRange / segments) * ((x * 2) + 1));
 							
@@ -312,63 +312,63 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 				}					
 				
 				// Run on the GL thread -- the same thread the other members of the renderer run in.
-				mGlSurfaceView.queueEvent(new Runnable() {
+				glSurfaceView.queueEvent(new Runnable() {
 					@Override
 					public void run() {												
-						if (mCubes != null) {
-							mCubes.release();
-							mCubes = null;
+						if (cubes != null) {
+							cubes.release();
+							cubes = null;
 						}
 						
 						// Not supposed to manually call this, but Dalvik sometimes needs some additional prodding to clean up the heap.
 						System.gc();
 						
 						try {
-							boolean useVbos = mUseVBOs;
-							boolean useStride = mUseStride;	
+							boolean useVbos = useVBOs;
+							boolean useStride = VertexBufferObjectRenderer.this.useStride;
 							
-							if (mToggleVbos) {
+							if (toggleVBOs) {
 								useVbos = !useVbos;
 							}
 							
-							if (mToggleStride) {
+							if (toggleStride) {
 								useStride = !useStride;
 							}
 							
 							if (useStride) {
 								if (useVbos) {
-									mCubes = new CubesWithVboWithStride(cubePositionData, cubeNormalData, cubeTextureCoordinateData, mRequestedCubeFactor);											
+									cubes = new CubesWithVboWithStride(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
 								} else {
-									mCubes = new CubesClientSideWithStride(cubePositionData, cubeNormalData, cubeTextureCoordinateData, mRequestedCubeFactor);
+									cubes = new CubesClientSideWithStride(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
 								}
 							} else {
 								if (useVbos) {
-									mCubes = new CubesWithVbo(cubePositionData, cubeNormalData, cubeTextureCoordinateData, mRequestedCubeFactor);											
+									cubes = new CubesWithVbo(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
 								} else {
-									mCubes = new CubesClientSide(cubePositionData, cubeNormalData, cubeTextureCoordinateData, mRequestedCubeFactor);
+									cubes = new CubesClientSide(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
 								}
 							}	
 																			
-							mUseVBOs = useVbos;
-							mLessonSevenActivity.updateVboStatus(mUseVBOs);
+							useVBOs = useVbos;
+							lessonSevenActivity.updateVboStatus(useVBOs);
 						
-							mUseStride = useStride;
-							mLessonSevenActivity.updateStrideStatus(mUseStride);																					
+							VertexBufferObjectRenderer.this.useStride = useStride;
+							lessonSevenActivity.updateStrideStatus(VertexBufferObjectRenderer.this.useStride);
 							
-							mActualCubeFactor = mRequestedCubeFactor;
+							actualCubeFactor = requestedCubeFactor;
 						} catch (OutOfMemoryError err) {
-							if (mCubes != null) {
-								mCubes.release();
-								mCubes = null;
+							if (cubes != null) {
+								cubes.release();
+								cubes = null;
 							}
 							
 							// Not supposed to manually call this, but Dalvik sometimes needs some additional prodding to clean up the heap.
 							System.gc();
 							
-							mLessonSevenActivity.runOnUiThread(new Runnable() {							
+							lessonSevenActivity.runOnUiThread(new Runnable() {
 								@Override
 								public void run() {
-//									Toast.makeText(mLessonSevenActivity, "Out of memory; Dalvik takes a while to clean up the memory. Please try again.\nExternal bytes allocated=" + dalvik.system.VMRuntime.getRuntime().getExternalBytesAllocated(), Toast.LENGTH_LONG).show();								
+//									Toast.makeText(lessonSevenActivity, "Out of memory; Dalvik takes a while to clean up the memory. Please try again.\nExternal bytes allocated=" + dalvik.system.VMRuntime.getRuntime().getExternalBytesAllocated(), Toast.LENGTH_LONG).show();
 								}
 							});										
 						}																	
@@ -378,10 +378,10 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 				// Not supposed to manually call this, but Dalvik sometimes needs some additional prodding to clean up the heap.
 				System.gc();
 				
-				mLessonSevenActivity.runOnUiThread(new Runnable() {							
+				lessonSevenActivity.runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
-//						Toast.makeText(mLessonSevenActivity, "Out of memory; Dalvik takes a while to clean up the memory. Please try again.\nExternal bytes allocated=" + dalvik.system.VMRuntime.getRuntime().getExternalBytesAllocated(), Toast.LENGTH_LONG).show();								
+//						Toast.makeText(lessonSevenActivity, "Out of memory; Dalvik takes a while to clean up the memory. Please try again.\nExternal bytes allocated=" + dalvik.system.VMRuntime.getRuntime().getExternalBytesAllocated(), Toast.LENGTH_LONG).show();
 					}
 				});
 			}			
@@ -389,30 +389,30 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void decreaseCubeCount() {
-		if (mLastRequestedCubeFactor > 1) {
-			generateCubes(--mLastRequestedCubeFactor, false, false);
+		if (lastRequestedCubeFactor > 1) {
+			generateCubes(--lastRequestedCubeFactor, false, false);
 		}
 	}
 
 	public void increaseCubeCount() {
-		if (mLastRequestedCubeFactor < 16) {
-			generateCubes(++mLastRequestedCubeFactor, false, false);
+		if (lastRequestedCubeFactor < 16) {
+			generateCubes(++lastRequestedCubeFactor, false, false);
 		}
 	}	
 	
 	public void toggleVBOs() {		
-		generateCubes(mLastRequestedCubeFactor, true, false);		
+		generateCubes(lastRequestedCubeFactor, true, false);
 	}
 	
 	public void toggleStride() {
-		generateCubes(mLastRequestedCubeFactor, false, true);		
+		generateCubes(lastRequestedCubeFactor, false, true);
 	}
 	
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) 
 	{		
-		mLastRequestedCubeFactor = mActualCubeFactor = 3;
-		generateCubes(mActualCubeFactor, false, false);			
+		lastRequestedCubeFactor = actualCubeFactor = 3;
+		generateCubes(actualCubeFactor, false, false);
 		
 		// Set the background clear color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -435,28 +435,28 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		// Set the view matrix. This matrix can be said to represent the camera position.
 		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
 		// view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-		Matrix.setLookAtM(mViewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
+		Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
 
-		final String vertexShader = readTextFileFromRawResource(mLessonSevenActivity, R.raw.lesson_seven_vertex_shader);
- 		final String fragmentShader = readTextFileFromRawResource(mLessonSevenActivity, R.raw.lesson_seven_fragment_shader);
+		final String vertexShader = readTextFileFromRawResource(lessonSevenActivity, R.raw.lesson_seven_vertex_shader);
+ 		final String fragmentShader = readTextFileFromRawResource(lessonSevenActivity, R.raw.lesson_seven_fragment_shader);
  				
 		final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
 		final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 		
-		mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[] {"a_Position",  "a_Normal", "a_TexCoordinate"});
+		programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[] {"a_Position",  "a_Normal", "a_TexCoordinate"});
         
 		// Load the texture
-		mAndroidDataHandle = TextureHelper.loadTexture(mLessonSevenActivity, R.drawable.usb_android);		
+		androidDataHandle = loadTexture(lessonSevenActivity, R.drawable.usb_android);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		
-		glBindTexture(GL_TEXTURE_2D, mAndroidDataHandle);
+		glBindTexture(GL_TEXTURE_2D, androidDataHandle);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		
-		glBindTexture(GL_TEXTURE_2D, mAndroidDataHandle);
+		glBindTexture(GL_TEXTURE_2D, androidDataHandle);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         
         // Initialize the accumulated rotation matrix
-        Matrix.setIdentityM(mAccumulatedRotation, 0);        
+        Matrix.setIdentityM(accumulatedRotation, 0);
 	}	
 		
 	@Override
@@ -475,7 +475,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		final float near = 1.0f;
 		final float far = 1000.0f;
 		
-		Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+		Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
 	}	
 
 	@Override
@@ -484,77 +484,77 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // Set our per-vertex lighting program.
-        glUseProgram(mProgramHandle);
+        glUseProgram(programHandle);
         
         // Set program handles for cube drawing.
-        mMVPMatrixHandle = glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
-        mMVMatrixHandle = glGetUniformLocation(mProgramHandle, "u_MVMatrix");
-        mLightPosHandle = glGetUniformLocation(mProgramHandle, "u_LightPos");
-        mTextureUniformHandle = glGetUniformLocation(mProgramHandle, "u_Texture");
-        mPositionHandle = glGetAttribLocation(mProgramHandle, "a_Position");
-        mNormalHandle = glGetAttribLocation(mProgramHandle, "a_Normal");
-        mTextureCoordinateHandle = glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
+        mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
+        mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
+        lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
+        textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
+        positionHandle = glGetAttribLocation(programHandle, "a_Position");
+        normalHandle = glGetAttribLocation(programHandle, "a_Normal");
+        textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
         
         // Calculate position of the light. Push into the distance.
-        Matrix.setIdentityM(mLightModelMatrix, 0);                     
-        Matrix.translateM(mLightModelMatrix, 0, 0.0f, 0.0f, -1.0f);
+        Matrix.setIdentityM(lightModelMatrix, 0);
+        Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, -1.0f);
                
-        Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
-        Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);                      
+        Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
+        Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
         
         // Draw a cube.
         // Translate the cube into the screen.
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -3.5f);     
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -3.5f);
         
         // Set a matrix that contains the current rotation.
-        Matrix.setIdentityM(mCurrentRotation, 0);        
-    	Matrix.rotateM(mCurrentRotation, 0, mDeltaX, 0.0f, 1.0f, 0.0f);
-    	Matrix.rotateM(mCurrentRotation, 0, mDeltaY, 1.0f, 0.0f, 0.0f);
-    	mDeltaX = 0.0f;
-    	mDeltaY = 0.0f;
+        Matrix.setIdentityM(currentRotation, 0);
+    	Matrix.rotateM(currentRotation, 0, deltaX, 0.0f, 1.0f, 0.0f);
+    	Matrix.rotateM(currentRotation, 0, deltaY, 1.0f, 0.0f, 0.0f);
+    	deltaX = 0.0f;
+    	deltaY = 0.0f;
     	    	
     	// Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
-    	Matrix.multiplyMM(mTemporaryMatrix, 0, mCurrentRotation, 0, mAccumulatedRotation, 0);
-    	System.arraycopy(mTemporaryMatrix, 0, mAccumulatedRotation, 0, 16);
+    	Matrix.multiplyMM(temporaryMatrix, 0, currentRotation, 0, accumulatedRotation, 0);
+    	System.arraycopy(temporaryMatrix, 0, accumulatedRotation, 0, 16);
     	    	
         // Rotate the cube taking the overall rotation into account.     	
-    	Matrix.multiplyMM(mTemporaryMatrix, 0, mModelMatrix, 0, mAccumulatedRotation, 0);
-    	System.arraycopy(mTemporaryMatrix, 0, mModelMatrix, 0, 16);   
+    	Matrix.multiplyMM(temporaryMatrix, 0, modelMatrix, 0, accumulatedRotation, 0);
+    	System.arraycopy(temporaryMatrix, 0, modelMatrix, 0, 16);
     	
     	// This multiplies the view matrix by the model matrix, and stores
 		// the result in the MVP matrix
 		// (which currently contains model * view).
-		Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+		Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
 		// Pass in the modelview matrix.
-		glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
+		glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
 
 		// This multiplies the modelview matrix by the projection matrix,
 		// and stores the result in the MVP matrix
 		// (which now contains model * view * projection).
-		Matrix.multiplyMM(mTemporaryMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-		System.arraycopy(mTemporaryMatrix, 0, mMVPMatrix, 0, 16);
+		Matrix.multiplyMM(temporaryMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+		System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
 
 		// Pass in the combined matrix.
-		glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+		glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
 		// Pass in the light position in eye space.
-		glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
+		glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 		
 		// Pass in the texture information
 		// Set the active texture unit to texture unit 0.
 		glActiveTexture(GL_TEXTURE0);
 
 		// Bind the texture to this unit.
-		glBindTexture(GL_TEXTURE_2D, mAndroidDataHandle);
+		glBindTexture(GL_TEXTURE_2D, androidDataHandle);
 
 		// Tell the texture uniform sampler to use this texture in the
 		// shader by binding to texture unit 0.
-		glUniform1i(mTextureUniformHandle, 0);
+		glUniform1i(textureUniformHandle, 0);
         
-		if (mCubes != null) {
-			mCubes.render();
+		if (cubes != null) {
+			cubes.render();
 		}
 	}		
 	
@@ -623,52 +623,52 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	}
 	
 	class CubesClientSide extends Cubes {
-		private FloatBuffer mCubePositions;
-		private FloatBuffer mCubeNormals;
-		private FloatBuffer mCubeTextureCoordinates;
+		private FloatBuffer cubePositions;
+		private FloatBuffer cubeNormals;
+		private FloatBuffer cubeTextureCoordinates;
 
 		CubesClientSide(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {	
 			FloatBuffer[] buffers = getBuffers(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
 			
-			mCubePositions = buffers[0];
-			mCubeNormals = buffers[1];
-			mCubeTextureCoordinates = buffers[2];
+			this.cubePositions = buffers[0];
+			this.cubeNormals = buffers[1];
+			this.cubeTextureCoordinates = buffers[2];
 		}
 
 		@Override
 		public void render() {				        
 			// Pass in the position information
-			glEnableVertexAttribArray(mPositionHandle);
-			glVertexAttribPointer(mPositionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, mCubePositions);
+			glEnableVertexAttribArray(positionHandle);
+			glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
 
 			// Pass in the normal information
-			glEnableVertexAttribArray(mNormalHandle);
-			glVertexAttribPointer(mNormalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, mCubeNormals);
+			glEnableVertexAttribArray(normalHandle);
+			glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, cubeNormals);
 			
 			// Pass in the texture information
-			glEnableVertexAttribArray(mTextureCoordinateHandle);
-			glVertexAttribPointer(mTextureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, mCubeTextureCoordinates);
+			glEnableVertexAttribArray(textureCoordinateHandle);
+			glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, cubeTextureCoordinates);
 
 			// Draw the cubes.
-			glDrawArrays(GL_TRIANGLES, 0, mActualCubeFactor * mActualCubeFactor * mActualCubeFactor * 36);
+			glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);
 		}
 
 		@Override
 		public void release() {
-			mCubePositions.limit(0);
-			mCubePositions = null;
-			mCubeNormals.limit(0);
-			mCubeNormals = null;
-			mCubeTextureCoordinates.limit(0);
-			mCubeTextureCoordinates = null;
+			cubePositions.limit(0);
+			cubePositions = null;
+			cubeNormals.limit(0);
+			cubeNormals = null;
+			cubeTextureCoordinates.limit(0);
+			cubeTextureCoordinates = null;
 		}
 	}
 	
 	class CubesClientSideWithStride extends Cubes {
-		private FloatBuffer mCubeBuffer;		
+		private FloatBuffer cubeBuffer;
 
 		CubesClientSideWithStride(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {	
-			mCubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);						
+			cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
 		}
 
 		@Override
@@ -676,35 +676,35 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 			final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
 			
 			// Pass in the position information
-			mCubeBuffer.position(0);
-			glEnableVertexAttribArray(mPositionHandle);
-			glVertexAttribPointer(mPositionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, mCubeBuffer);
+			cubeBuffer.position(0);
+			glEnableVertexAttribArray(positionHandle);
+			glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
 
 			// Pass in the normal information
-			mCubeBuffer.position(POSITION_DATA_SIZE);
-			glEnableVertexAttribArray(mNormalHandle);
-			glVertexAttribPointer(mNormalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, mCubeBuffer);
+			cubeBuffer.position(POSITION_DATA_SIZE);
+			glEnableVertexAttribArray(normalHandle);
+			glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
 			
 			// Pass in the texture information
-			mCubeBuffer.position(POSITION_DATA_SIZE + NORMAL_DATA_SIZE);
-			glEnableVertexAttribArray(mTextureCoordinateHandle);
-			glVertexAttribPointer(mTextureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, mCubeBuffer);
+			cubeBuffer.position(POSITION_DATA_SIZE + NORMAL_DATA_SIZE);
+			glEnableVertexAttribArray(textureCoordinateHandle);
+			glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
 
 			// Draw the cubes.
-			glDrawArrays(GL_TRIANGLES, 0, mActualCubeFactor * mActualCubeFactor * mActualCubeFactor * 36);
+			glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);
 		}
 
 		@Override
 		public void release() {
-			mCubeBuffer.limit(0);
-			mCubeBuffer = null;
+			cubeBuffer.limit(0);
+			cubeBuffer = null;
 		}
 	}
 	
 	class CubesWithVbo extends Cubes {
-		final int mCubePositionsBufferIdx;
-		final int mCubeNormalsBufferIdx;
-		final int mCubeTexCoordsBufferIdx;
+		final int cubePositionsBufferIdx;
+		final int cubeNormalsBufferIdx;
+		final int cubeTexCoordsBufferIdx;
 
 		CubesWithVbo(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
 			FloatBuffer[] floatBuffers = getBuffers(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
@@ -728,9 +728,9 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-			mCubePositionsBufferIdx = buffers[0];
-			mCubeNormalsBufferIdx = buffers[1];
-			mCubeTexCoordsBufferIdx = buffers[2];
+			cubePositionsBufferIdx = buffers[0];
+			cubeNormalsBufferIdx = buffers[1];
+			cubeTexCoordsBufferIdx = buffers[2];
 			
 			cubePositionsBuffer.limit(0);
 			cubePositionsBuffer = null;
@@ -743,37 +743,37 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		@Override
 		public void render() {	      
 			// Pass in the position information
-			glBindBuffer(GL_ARRAY_BUFFER, mCubePositionsBufferIdx);
-			glEnableVertexAttribArray(mPositionHandle);
-			glVertexAttribPointer(mPositionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, cubePositionsBufferIdx);
+			glEnableVertexAttribArray(positionHandle);
+			glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, 0);
 
 			// Pass in the normal information
-			glBindBuffer(GL_ARRAY_BUFFER, mCubeNormalsBufferIdx);
-			glEnableVertexAttribArray(mNormalHandle);
-			glVertexAttribPointer(mNormalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, cubeNormalsBufferIdx);
+			glEnableVertexAttribArray(normalHandle);
+			glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, 0);
 			
 			// Pass in the texture information
-			glBindBuffer(GL_ARRAY_BUFFER, mCubeTexCoordsBufferIdx);
-			glEnableVertexAttribArray(mTextureCoordinateHandle);
-			glVertexAttribPointer(mTextureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, cubeTexCoordsBufferIdx);
+			glEnableVertexAttribArray(textureCoordinateHandle);
+			glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, 0);
 
 			// Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			// Draw the cubes.
-			glDrawArrays(GL_TRIANGLES, 0, mActualCubeFactor * mActualCubeFactor * mActualCubeFactor * 36);
+			glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);
 		}
 
 		@Override
 		public void release() {
 			// Delete buffers from OpenGL's memory
-			final int[] buffersToDelete = new int[] { mCubePositionsBufferIdx, mCubeNormalsBufferIdx, mCubeTexCoordsBufferIdx };
+			final int[] buffersToDelete = new int[] {cubePositionsBufferIdx, cubeNormalsBufferIdx, cubeTexCoordsBufferIdx};
 			glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
 		}
 	}
 	
 	class CubesWithVboWithStride extends Cubes {
-		final int mCubeBufferIdx;
+		final int cubeBufferIdx;
 
 		CubesWithVboWithStride(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
 			FloatBuffer cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);			
@@ -787,7 +787,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-			mCubeBufferIdx = buffers[0];			
+			cubeBufferIdx = buffers[0];
 			
 			cubeBuffer.limit(0);
 			cubeBuffer = null;
@@ -798,31 +798,31 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 			final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
 			
 			// Pass in the position information
-			glBindBuffer(GL_ARRAY_BUFFER, mCubeBufferIdx);
-			glEnableVertexAttribArray(mPositionHandle);
-			glVertexAttribPointer(mPositionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, 0);
+			glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
+			glEnableVertexAttribArray(positionHandle);
+			glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, 0);
 
 			// Pass in the normal information
-			glBindBuffer(GL_ARRAY_BUFFER, mCubeBufferIdx);
-			glEnableVertexAttribArray(mNormalHandle);
-			glVertexAttribPointer(mNormalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, POSITION_DATA_SIZE * BYTES_PER_FLOAT);
+			glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
+			glEnableVertexAttribArray(normalHandle);
+			glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, POSITION_DATA_SIZE * BYTES_PER_FLOAT);
 			
 			// Pass in the texture information
-			glBindBuffer(GL_ARRAY_BUFFER, mCubeBufferIdx);
-			glEnableVertexAttribArray(mTextureCoordinateHandle);
-			glVertexAttribPointer(mTextureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, (POSITION_DATA_SIZE + NORMAL_DATA_SIZE) * BYTES_PER_FLOAT);
+			glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
+			glEnableVertexAttribArray(textureCoordinateHandle);
+			glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, (POSITION_DATA_SIZE + NORMAL_DATA_SIZE) * BYTES_PER_FLOAT);
 
 			// Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			// Draw the cubes.
-			glDrawArrays(GL_TRIANGLES, 0, mActualCubeFactor * mActualCubeFactor * mActualCubeFactor * 36);
+			glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);
 		}
 
 		@Override
 		public void release() {
 			// Delete buffers from OpenGL's memory
-			final int[] buffersToDelete = new int[] { mCubeBufferIdx };
+			final int[] buffersToDelete = new int[] {cubeBufferIdx};
 			glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
 		}
 	}

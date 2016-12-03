@@ -19,6 +19,8 @@ import javax.microedition.khronos.opengles.GL10;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
+import static com.learnopengles.android.common.ShaderHelper.compileShader;
+import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -30,76 +32,76 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
      */
     private static final String TAG = "BlendingRenderer";
 
-    private final Context mActivityContext;
+    private final Context activityContext;
 
     /**
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
      * of being located at the center of the universe) to world space.
      */
-    private float[] mModelMatrix = new float[16];
+    private float[] modelMatrix = new float[16];
 
     /**
      * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
      * it positions things relative to our eye.
      */
-    private float[] mViewMatrix = new float[16];
+    private float[] viewMatrix = new float[16];
 
     /**
      * Store the projection matrix. This is used to project the scene onto a 2D viewport.
      */
-    private float[] mProjectionMatrix = new float[16];
+    private float[] projectionMatrix = new float[16];
 
     /**
      * Allocate storage for the final combined matrix. This will be passed into the shader program.
      */
-    private float[] mMVPMatrix = new float[16];
+    private float[] mvpMatrix = new float[16];
 
     /**
      * Store our model data in a float buffer.
      */
-    private final FloatBuffer mCubePositions;
-    private final FloatBuffer mCubeColors;
+    private final FloatBuffer cubePositions;
+    private final FloatBuffer cubeColors;
 
     /**
      * This will be used to pass in the transformation matrix.
      */
-    private int mMVPMatrixHandle;
+    private int mvpMatrixHandle;
 
     /**
      * This will be used to pass in model position information.
      */
-    private int mPositionHandle;
+    private int positionHandle;
 
     /**
      * This will be used to pass in model color information.
      */
-    private int mColorHandle;
+    private int colorHandle;
 
     /**
      * Size of the position data in elements.
      */
-    private final int mPositionDataSize = 3;
+    private final int positionDataSize = 3;
 
     /**
      * Size of the color data in elements.
      */
-    private final int mColorDataSize = 4;
+    private final int colorDataSize = 4;
 
     /**
      * This is a handle to our cube shading program.
      */
-    private int mProgramHandle;
+    private int programHandle;
 
     /**
      * This will be used to switch between blending mode and regular mode.
      */
-    private boolean mBlending = true;
+    private boolean blending = true;
 
     /**
      * Initialize the model data.
      */
     public BlendingRenderer(final Context activityContext) {
-        mActivityContext = activityContext;
+        this.activityContext = activityContext;
 
         // Define points for a cube.
         // X, Y, Z
@@ -128,22 +130,22 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         final float[] cubeColorData = CubeBuilder.generateColorData(p1c, p2c, p3c, p4c, p5c, p6c, p7c, p8c);
 
         // Initialize the buffers.
-        mCubePositions = allocateBuffer(cubePositionData);
-        mCubeColors = allocateBuffer(cubeColorData);
+        cubePositions = allocateBuffer(cubePositionData);
+        cubeColors = allocateBuffer(cubeColorData);
     }
 
     protected String getVertexShader() {
-        return readTextFileFromRawResource(mActivityContext, R.raw.color_vertex_shader);
+        return readTextFileFromRawResource(activityContext, R.raw.color_vertex_shader);
     }
 
     protected String getFragmentShader() {
-        return readTextFileFromRawResource(mActivityContext, R.raw.color_fragment_shader);
+        return readTextFileFromRawResource(activityContext, R.raw.color_fragment_shader);
     }
 
     public void switchMode() {
-        mBlending = !mBlending;
+        blending = !blending;
 
-        if (mBlending) {
+        if (blending) {
             // No culling of back faces
             glDisable(GL_CULL_FACE);
 
@@ -193,15 +195,15 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         // Set the view matrix. This matrix can be said to represent the camera position.
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(mViewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
+        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
 
         final String vertexShader = getVertexShader();
         final String fragmentShader = getFragmentShader();
 
-        final int vertexShaderHandle = ShaderHelper.compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = ShaderHelper.compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
+        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-        mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color"});
+        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color"});
     }
 
     @Override
@@ -219,12 +221,12 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         final float near = 1.0f;
         final float far = 10.0f;
 
-        Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
+        Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
     @Override
     public void onDrawFrame(GL10 glUnused) {
-        if (mBlending) {
+        if (blending) {
             glClear(GL_COLOR_BUFFER_BIT);
         } else {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -235,36 +237,36 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Set our program
-        glUseProgram(mProgramHandle);
+        glUseProgram(programHandle);
 
         // Set program handles for cube drawing.
-        mMVPMatrixHandle = glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
-        mPositionHandle = glGetAttribLocation(mProgramHandle, "a_Position");
-        mColorHandle = glGetAttribLocation(mProgramHandle, "a_Color");
+        mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
+        positionHandle = glGetAttribLocation(programHandle, "a_Position");
+        colorHandle = glGetAttribLocation(programHandle, "a_Color");
 
         // Draw some cubes.        
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 4.0f, 0.0f, -7.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
         drawCube();
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, -4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, -4.0f, 0.0f, -7.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
         drawCube();
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 4.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0.0f, 4.0f, -7.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
         drawCube();
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, -4.0f, -7.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0.0f, -4.0f, -7.0f);
         drawCube();
 
-        Matrix.setIdentityM(mModelMatrix, 0);
-        Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
+        Matrix.setIdentityM(modelMatrix, 0);
+        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -5.0f);
+        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
         drawCube();
     }
 
@@ -273,27 +275,27 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
      */
     private void drawCube() {
         // Pass in the position information
-        mCubePositions.position(0);
-        glVertexAttribPointer(mPositionHandle, mPositionDataSize, GL_FLOAT, false, 0, mCubePositions);
+        cubePositions.position(0);
+        glVertexAttribPointer(positionHandle, positionDataSize, GL_FLOAT, false, 0, cubePositions);
 
-        glEnableVertexAttribArray(mPositionHandle);
+        glEnableVertexAttribArray(positionHandle);
 
         // Pass in the color information
-        mCubeColors.position(0);
-        glVertexAttribPointer(mColorHandle, mColorDataSize, GL_FLOAT, false, 0, mCubeColors);
+        cubeColors.position(0);
+        glVertexAttribPointer(colorHandle, colorDataSize, GL_FLOAT, false, 0, cubeColors);
 
-        glEnableVertexAttribArray(mColorHandle);
+        glEnableVertexAttribArray(colorHandle);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
 
         // Pass in the combined matrix.
-        glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the cube.
         glDrawArrays(GL_TRIANGLES, 0, 36);
