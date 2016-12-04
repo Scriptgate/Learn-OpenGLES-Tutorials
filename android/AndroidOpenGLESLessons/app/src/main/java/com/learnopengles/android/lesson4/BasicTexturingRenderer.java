@@ -306,29 +306,25 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
         Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
 
-        // Draw some cubes.        
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
+        // Draw some cubes.
+        cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));
+        cube1.setRotationX(angleInDegrees);
         cube1.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, -4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
+        cube2.setPosition(new Point(-4.0f, 0.0f, -7.0f));
+        cube2.setRotationY(angleInDegrees);
         cube2.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 0.0f, 4.0f, -7.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
+        cube3.setPosition(new Point(0.0f, 4.0f, -7.0f));
+        cube3.setRotationZ(angleInDegrees);
         cube3.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 0.0f, -4.0f, -7.0f);
+        cube4.setPosition(new Point(0.0f, -4.0f, -7.0f));
         cube4.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
+        cube5.setPosition(new Point(0.0f, 0.0f, -5.0f));
+        cube5.setRotationX(angleInDegrees);
+        cube5.setRotationY(angleInDegrees);
         cube5.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         // Draw a point to indicate the light.

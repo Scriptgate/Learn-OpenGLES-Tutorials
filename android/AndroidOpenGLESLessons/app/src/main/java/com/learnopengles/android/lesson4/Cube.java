@@ -2,6 +2,8 @@ package com.learnopengles.android.lesson4;
 
 import android.opengl.Matrix;
 
+import com.learnopengles.android.common.Point;
+
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_FLOAT;
@@ -21,7 +23,17 @@ public class Cube {
     private static final int NORMAL_DATA_SIZE = 3;
     private static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
 
+    private Point position = new Point();
+    private Point rotation = new Point();
+
     public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, FloatBuffer cubeNormals, FloatBuffer cubeTextureCoordinates, float[] mvpMatrix, float[] modelMatrix, float[] viewMatrix, float[] projectionMatrix, float[] lightPosInEyeSpace) {
+        Matrix.setIdentityM(modelMatrix, 0);
+
+        Matrix.translateM(modelMatrix, 0, position.x, position.y, position.z);
+        Matrix.rotateM(modelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
+
         // Set program handles for cube drawing.
         int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
         int mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
@@ -74,6 +86,22 @@ public class Cube {
 
         // Draw the cube.
         glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    public void setRotationX(float rotation) {
+        this.rotation.x = rotation;
+    }
+
+    public void setRotationY(float rotation) {
+        this.rotation.y = rotation;
+    }
+
+    public void setRotationZ(float rotation) {
+        this.rotation.z = rotation;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
     }
 
 }
