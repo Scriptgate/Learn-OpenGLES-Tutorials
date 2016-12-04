@@ -81,20 +81,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     public BlendingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
-        // Define points for a cube.
-        // X, Y, Z
-        //@formatter:off
-        final Point p1p = new Point(-1.0f,  1.0f,  1.0f);
-        final Point p2p = new Point( 1.0f,  1.0f,  1.0f);
-        final Point p3p = new Point(-1.0f, -1.0f,  1.0f);
-        final Point p4p = new Point( 1.0f, -1.0f,  1.0f);
-        final Point p5p = new Point(-1.0f,  1.0f, -1.0f);
-        final Point p6p = new Point( 1.0f,  1.0f, -1.0f);
-        final Point p7p = new Point(-1.0f, -1.0f, -1.0f);
-        final Point p8p = new Point( 1.0f, -1.0f, -1.0f);
-        //@formatter:on
-
-        final float[] cubePositionData = CubeBuilder.generatePositionData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
+        final float[] cubePositionData = CubeBuilder.generatePositionData(1.0f,1.0f,1.0f);
 
         final float[] cubeColorData = CubeBuilder.generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN);
 
