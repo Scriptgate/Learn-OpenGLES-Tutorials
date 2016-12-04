@@ -26,6 +26,10 @@ public class Cube {
     private Point position = new Point();
     private Point rotation = new Point();
 
+    public Cube(Point point) {
+        this.position = point;
+    }
+
     public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, FloatBuffer cubeNormals, FloatBuffer cubeTextureCoordinates, float[] mvpMatrix, float[] modelMatrix, float[] viewMatrix, float[] projectionMatrix, float[] lightPosInEyeSpace) {
         Matrix.setIdentityM(modelMatrix, 0);
 

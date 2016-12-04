@@ -9,6 +9,8 @@ import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -100,11 +102,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
      */
     private int textureDataHandle;
 
-    private Cube cube1;
-    private Cube cube2;
-    private Cube cube3;
-    private Cube cube4;
-    private Cube cube5;
+    private List<Cube> cubes;
 
     /**
      * Initialize the model data.
@@ -192,11 +190,12 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubeNormals = allocateBuffer(cubeNormalData);
         cubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
 
-        cube1 = new Cube();
-        cube2 = new Cube();
-        cube3 = new Cube();
-        cube4 = new Cube();
-        cube5 = new Cube();
+        cubes = new ArrayList<>();
+        cubes.add(new Cube(new Point(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(new Point(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, 0.0f, -5.0f)));
     }
 
     protected String getVertexShader() {
@@ -307,25 +306,15 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
 
         // Draw some cubes.
-        cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));
-        cube1.setRotationX(angleInDegrees);
-        cube1.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+        cubes.get(0).setRotationX(angleInDegrees);
+        cubes.get(1).setRotationY(angleInDegrees);
+        cubes.get(2).setRotationZ(angleInDegrees);
+        cubes.get(4).setRotationX(angleInDegrees);
+        cubes.get(4).setRotationY(angleInDegrees);
 
-        cube2.setPosition(new Point(-4.0f, 0.0f, -7.0f));
-        cube2.setRotationY(angleInDegrees);
-        cube2.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-
-        cube3.setPosition(new Point(0.0f, 4.0f, -7.0f));
-        cube3.setRotationZ(angleInDegrees);
-        cube3.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-
-        cube4.setPosition(new Point(0.0f, -4.0f, -7.0f));
-        cube4.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
-
-        cube5.setPosition(new Point(0.0f, 0.0f, -5.0f));
-        cube5.setRotationX(angleInDegrees);
-        cube5.setRotationY(angleInDegrees);
-        cube5.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+        for (Cube cube : cubes) {
+            cube.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+        }
 
         // Draw a point to indicate the light.
         glUseProgram(pointProgramHandle);
