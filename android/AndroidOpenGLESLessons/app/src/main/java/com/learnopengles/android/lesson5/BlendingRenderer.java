@@ -8,7 +8,6 @@ import android.os.SystemClock;
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.common.CubeBuilder;
 
 import java.nio.FloatBuffer;
@@ -63,31 +62,6 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer cubeColors;
 
     /**
-     * This will be used to pass in the transformation matrix.
-     */
-    private int mvpMatrixHandle;
-
-    /**
-     * This will be used to pass in model position information.
-     */
-    private int positionHandle;
-
-    /**
-     * This will be used to pass in model color information.
-     */
-    private int colorHandle;
-
-    /**
-     * Size of the position data in elements.
-     */
-    private final int positionDataSize = 3;
-
-    /**
-     * Size of the color data in elements.
-     */
-    private final int colorDataSize = 4;
-
-    /**
      * This is a handle to our cube shading program.
      */
     private int programHandle;
@@ -96,6 +70,12 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
      * This will be used to switch between blending mode and regular mode.
      */
     private boolean blending = true;
+
+    private Cube cube1;
+    private Cube cube2;
+    private Cube cube3;
+    private Cube cube4;
+    private Cube cube5;
 
     /**
      * Initialize the model data.
@@ -132,6 +112,12 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         // Initialize the buffers.
         cubePositions = allocateBuffer(cubePositionData);
         cubeColors = allocateBuffer(cubeColorData);
+
+        cube1 = new Cube();
+        cube2 = new Cube();
+        cube3 = new Cube();
+        cube4 = new Cube();
+        cube5 = new Cube();
     }
 
     protected String getVertexShader() {
@@ -239,65 +225,25 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         // Set our program
         glUseProgram(programHandle);
 
-        // Set program handles for cube drawing.
-        mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        colorHandle = glGetAttribLocation(programHandle, "a_Color");
+        // Draw some cubes.
+        cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));
+        cube1.setRotationX(angleInDegrees);
+        cube1.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
 
-        // Draw some cubes.        
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
-        drawCube();
+        cube2.setPosition(new Point(-4.0f, 0.0f, -7.0f));
+        cube2.setRotationY(angleInDegrees);
+        cube2.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
 
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, -4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
-        drawCube();
+        cube3.setPosition(new Point(0.0f, 4.0f, -7.0f));
+        cube3.setRotationZ(angleInDegrees);
+        cube3.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
 
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 0.0f, 4.0f, -7.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawCube();
+        cube4.setPosition(new Point(0.0f, -4.0f, -7.0f));
+        cube4.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
 
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 0.0f, -4.0f, -7.0f);
-        drawCube();
-
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
-        drawCube();
-    }
-
-    /**
-     * Draws a cube.
-     */
-    private void drawCube() {
-        // Pass in the position information
-        cubePositions.position(0);
-        glVertexAttribPointer(positionHandle, positionDataSize, GL_FLOAT, false, 0, cubePositions);
-
-        glEnableVertexAttribArray(positionHandle);
-
-        // Pass in the color information
-        cubeColors.position(0);
-        glVertexAttribPointer(colorHandle, colorDataSize, GL_FLOAT, false, 0, cubeColors);
-
-        glEnableVertexAttribArray(colorHandle);
-
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
-
-        // Pass in the combined matrix.
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // Draw the cube.
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        cube5.setPosition(new Point(0.0f, 0.0f, -5.0f));
+        cube5.setRotationX(angleInDegrees);
+        cube5.setRotationY(angleInDegrees);
+        cube5.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
     }
 }
