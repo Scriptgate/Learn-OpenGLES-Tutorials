@@ -70,66 +70,6 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer cubeTextureCoordinates;
 
     /**
-     * This will be used to pass in the transformation matrix.
-     */
-    private int mvpMatrixHandle;
-
-    /**
-     * This will be used to pass in the modelview matrix.
-     */
-    private int mvMatrixHandle;
-
-    /**
-     * This will be used to pass in the light position.
-     */
-    private int lightPosHandle;
-
-    /**
-     * This will be used to pass in the texture.
-     */
-    private int textureUniformHandle;
-
-    /**
-     * This will be used to pass in model position information.
-     */
-    private int positionHandle;
-
-    /**
-     * This will be used to pass in model color information.
-     */
-    private int colorHandle;
-
-    /**
-     * This will be used to pass in model normal information.
-     */
-    private int normalHandle;
-
-    /**
-     * This will be used to pass in model texture coordinate information.
-     */
-    private int textureCoordinateHandle;
-
-    /**
-     * Size of the position data in elements.
-     */
-    private final int positionDataSize = 3;
-
-    /**
-     * Size of the color data in elements.
-     */
-    private final int colorDataSize = 4;
-
-    /**
-     * Size of the normal data in elements.
-     */
-    private final int normalDataSize = 3;
-
-    /**
-     * Size of the texture coordinate data in elements.
-     */
-    private final int textureCoordinateDataSize = 2;
-
-    /**
      * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      * we multiply this by our transformation matrices.
      */
@@ -159,6 +99,12 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
      * This is a handle to our texture data.
      */
     private int textureDataHandle;
+
+    private Cube cube1;
+    private Cube cube2;
+    private Cube cube3;
+    private Cube cube4;
+    private Cube cube5;
 
     /**
      * Initialize the model data.
@@ -245,6 +191,12 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubeColors = allocateBuffer(cubeColorData);
         cubeNormals = allocateBuffer(cubeNormalData);
         cubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
+
+        cube1 = new Cube();
+        cube2 = new Cube();
+        cube3 = new Cube();
+        cube4 = new Cube();
+        cube5 = new Cube();
     }
 
     protected String getVertexShader() {
@@ -334,14 +286,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         glUseProgram(programHandle);
 
         // Set program handles for cube drawing.
-        mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
-        lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
-        textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
-        positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        colorHandle = glGetAttribLocation(programHandle, "a_Color");
-        normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+        int textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
 
         // Set the active texture unit to texture unit 0.
         glActiveTexture(GL_TEXTURE0);
@@ -365,79 +310,30 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 4.0f, 0.0f, -7.0f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
-        drawCube();
+        cube1.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, -4.0f, 0.0f, -7.0f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
-        drawCube();
+        cube2.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 0.0f, 4.0f, -7.0f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-        drawCube();
+        cube3.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 0.0f, -4.0f, -7.0f);
-        drawCube();
+        cube4.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -5.0f);
         Matrix.rotateM(modelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
-        drawCube();
+        cube5.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
 
         // Draw a point to indicate the light.
         glUseProgram(pointProgramHandle);
         drawLight();
-    }
-
-    /**
-     * Draws a cube.
-     */
-    private void drawCube() {
-        // Pass in the position information
-        cubePositions.position(0);
-        glVertexAttribPointer(positionHandle, positionDataSize, GL_FLOAT, false, 0, cubePositions);
-
-        glEnableVertexAttribArray(positionHandle);
-
-        // Pass in the color information
-        cubeColors.position(0);
-        glVertexAttribPointer(colorHandle, colorDataSize, GL_FLOAT, false, 0, cubeColors);
-
-        glEnableVertexAttribArray(colorHandle);
-
-        // Pass in the normal information
-        cubeNormals.position(0);
-        glVertexAttribPointer(normalHandle, normalDataSize, GL_FLOAT, false, 0, cubeNormals);
-
-        glEnableVertexAttribArray(normalHandle);
-
-        // Pass in the texture coordinate information
-        cubeTextureCoordinates.position(0);
-        glVertexAttribPointer(textureCoordinateHandle, textureCoordinateDataSize, GL_FLOAT, false, 0, cubeTextureCoordinates);
-
-        glEnableVertexAttribArray(textureCoordinateHandle);
-
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-
-        // Pass in the modelview matrix.
-        glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
-
-        // Pass in the combined matrix.
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // Pass in the light position in eye space.        
-        glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
-
-        // Draw the cube.
-        glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
     /**
