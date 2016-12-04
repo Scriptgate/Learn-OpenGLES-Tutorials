@@ -7,7 +7,6 @@ import android.os.SystemClock;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.TextureHelper;
 
 import java.nio.FloatBuffer;
 
@@ -84,56 +83,6 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer cubeTextureCoordinatesForPlane;
 
     /**
-     * This will be used to pass in the transformation matrix.
-     */
-    private int mvpMatrixHandle;
-
-    /**
-     * This will be used to pass in the modelview matrix.
-     */
-    private int mvMatrixHandle;
-
-    /**
-     * This will be used to pass in the light position.
-     */
-    private int lightPosHandle;
-
-    /**
-     * This will be used to pass in the texture.
-     */
-    private int textureUniformHandle;
-
-    /**
-     * This will be used to pass in model position information.
-     */
-    private int positionHandle;
-
-    /**
-     * This will be used to pass in model normal information.
-     */
-    private int normalHandle;
-
-    /**
-     * This will be used to pass in model texture coordinate information.
-     */
-    private int textureCoordinateHandle;
-
-    /**
-     * Size of the position data in elements.
-     */
-    private final int positionDataSize = 3;
-
-    /**
-     * Size of the normal data in elements.
-     */
-    private final int normalDataSize = 3;
-
-    /**
-     * Size of the texture coordinate data in elements.
-     */
-    private final int textureCoordinateDataSize = 2;
-
-    /**
      * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      * we multiply this by our transformation matrices.
      */
@@ -174,6 +123,9 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     // These still work without volatile, but refreshes are not guaranteed to happen.
     public volatile float deltaX;
     public volatile float deltaY;
+
+    private Cube cube1;
+    private Cube cube2;
 
     /**
      * Initialize the model data.
@@ -412,6 +364,9 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         cubeNormals = allocateBuffer(cubeNormalData);
         cubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
         cubeTextureCoordinatesForPlane = allocateBuffer(cubeTextureCoordinateDataForPlane);
+
+        cube1 = new Cube();
+        cube2 = new Cube();
     }
 
     @Override
@@ -510,13 +465,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         glUseProgram(programHandle);
 
         // Set program handles for cube drawing.
-        mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
-        lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
-        textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
-        positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+        int textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
+        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
 
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(lightModelMatrix, 0);
@@ -558,11 +508,13 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         // Pass in the texture coordinate information
         cubeTextureCoordinates.position(0);
+
+        int textureCoordinateDataSize = 2;
         glVertexAttribPointer(textureCoordinateHandle, textureCoordinateDataSize, GL_FLOAT, false, 0, cubeTextureCoordinates);
 
         glEnableVertexAttribArray(textureCoordinateHandle);
 
-        drawCube();
+        cube1.drawCube(programHandle, cubePositions, cubeNormals, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace, temporaryMatrix);
 
         // Draw a plane
         Matrix.setIdentityM(modelMatrix, 0);
@@ -585,7 +537,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         glEnableVertexAttribArray(textureCoordinateHandle);
 
-        drawCube();
+        cube2.drawCube(programHandle, cubePositions, cubeNormals, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace, temporaryMatrix);
 
         // Draw a point to indicate the light.
         glUseProgram(pointProgramHandle);
@@ -612,44 +564,6 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         } else {
             queuedMagFilter = filter;
         }
-    }
-
-    /**
-     * Draws a cube.
-     */
-    private void drawCube() {
-        // Pass in the position information
-        cubePositions.position(0);
-        glVertexAttribPointer(positionHandle, positionDataSize, GL_FLOAT, false, 0, cubePositions);
-
-        glEnableVertexAttribArray(positionHandle);
-
-        // Pass in the normal information
-        cubeNormals.position(0);
-        glVertexAttribPointer(normalHandle, normalDataSize, GL_FLOAT, false, 0, cubeNormals);
-
-        glEnableVertexAttribArray(normalHandle);
-
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
-
-        // Pass in the modelview matrix.
-        glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).        
-        Matrix.multiplyMM(temporaryMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
-        System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
-
-        // Pass in the combined matrix.
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // Pass in the light position in eye space.        
-        glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
-
-        // Draw the cube.
-        glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
     /**
