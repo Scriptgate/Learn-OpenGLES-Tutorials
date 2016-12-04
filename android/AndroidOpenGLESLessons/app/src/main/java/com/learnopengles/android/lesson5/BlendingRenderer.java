@@ -6,16 +6,18 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.CubeBuilder;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
@@ -71,11 +73,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
      */
     private boolean blending = true;
 
-    private Cube cube1;
-    private Cube cube2;
-    private Cube cube3;
-    private Cube cube4;
-    private Cube cube5;
+    private List<Cube> cubes;
 
     /**
      * Initialize the model data.
@@ -85,39 +83,31 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
 
         // Define points for a cube.
         // X, Y, Z
-        final Point p1p = new Point(-1.0f, 1.0f, 1.0f);
-        final Point p2p = new Point(1.0f, 1.0f, 1.0f);
-        final Point p3p = new Point(-1.0f, -1.0f, 1.0f);
-        final Point p4p = new Point(1.0f, -1.0f, 1.0f);
-        final Point p5p = new Point(-1.0f, 1.0f, -1.0f);
-        final Point p6p = new Point(1.0f, 1.0f, -1.0f);
+        //@formatter:off
+        final Point p1p = new Point(-1.0f,  1.0f,  1.0f);
+        final Point p2p = new Point( 1.0f,  1.0f,  1.0f);
+        final Point p3p = new Point(-1.0f, -1.0f,  1.0f);
+        final Point p4p = new Point( 1.0f, -1.0f,  1.0f);
+        final Point p5p = new Point(-1.0f,  1.0f, -1.0f);
+        final Point p6p = new Point( 1.0f,  1.0f, -1.0f);
         final Point p7p = new Point(-1.0f, -1.0f, -1.0f);
-        final Point p8p = new Point(1.0f, -1.0f, -1.0f);
+        final Point p8p = new Point( 1.0f, -1.0f, -1.0f);
+        //@formatter:on
 
         final float[] cubePositionData = CubeBuilder.generatePositionData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
 
-        // Points of the cube: color information
-        // R, G, B, A
-        final Color p1c = new Color(1.0f, 0.0f, 0.0f, 1.0f);        // red
-        final Color p2c = new Color(1.0f, 0.0f, 1.0f, 1.0f);        // magenta
-        final Color p3c = new Color(0.0f, 0.0f, 0.0f, 1.0f);        // black
-        final Color p4c = new Color(0.0f, 0.0f, 1.0f, 1.0f);        // blue
-        final Color p5c = new Color(1.0f, 1.0f, 0.0f, 1.0f);        // yellow
-        final Color p6c = new Color(1.0f, 1.0f, 1.0f, 1.0f);        // white
-        final Color p7c = new Color(0.0f, 1.0f, 0.0f, 1.0f);        // green
-        final Color p8c = new Color(0.0f, 1.0f, 1.0f, 1.0f);        // cyan
-
-        final float[] cubeColorData = CubeBuilder.generateColorData(p1c, p2c, p3c, p4c, p5c, p6c, p7c, p8c);
+        final float[] cubeColorData = CubeBuilder.generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN);
 
         // Initialize the buffers.
         cubePositions = allocateBuffer(cubePositionData);
         cubeColors = allocateBuffer(cubeColorData);
 
-        cube1 = new Cube();
-        cube2 = new Cube();
-        cube3 = new Cube();
-        cube4 = new Cube();
-        cube5 = new Cube();
+        cubes = new ArrayList<>();
+        cubes.add(new Cube(new Point(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(new Point(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(new Point(0.0f, 0.0f, -5.0f)));
     }
 
     protected String getVertexShader() {
@@ -169,6 +159,18 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         glBlendFunc(GL_ONE, GL_ONE);
 //		glBlendEquation(GL_FUNC_ADD);
 
+        initializeViewMatrix(viewMatrix);
+
+        final String vertexShader = getVertexShader();
+        final String fragmentShader = getFragmentShader();
+
+        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
+        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
+
+        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color"});
+    }
+
+    private static void initializeViewMatrix(float[] viewMatrix) {
         // Position the eye in front of the origin.
         final Point eye = new Point(0.0f, 0.0f, -0.5f);
 
@@ -182,14 +184,6 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
         Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
-
-        final String vertexShader = getVertexShader();
-        final String fragmentShader = getFragmentShader();
-
-        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color"});
     }
 
     @Override
@@ -226,24 +220,14 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         glUseProgram(programHandle);
 
         // Draw some cubes.
-        cube1.setPosition(new Point(4.0f, 0.0f, -7.0f));
-        cube1.setRotationX(angleInDegrees);
-        cube1.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+        cubes.get(0).setRotationX(angleInDegrees);
+        cubes.get(1).setRotationY(angleInDegrees);
+        cubes.get(2).setRotationZ(angleInDegrees);
+        cubes.get(4).setRotationX(angleInDegrees);
+        cubes.get(4).setRotationY(angleInDegrees);
 
-        cube2.setPosition(new Point(-4.0f, 0.0f, -7.0f));
-        cube2.setRotationY(angleInDegrees);
-        cube2.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
-
-        cube3.setPosition(new Point(0.0f, 4.0f, -7.0f));
-        cube3.setRotationZ(angleInDegrees);
-        cube3.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
-
-        cube4.setPosition(new Point(0.0f, -4.0f, -7.0f));
-        cube4.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
-
-        cube5.setPosition(new Point(0.0f, 0.0f, -5.0f));
-        cube5.setRotationX(angleInDegrees);
-        cube5.setRotationY(angleInDegrees);
-        cube5.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+        for (Cube cube : cubes) {
+            cube.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+        }
     }
 }
