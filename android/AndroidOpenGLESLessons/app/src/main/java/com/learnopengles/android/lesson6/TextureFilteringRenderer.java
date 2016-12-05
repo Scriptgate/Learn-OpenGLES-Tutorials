@@ -139,14 +139,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         final float[] cubePositionData = generatePositionData(1.0f, 1.0f, 1.0f);
 
-        Point front = new Point(0.0f, 0.0f, 1.0f);
-        Point right = new Point(1.0f, 0.0f, 0.0f);
-        Point back = new Point(0.0f, 0.0f, -1.0f);
-        Point left = new Point(-1.0f, 0.0f, 0.0f);
-        Point top = new Point(0.0f, 1.0f, 0.0f);
-        Point bottom = new Point(0.0f, -1.0f, 0.0f);
-
-        float[] cubeNormalData = generateNormalData(front, right, back, left, top, bottom);
+        float[] cubeNormalData = generateNormalData();
 
         // S, T (or X, Y)
         // Texture coordinate data.

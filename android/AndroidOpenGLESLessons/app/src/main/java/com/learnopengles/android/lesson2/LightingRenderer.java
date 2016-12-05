@@ -110,14 +110,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
         final float[] cubeColorData = generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
 
-        float[] cubeNormalData = generateNormalData(
-                new Point(0.0f, 0.0f, 1.0f),
-                new Point(1.0f, 0.0f, 0.0f),
-                new Point(0.0f, 0.0f, -1.0f),
-                new Point(-1.0f, 0.0f, 0.0f),
-                new Point(0.0f, 1.0f, 0.0f),
-                new Point(0.0f, -1.0f, 0.0f)
-        );
+        float[] cubeNormalData = generateNormalData();
 
         // Initialize the buffers.
         cubePositions = allocateBuffer(cubePositionData);

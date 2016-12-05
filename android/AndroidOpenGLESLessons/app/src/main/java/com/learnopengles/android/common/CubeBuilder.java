@@ -67,6 +67,16 @@ public class CubeBuilder {
         return generateData(faces);
     }
 
+    public static float[] generateNormalData() {
+        Point front = new Point(0.0f, 0.0f, 1.0f);
+        Point right = new Point(1.0f, 0.0f, 0.0f);
+        Point back = new Point(0.0f, 0.0f, -1.0f);
+        Point left = new Point(-1.0f, 0.0f, 0.0f);
+        Point top = new Point(0.0f, 1.0f, 0.0f);
+        Point bottom = new Point(0.0f, -1.0f, 0.0f);
+        return generateNormalData(front, right, back, left, top, bottom);
+    }
+
     public static float[] generatePositionData(Point frontA,
                                                Point frontB,
                                                Point frontC,

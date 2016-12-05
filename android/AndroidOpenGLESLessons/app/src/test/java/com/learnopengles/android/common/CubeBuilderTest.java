@@ -222,6 +222,13 @@ public class CubeBuilderTest {
     }
 
     @Test
+    public void generateNormalData() throws Exception {
+        float[] normalData = CubeBuilder.generateNormalData();
+
+        assertArrayEquals(normalData, NORMAL, DELTA);
+    }
+
+    @Test
     public void generateNormalData_perFace() throws Exception {
         Point front = new Point(0.0f, 0.0f, 1.0f);
         Point right = new Point(1.0f, 0.0f, 0.0f);
@@ -230,7 +237,7 @@ public class CubeBuilderTest {
         Point top = new Point(0.0f, 1.0f, 0.0f);
         Point bottom = new Point(0.0f, -1.0f, 0.0f);
 
-        float[] normalData = generateNormalData(front, right, back, left, top, bottom);
+        float[] normalData = CubeBuilder.generateNormalData(front, right, back, left, top, bottom);
 
         assertArrayEquals(normalData, NORMAL, DELTA);
     }

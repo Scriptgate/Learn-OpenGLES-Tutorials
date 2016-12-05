@@ -115,18 +115,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
         final float[] cubeColorData = generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
 
-        // X, Y, Z
-        // The normal is used in light calculations and is a vector which points
-        // orthogonal to the plane of the surface. For a cube model, the normals
-        // should be orthogonal to the points of each face.
-        Point front = new Point(0.0f, 0.0f, 1.0f);
-        Point right = new Point(1.0f, 0.0f, 0.0f);
-        Point back = new Point(0.0f, 0.0f, -1.0f);
-        Point left = new Point(-1.0f, 0.0f, 0.0f);
-        Point top = new Point(0.0f, 1.0f, 0.0f);
-        Point bottom = new Point(0.0f, -1.0f, 0.0f);
-
-        float[] cubeNormalData = generateNormalData(front, right, back, left, top, bottom);
+        float[] cubeNormalData = generateNormalData();
 
         // S, T (or X, Y)
         // Texture coordinate data.

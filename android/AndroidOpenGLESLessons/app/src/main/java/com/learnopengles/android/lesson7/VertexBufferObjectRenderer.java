@@ -15,6 +15,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -178,60 +179,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         @Override
         public void run() {
             try {
-                // X, Y, Z
-                // The normal is used in light calculations and is a vector which points
-                // orthogonal to the plane of the surface. For a cube model, the normals
-                // should be orthogonal to the points of each face.
-                final float[] cubeNormalData =
-                        {
-                                // Front face
-                                0.0f, 0.0f, 1.0f,
-                                0.0f, 0.0f, 1.0f,
-                                0.0f, 0.0f, 1.0f,
-                                0.0f, 0.0f, 1.0f,
-                                0.0f, 0.0f, 1.0f,
-                                0.0f, 0.0f, 1.0f,
-
-                                // Right face
-                                1.0f, 0.0f, 0.0f,
-                                1.0f, 0.0f, 0.0f,
-                                1.0f, 0.0f, 0.0f,
-                                1.0f, 0.0f, 0.0f,
-                                1.0f, 0.0f, 0.0f,
-                                1.0f, 0.0f, 0.0f,
-
-                                // Back face
-                                0.0f, 0.0f, -1.0f,
-                                0.0f, 0.0f, -1.0f,
-                                0.0f, 0.0f, -1.0f,
-                                0.0f, 0.0f, -1.0f,
-                                0.0f, 0.0f, -1.0f,
-                                0.0f, 0.0f, -1.0f,
-
-                                // Left face
-                                -1.0f, 0.0f, 0.0f,
-                                -1.0f, 0.0f, 0.0f,
-                                -1.0f, 0.0f, 0.0f,
-                                -1.0f, 0.0f, 0.0f,
-                                -1.0f, 0.0f, 0.0f,
-                                -1.0f, 0.0f, 0.0f,
-
-                                // Top face
-                                0.0f, 1.0f, 0.0f,
-                                0.0f, 1.0f, 0.0f,
-                                0.0f, 1.0f, 0.0f,
-                                0.0f, 1.0f, 0.0f,
-                                0.0f, 1.0f, 0.0f,
-                                0.0f, 1.0f, 0.0f,
-
-                                // Bottom face
-                                0.0f, -1.0f, 0.0f,
-                                0.0f, -1.0f, 0.0f,
-                                0.0f, -1.0f, 0.0f,
-                                0.0f, -1.0f, 0.0f,
-                                0.0f, -1.0f, 0.0f,
-                                0.0f, -1.0f, 0.0f
-                        };
+                final float[] cubeNormalData = generateNormalData();
 
                 // S, T (or X, Y)
                 // Texture coordinate data.
