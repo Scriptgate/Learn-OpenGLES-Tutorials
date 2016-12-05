@@ -4,6 +4,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
+import com.learnopengles.android.common.Light;
 import com.learnopengles.android.common.Point;
 
 import java.nio.FloatBuffer;

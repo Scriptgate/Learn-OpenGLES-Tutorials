@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson2;
+package com.learnopengles.android.common;
 
 import android.opengl.Matrix;
 
@@ -13,13 +13,6 @@ import static android.opengl.GLES20.glVertexAttrib3f;
 public class Light {
     /**
      * Draws a point representing the position of the light.
-     *
-     * @param pointProgramHandle
-     * @param lightPosInModelSpace
-     * @param mvpMatrix
-     * @param lightModelMatrix
-     * @param viewMatrix
-     * @param projectionMatrix
      */
     public void drawLight(int pointProgramHandle, float[] lightPosInModelSpace, float[] mvpMatrix, float[] lightModelMatrix, float[] viewMatrix, float[] projectionMatrix) {
         final int pointMVPMatrixHandle = glGetUniformLocation(pointProgramHandle, "u_MVPMatrix");

@@ -1,7 +1,6 @@
 package com.learnopengles.android.lesson1;
 
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.lesson2.Light;
 
 import org.junit.Assert;
 import org.junit.Test;
