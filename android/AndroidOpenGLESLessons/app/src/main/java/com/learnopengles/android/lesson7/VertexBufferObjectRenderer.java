@@ -7,7 +7,7 @@ import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonSevenActivity;
 import com.learnopengles.android.common.CubeBuilder;
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.ProjectionMatrix;
+import com.learnopengles.android.component.ProjectionMatrix;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +17,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
-import static com.learnopengles.android.common.ProjectionMatrix.createProjectMatrix;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -49,9 +49,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
      */
     private float[] viewMatrix = new float[16];
 
-    /**
-     * Store the projection matrix. This is used to project the scene onto a 2D viewport.
-     */
     private ProjectionMatrix projectionMatrix = createProjectMatrix(1000.0f);
 
     /**

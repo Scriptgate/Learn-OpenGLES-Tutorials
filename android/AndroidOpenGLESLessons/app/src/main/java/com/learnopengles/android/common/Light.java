@@ -2,6 +2,8 @@ package com.learnopengles.android.common;
 
 import android.opengl.Matrix;
 
+import com.learnopengles.android.component.ProjectionMatrix;
+
 import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawArrays;

@@ -5,7 +5,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.ProjectionMatrix;
+import com.learnopengles.android.component.ProjectionMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.WHITE;
 import static com.learnopengles.android.common.Color.YELLOW;
-import static com.learnopengles.android.common.ProjectionMatrix.createProjectionMatrix;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.lesson1.Program.createProgram;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
 

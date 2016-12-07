@@ -2,7 +2,7 @@ package com.learnopengles.android.lesson6;
 
 import android.opengl.Matrix;
 
-import com.learnopengles.android.common.ProjectionMatrix;
+import com.learnopengles.android.component.ProjectionMatrix;
 
 import java.nio.FloatBuffer;
 

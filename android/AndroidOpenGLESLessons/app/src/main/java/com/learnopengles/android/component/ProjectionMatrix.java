@@ -1,4 +1,4 @@
-package com.learnopengles.android.common;
+package com.learnopengles.android.component;
 
 import android.opengl.Matrix;
 

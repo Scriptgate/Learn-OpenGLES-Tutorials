@@ -6,14 +6,14 @@ import android.opengl.Matrix;
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonEightActivity;
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.ProjectionMatrix;
+import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.common.ShaderHelper;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.ProjectionMatrix.createProjectMatrix;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 
 /**

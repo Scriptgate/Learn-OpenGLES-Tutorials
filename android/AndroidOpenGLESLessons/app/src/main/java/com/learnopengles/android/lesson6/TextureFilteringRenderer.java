@@ -7,7 +7,7 @@ import android.os.SystemClock;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point;
-import com.learnopengles.android.common.ProjectionMatrix;
+import com.learnopengles.android.component.ProjectionMatrix;
 
 import java.nio.FloatBuffer;
 
@@ -18,7 +18,7 @@ import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
 import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
-import static com.learnopengles.android.common.ProjectionMatrix.createProjectMatrix;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
