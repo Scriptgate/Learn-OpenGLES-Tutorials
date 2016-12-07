@@ -51,7 +51,7 @@ public class Cube {
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        projectionMatrix.multiplyWithAndStore(mvpMatrix);
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
 
         // Pass in the combined matrix.
         glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);

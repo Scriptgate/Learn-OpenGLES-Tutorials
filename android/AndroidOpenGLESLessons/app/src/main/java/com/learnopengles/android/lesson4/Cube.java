@@ -4,6 +4,7 @@ import android.opengl.Matrix;
 
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ProjectionMatrix;
+import com.learnopengles.android.component.ViewMatrix;
 
 import java.nio.FloatBuffer;
 
@@ -31,7 +32,7 @@ public class Cube {
         this.position = point;
     }
 
-    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, FloatBuffer cubeNormals, FloatBuffer cubeTextureCoordinates, float[] mvpMatrix, float[] modelMatrix, float[] viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace) {
+    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, FloatBuffer cubeNormals, FloatBuffer cubeTextureCoordinates, float[] mvpMatrix, float[] modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace) {
         Matrix.setIdentityM(modelMatrix, 0);
 
         Matrix.translateM(modelMatrix, 0, position.x, position.y, position.z);
@@ -74,14 +75,14 @@ public class Cube {
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
 
         // Pass in the modelview matrix.
         glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        projectionMatrix.multiplyWithAndStore(mvpMatrix);
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
 
         // Pass in the combined matrix.
         glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);

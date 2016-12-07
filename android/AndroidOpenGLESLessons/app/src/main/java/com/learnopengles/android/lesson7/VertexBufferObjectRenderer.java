@@ -478,7 +478,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         // This multiplies the modelview matrix by the projection matrix,
         // and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        projectionMatrix.multiplyWithAndStore(mvpMatrix, temporaryMatrix);
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix, temporaryMatrix);
         System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
 
         // Pass in the combined matrix.

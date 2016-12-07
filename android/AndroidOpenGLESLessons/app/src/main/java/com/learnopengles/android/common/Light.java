@@ -1,8 +1,7 @@
 package com.learnopengles.android.common;
 
-import android.opengl.Matrix;
-
 import com.learnopengles.android.component.ProjectionMatrix;
+import com.learnopengles.android.component.ViewMatrix;
 
 import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
@@ -16,7 +15,7 @@ public class Light {
     /**
      * Draws a point representing the position of the light.
      */
-    public void drawLight(int pointProgramHandle, float[] lightPosInModelSpace, float[] mvpMatrix, float[] lightModelMatrix, float[] viewMatrix, ProjectionMatrix projectionMatrix) {
+    public void drawLight(int pointProgramHandle, float[] lightPosInModelSpace, float[] mvpMatrix, float[] lightModelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         final int pointMVPMatrixHandle = glGetUniformLocation(pointProgramHandle, "u_MVPMatrix");
         final int pointPositionHandle = glGetAttribLocation(pointProgramHandle, "a_Position");
 
@@ -27,8 +26,8 @@ public class Light {
         glDisableVertexAttribArray(pointPositionHandle);
 
         // Pass in the transformation matrix.
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, lightModelMatrix, 0);
-        projectionMatrix.multiplyWithAndStore(mvpMatrix);
+        viewMatrix.multiplyWithMatrixAndStore(lightModelMatrix, mvpMatrix);
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
         glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the point.

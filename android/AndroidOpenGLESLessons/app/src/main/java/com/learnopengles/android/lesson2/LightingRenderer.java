@@ -7,6 +7,7 @@ import android.os.SystemClock;
 import com.learnopengles.android.common.Light;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ProjectionMatrix;
+import com.learnopengles.android.component.ViewMatrix;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import static com.learnopengles.android.component.ProjectionMatrix.createProject
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
+import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -47,12 +49,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] modelMatrix = new float[16];
 
-    /**
-     * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
-     * it positions things relative to our eye.
-     */
-    private float[] viewMatrix = new float[16];
-
+    private ViewMatrix viewMatrix = createViewInFrontOrigin();
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     /**
@@ -145,7 +142,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         // Enable depth testing
         glEnable(GL_DEPTH_TEST);
 
-        initializeViewMatrix(viewMatrix);
+        viewMatrix.onSurfaceCreated();
 
         final String vertexShader = getVertexShader();
         final String fragmentShader = getFragmentShader();
@@ -162,22 +159,6 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         final int pointVertexShaderHandle = compileShader(GL_VERTEX_SHADER, pointVertexShader);
         final int pointFragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, pointFragmentShader);
         pointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle, new String[]{"a_Position"});
-    }
-
-    private static void initializeViewMatrix(float[] viewMatrix) {
-        // Position the eye in front of the origin.
-        final Point eye = new Point(0.0f, 0.0f, -0.5f);
-
-        // We are looking toward the distance
-        final Point look = new Point(0.0f, 0.0f, -5.0f);
-
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final Point up = new Point(0.0f, 1.0f, 0.0f);
-
-        // Set the view matrix. This matrix can be said to represent the camera position.
-        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
     }
 
     @Override
@@ -201,7 +182,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, 2.0f);
 
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
-        Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
+        viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
 
         // Set our per-vertex lighting program.
         glUseProgram(perVertexProgramHandle);

@@ -41,11 +41,11 @@ public class ProjectionMatrix {
         Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
-    public void multiplyWithAndStore(float[] matrix) {
+    public void multiplyWithMatrixAndStore(float[] matrix) {
         Matrix.multiplyMM(matrix, 0, projectionMatrix, 0, matrix, 0);
     }
 
-    public void multiplyWithAndStore(float[] matrix, float[] storeIn) {
+    public void multiplyWithMatrixAndStore(float[] matrix, float[] storeIn) {
         Matrix.multiplyMM(storeIn, 0, projectionMatrix, 0, matrix, 0);
     }
 }

@@ -464,7 +464,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         // Pass in the transformation matrix.
         Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, lightModelMatrix, 0);
-        projectionMatrix.multiplyWithAndStore(mvpMatrix, temporaryMatrix);
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix, temporaryMatrix);
         System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
         glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mvpMatrix, 0);
 

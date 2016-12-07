@@ -28,7 +28,7 @@ import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.WHITE;
 import static com.learnopengles.android.common.Color.YELLOW;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.component.ViewMatrix.createViewMatrix;
+import static com.learnopengles.android.component.ViewMatrix.createViewBehindOrigin;
 import static com.learnopengles.android.lesson1.Program.createProgram;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
 
@@ -43,7 +43,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] modelMatrix = new float[16];
 
-    private ViewMatrix viewMatrix = createViewMatrix();
+    private ViewMatrix viewMatrix = createViewBehindOrigin();
 
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 

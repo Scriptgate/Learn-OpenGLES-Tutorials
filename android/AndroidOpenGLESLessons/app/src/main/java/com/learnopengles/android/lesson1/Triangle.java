@@ -69,11 +69,11 @@ public class Triangle {
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        viewMatrix.multiplyWithAndStore(modelMatrix, mvpMatrix);
+        viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        projectionMatrix.multiplyWithAndStore(mvpMatrix);
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
 
         glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
