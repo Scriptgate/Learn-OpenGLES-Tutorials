@@ -1,8 +1,7 @@
 package com.learnopengles.android.lesson1;
 
-import android.opengl.Matrix;
-
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -43,13 +42,11 @@ public class Triangle {
         vertices = allocateBuffer(verticesData);
     }
 
-    public void draw(int programHandle, float[] mvpMatrix, ViewMatrix viewMatrix, float[] modelMatrix, ProjectionMatrix projectionMatrix) {
-        Matrix.setIdentityM(modelMatrix, 0);
+    public void draw(int programHandle, float[] mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
+        modelMatrix.setIdentity();
 
-        Matrix.translateM(modelMatrix, 0, position.x, position.y, position.z);
-        Matrix.rotateM(modelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
+        modelMatrix.translate(position);
+        modelMatrix.rotate(rotation);
 
         int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
         int positionHandle = glGetAttribLocation(programHandle, "a_Position");
@@ -69,8 +66,7 @@ public class Triangle {
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
-
+        modelMatrix.multiplyWithMatrixAndStore(viewMatrix, mvpMatrix);
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
         projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);

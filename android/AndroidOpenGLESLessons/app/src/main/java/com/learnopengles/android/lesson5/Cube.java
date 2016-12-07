@@ -3,6 +3,7 @@ package com.learnopengles.android.lesson5;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -22,13 +23,11 @@ public class Cube {
         this.position = point;
     }
 
-    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, float[] mvpMatrix, float[] modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
-        Matrix.setIdentityM(modelMatrix, 0);
+    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, float[] mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
+        modelMatrix.setIdentity();
 
-        Matrix.translateM(modelMatrix, 0, position.x, position.y, position.z);
-        Matrix.rotateM(modelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
+        modelMatrix.translate(position);
+        modelMatrix.rotate(rotation);
 
         int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
         int positionHandle = glGetAttribLocation(programHandle, "a_Position");
@@ -48,7 +47,7 @@ public class Cube {
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
+        modelMatrix.multiplyWithMatrixAndStore(viewMatrix, mvpMatrix);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).

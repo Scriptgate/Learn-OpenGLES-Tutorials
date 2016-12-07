@@ -4,6 +4,7 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -37,14 +38,9 @@ import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
  * renderers -- the static class GLES20 is used instead.
  */
 public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
-    /**
-     * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
-     * of being located at the center of the universe) to world space.
-     */
-    private float[] modelMatrix = new float[16];
 
+    private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewBehindOrigin();
-
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     /**
