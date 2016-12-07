@@ -5,6 +5,7 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.ProjectionMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,6 @@ import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
 import static android.opengl.GLES20.glUseProgram;
-import static android.opengl.GLES20.glViewport;
 import static com.learnopengles.android.common.Color.BLACK;
 import static com.learnopengles.android.common.Color.BLUE;
 import static com.learnopengles.android.common.Color.CYAN;
@@ -27,6 +27,7 @@ import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.WHITE;
 import static com.learnopengles.android.common.Color.YELLOW;
+import static com.learnopengles.android.common.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.lesson1.Program.createProgram;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
 
@@ -47,10 +48,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] viewMatrix = new float[16];
 
-    /**
-     * Store the projection matrix. This is used to project the scene onto a 2D viewport.
-     */
-    private float[] projectionMatrix = new float[16];
+    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     /**
      * Allocate storage for the final combined matrix. This will be passed into the shader program.
@@ -118,20 +116,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-        // Set the OpenGL viewport to the same size as the surface.
-        glViewport(0, 0, width, height);
-
-        // Create a new perspective projection matrix. The height will stay the same
-        // while the width will vary as per aspect ratio.
-        final float ratio = (float) width / height;
-        final float left = -ratio;
-        final float right = ratio;
-        final float bottom = -1.0f;
-        final float top = 1.0f;
-        final float near = 1.0f;
-        final float far = 10.0f;
-
-        Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
+        projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override

@@ -21,6 +21,7 @@ import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.CubeBuilder.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -50,7 +51,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] viewMatrix = new float[16];
 
-    private ProjectionMatrix projectionMatrix = new ProjectionMatrix();
+    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     /**
      * Allocate storage for the final combined matrix. This will be passed into the shader program.

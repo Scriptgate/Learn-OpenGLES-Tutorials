@@ -26,6 +26,7 @@ import static com.learnopengles.android.common.CubeBuilder.generateColorData;
 import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
 import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -52,7 +53,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] viewMatrix = new float[16];
 
-    private ProjectionMatrix projectionMatrix = new ProjectionMatrix();
+    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     /**
      * Allocate storage for the final combined matrix. This will be passed into the shader program.

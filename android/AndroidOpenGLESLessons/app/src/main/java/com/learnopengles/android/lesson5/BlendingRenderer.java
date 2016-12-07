@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.CubeBuilder;
+import com.learnopengles.android.common.ProjectionMatrix;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import javax.microedition.khronos.opengles.GL10;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -47,10 +49,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] viewMatrix = new float[16];
 
-    /**
-     * Store the projection matrix. This is used to project the scene onto a 2D viewport.
-     */
-    private float[] projectionMatrix = new float[16];
+    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     /**
      * Allocate storage for the final combined matrix. This will be passed into the shader program.
@@ -175,20 +174,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-        // Set the OpenGL viewport to the same size as the surface.
-        glViewport(0, 0, width, height);
-
-        // Create a new perspective projection matrix. The height will stay the same
-        // while the width will vary as per aspect ratio.
-        final float ratio = (float) width / height;
-        final float left = -ratio;
-        final float right = ratio;
-        final float bottom = -1.0f;
-        final float top = 1.0f;
-        final float near = 1.0f;
-        final float far = 10.0f;
-
-        Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
+        projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override

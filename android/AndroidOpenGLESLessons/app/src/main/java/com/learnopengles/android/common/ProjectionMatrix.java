@@ -6,6 +6,14 @@ import static android.opengl.GLES20.glViewport;
 
 public class ProjectionMatrix {
 
+    private ProjectionMatrix() {
+
+    }
+
+    public static ProjectionMatrix createProjectionMatrix() {
+        return new ProjectionMatrix();
+    }
+
     /**
      * Store the projection matrix. This is used to project the scene onto a 2D viewport.
      */

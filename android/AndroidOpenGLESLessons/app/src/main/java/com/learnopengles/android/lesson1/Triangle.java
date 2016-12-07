@@ -3,6 +3,7 @@ package com.learnopengles.android.lesson1;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.ProjectionMatrix;
 
 import java.nio.FloatBuffer;
 
@@ -41,7 +42,7 @@ public class Triangle {
         vertices = allocateBuffer(verticesData);
     }
 
-    public void draw(int programHandle, float[] mvpMatrix, float[] viewMatrix, float[] modelMatrix, float[] projectionMatrix) {
+    public void draw(int programHandle, float[] mvpMatrix, float[] viewMatrix, float[] modelMatrix, ProjectionMatrix projectionMatrix) {
         Matrix.setIdentityM(modelMatrix, 0);
 
         Matrix.translateM(modelMatrix, 0, position.x, position.y, position.z);
@@ -71,7 +72,7 @@ public class Triangle {
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        projectionMatrix.multiplyWithAndStore(mvpMatrix);
 
         glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
