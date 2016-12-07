@@ -1,11 +1,11 @@
 package com.learnopengles.android.lesson1;
 
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ProjectionMatrix;
+import com.learnopengles.android.component.ViewMatrix;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +42,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] modelMatrix = new float[16];
 
-    /**
-     * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
-     * it positions things relative to our eye.
-     */
-    private float[] viewMatrix = new float[16];
+    private ViewMatrix viewMatrix = new ViewMatrix();
 
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
@@ -86,32 +82,17 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+    public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background clear color to gray.
         glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
-        initializeViewMatrix(viewMatrix);
+
+        viewMatrix.onSurfaceCreated();
 
         // Create a program object and store the handle to it.
         programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
 
         // Tell OpenGL to use this program when rendering.
         glUseProgram(programHandle);
-    }
-
-    private static void initializeViewMatrix(float[] viewMatrix) {
-        // Position the eye behind the origin.
-        Point eye = new Point(0.0f, 0.0f, 1.5f);
-
-        // We are looking toward the distance
-        Point look = new Point(0.0f, 0.0f, -5.0f);
-
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
-        Point up = new Point(0.0f, 1.0f, 0.0f);
-
-        // Set the view matrix. This matrix can be said to represent the camera position.
-        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
     }
 
     @Override
