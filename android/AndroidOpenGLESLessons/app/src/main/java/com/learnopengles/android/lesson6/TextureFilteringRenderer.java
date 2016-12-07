@@ -7,6 +7,7 @@ import android.os.SystemClock;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.ProjectionMatrix;
 
 import java.nio.FloatBuffer;
 
@@ -17,6 +18,7 @@ import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
 import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.ProjectionMatrix.createProjectMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -49,7 +51,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     /**
      * Store the projection matrix. This is used to project the scene onto a 2D viewport.
      */
-    private float[] projectionMatrix = new float[16];
+    private ProjectionMatrix projectionMatrix = createProjectMatrix(1000.0f);
 
     /**
      * Allocate storage for the final combined matrix. This will be passed into the shader program.
@@ -329,20 +331,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-        // Set the OpenGL viewport to the same size as the surface.
-        glViewport(0, 0, width, height);
-
-        // Create a new perspective projection matrix. The height will stay the same
-        // while the width will vary as per aspect ratio.
-        final float ratio = (float) width / height;
-        final float left = -ratio;
-        final float right = ratio;
-        final float bottom = -1.0f;
-        final float top = 1.0f;
-        final float near = 1.0f;
-        final float far = 1000.0f;
-
-        Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
+        projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override
@@ -475,7 +464,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         // Pass in the transformation matrix.
         Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, lightModelMatrix, 0);
-        Matrix.multiplyMM(temporaryMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        projectionMatrix.multiplyWithAndStore(mvpMatrix, temporaryMatrix);
         System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
         glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
