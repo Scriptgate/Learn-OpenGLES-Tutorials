@@ -14,7 +14,7 @@ public class Light {
     /**
      * Draws a point representing the position of the light.
      */
-    public void drawLight(int pointProgramHandle, float[] lightPosInModelSpace, float[] mvpMatrix, float[] lightModelMatrix, float[] viewMatrix, float[] projectionMatrix) {
+    public void drawLight(int pointProgramHandle, float[] lightPosInModelSpace, float[] mvpMatrix, float[] lightModelMatrix, float[] viewMatrix, ProjectionMatrix projectionMatrix) {
         final int pointMVPMatrixHandle = glGetUniformLocation(pointProgramHandle, "u_MVPMatrix");
         final int pointPositionHandle = glGetAttribLocation(pointProgramHandle, "a_Position");
 
@@ -26,7 +26,7 @@ public class Light {
 
         // Pass in the transformation matrix.
         Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, lightModelMatrix, 0);
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        projectionMatrix.multiplyWithAndStore(mvpMatrix);
         glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the point.

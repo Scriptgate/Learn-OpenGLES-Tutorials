@@ -3,6 +3,7 @@ package com.learnopengles.android.lesson2;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.ProjectionMatrix;
 
 import java.nio.FloatBuffer;
 
@@ -33,7 +34,7 @@ public class Cube {
     /**
      * Draws a cube.
      */
-    public void drawCube(int perVertexProgramHandle, FloatBuffer cubePositions, FloatBuffer cubeNormals, FloatBuffer cubeColors, float[] mvpMatrix, float[] modelMatrix, float[] viewMatrix, float[] projectionMatrix, float[] lightPosInEyeSpace) {
+    public void drawCube(int perVertexProgramHandle, FloatBuffer cubePositions, FloatBuffer cubeNormals, FloatBuffer cubeColors, float[] mvpMatrix, float[] modelMatrix, float[] viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace) {
         Matrix.setIdentityM(modelMatrix, 0);
 
         Matrix.translateM(modelMatrix, 0, position.x, position.y, position.z);
@@ -76,7 +77,7 @@ public class Cube {
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, mvpMatrix, 0);
+        projectionMatrix.multiplyWithAndStore(mvpMatrix);
 
         // Pass in the combined matrix.
         glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
