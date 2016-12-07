@@ -6,8 +6,8 @@ import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ProjectionMatrix;
+import com.learnopengles.android.component.ViewMatrix;
 
 import java.nio.FloatBuffer;
 
@@ -23,6 +23,7 @@ import static com.learnopengles.android.common.RawResourceReader.readTextFileFro
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
+import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -30,9 +31,9 @@ import static com.learnopengles.android.common.TextureHelper.loadTexture;
  */
 public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     /**
-     * Used for debug logs.
+     * Used for debug logs. max 23 characters
      */
-    private static final String TAG = "TextureFilteringRenderer";
+    private static final String TAG = "TextureFilteringR";
 
     private final Context activityContext;
 
@@ -42,15 +43,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
      */
     private float[] modelMatrix = new float[16];
 
-    /**
-     * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
-     * it positions things relative to our eye.
-     */
-    private float[] viewMatrix = new float[16];
-
-    /**
-     * Store the projection matrix. This is used to project the scene onto a 2D viewport.
-     */
+    private ViewMatrix viewMatrix = createViewInFrontOrigin();
     private ProjectionMatrix projectionMatrix = createProjectMatrix(1000.0f);
 
     /**
@@ -280,19 +273,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Enable texture mapping
         // glEnable(GL_TEXTURE_2D);
 
-        // Position the eye in front of the origin.
-        Point eye = new Point(0.0f, 0.0f, -0.5f);
-
-        // We are looking toward the distance
-        Point look = new Point(0.0f, 0.0f, -5.0f);
-
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
-        Point up = new Point(0.0f, 1.0f, 0.0f);
-
-        // Set the view matrix. This matrix can be said to represent the camera position.
-        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
+        viewMatrix.onSurfaceCreated();
 
         final String vertexShader = readTextFileFromRawResource(activityContext, R.raw.per_pixel_vertex_shader_tex_and_light);
         final String fragmentShader = readTextFileFromRawResource(activityContext, R.raw.per_pixel_fragment_shader_tex_and_light);
@@ -358,7 +339,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, 3.5f);
 
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
-        Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
+        viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
 
         // Draw a cube.
         // Translate the cube into the screen.
@@ -463,7 +444,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         glDisableVertexAttribArray(pointPositionHandle);
 
         // Pass in the transformation matrix.
-        Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, lightModelMatrix, 0);
+        viewMatrix.multiplyWithMatrixAndStore(lightModelMatrix, mvpMatrix);
         projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix, temporaryMatrix);
         System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
         glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mvpMatrix, 0);

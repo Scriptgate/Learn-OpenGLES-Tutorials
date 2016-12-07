@@ -5,9 +5,9 @@ import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonEightActivity;
-import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.common.ShaderHelper;
+import com.learnopengles.android.component.ViewMatrix;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -15,6 +15,7 @@ import javax.microedition.khronos.opengles.GL10;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
+import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter
@@ -34,13 +35,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	 */
 	private final float[] modelMatrix = new float[16];
 
-	/**
-	 * Store the view matrix. This can be thought of as our camera. This matrix
-	 * transforms world space to eye space; it positions things relative to our
-	 * eye.
-	 */
-	private final float[] viewMatrix = new float[16];
-
+	private final ViewMatrix viewMatrix = createViewInFrontOrigin();
 	private final ProjectionMatrix projectionMatrix = createProjectMatrix(1000.0f);
 
 	/**
@@ -120,21 +115,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		// Enable depth testing
 		glEnable(GL_DEPTH_TEST);
 
-		// Position the eye in front of the origin.
-		final Point eye = new Point(0.0f,0.0f,-0.5f);
-
-		// We are looking toward the distance
-		final Point look = new Point(0.0f,0.0f,-5.0f);
-
-		// Set our up vector. This is where our head would be pointing were we
-		// holding the camera.
-		final Point up = new Point(0.0f,1.0f, 0.0f);
-
-		// Set the view matrix. This matrix can be said to represent the camera position.
-		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination
-		// of a model and view matrix. In OpenGL 2, we can keep track of these
-		// matrices separately if we choose.
-		Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
+		viewMatrix.onSurfaceCreated();
 
 		final String vertexShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_vertex_shader_no_tex);
 		final String fragmentShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_fragment_shader_no_tex);
@@ -171,7 +152,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		Matrix.translateM(lightModelMatrix, 0, 0.0f, 7.5f, -8.0f);
 
 		Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
-		Matrix.multiplyMV(lightPosInEyeSpace, 0, viewMatrix, 0, lightPosInWorldSpace, 0);
+        viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
 
 		// Draw the heightmap.
 		// Translate the heightmap into the screen.
@@ -197,7 +178,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		// This multiplies the view matrix by the model matrix, and stores
 		// the result in the MVP matrix
 		// (which currently contains model * view).
-		Matrix.multiplyMM(mvpMatrix, 0, viewMatrix, 0, modelMatrix, 0);
+        viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
 
 		// Pass in the modelview matrix.
 		glUniformMatrix4fv(mvMatrixUniform, 1, false, mvpMatrix, 0);

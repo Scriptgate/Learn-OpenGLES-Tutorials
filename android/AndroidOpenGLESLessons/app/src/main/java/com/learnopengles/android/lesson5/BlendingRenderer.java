@@ -2,13 +2,13 @@ package com.learnopengles.android.lesson5;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Point;
 import com.learnopengles.android.common.CubeBuilder;
+import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ProjectionMatrix;
+import com.learnopengles.android.component.ViewMatrix;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -20,10 +20,11 @@ import javax.microedition.khronos.opengles.GL10;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
+import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -31,7 +32,7 @@ import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram
  */
 public class BlendingRenderer implements GLSurfaceView.Renderer {
     /**
-     * Used for debug logs.
+     * Used for debug logs. max 23 characters
      */
     private static final String TAG = "BlendingRenderer";
 
@@ -43,12 +44,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
      */
     private float[] modelMatrix = new float[16];
 
-    /**
-     * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
-     * it positions things relative to our eye.
-     */
-    private float[] viewMatrix = new float[16];
-
+    private ViewMatrix viewMatrix = createViewInFrontOrigin();
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     /**
@@ -145,7 +141,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         glBlendFunc(GL_ONE, GL_ONE);
 //		glBlendEquation(GL_FUNC_ADD);
 
-        initializeViewMatrix(viewMatrix);
+        viewMatrix.onSurfaceCreated();
 
         final String vertexShader = getVertexShader();
         final String fragmentShader = getFragmentShader();
@@ -154,22 +150,6 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
         programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color"});
-    }
-
-    private static void initializeViewMatrix(float[] viewMatrix) {
-        // Position the eye in front of the origin.
-        final Point eye = new Point(0.0f, 0.0f, -0.5f);
-
-        // We are looking toward the distance
-        final Point look = new Point(0.0f, 0.0f, -5.0f);
-
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final Point up = new Point(0.0f, 1.0f, 0.0f);
-
-        // Set the view matrix. This matrix can be said to represent the camera position.
-        // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
-        // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
     }
 
     @Override

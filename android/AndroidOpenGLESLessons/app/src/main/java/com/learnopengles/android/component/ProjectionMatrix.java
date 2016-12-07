@@ -45,7 +45,7 @@ public class ProjectionMatrix {
         Matrix.multiplyMM(matrix, 0, projectionMatrix, 0, matrix, 0);
     }
 
-    public void multiplyWithMatrixAndStore(float[] matrix, float[] storeIn) {
-        Matrix.multiplyMM(storeIn, 0, projectionMatrix, 0, matrix, 0);
+    public void multiplyWithMatrixAndStore(float[] matrix, float[] resultMatrix) {
+        Matrix.multiplyMM(resultMatrix, 0, projectionMatrix, 0, matrix, 0);
     }
 }

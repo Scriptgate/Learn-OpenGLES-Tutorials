@@ -35,7 +35,7 @@ import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOr
  */
 public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     /**
-     * Used for debug logs.
+     * Used for debug logs. max 23 characters
      */
     private static final String TAG = "BasicTexturingRenderer";
 

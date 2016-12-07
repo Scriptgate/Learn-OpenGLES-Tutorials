@@ -22,30 +22,26 @@ public class ViewMatrix {
         this.up = up;
     }
 
-    public static ViewMatrix createViewInFrontOrigin(){
+    public static ViewMatrix createViewInFrontOrigin() {
         // Position the eye in front of the origin.
-        final Point eye = new Point(0.0f, 0.0f, -0.5f);
-
-        // We are looking toward the distance
-        final Point look = new Point(0.0f, 0.0f, -5.0f);
-
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final Point up = new Point(0.0f, 1.0f, 0.0f);
-
-        return new ViewMatrix(eye, look, up);
+        Point eye = new Point(0.0f, 0.0f, -0.5f);
+        return createViewMatrix(eye);
     }
 
     public static ViewMatrix createViewBehindOrigin() {
         // Position the eye behind the origin.
         Point eye = new Point(0.0f, 0.0f, 1.5f);
+        return createViewMatrix(eye);
+    }
 
+    private static ViewMatrix createViewMatrix(Point eye) {
         // We are looking toward the distance
         Point look = new Point(0.0f, 0.0f, -5.0f);
 
         // Set our up vector. This is where our head would be pointing were we holding the camera.
         Point up = new Point(0.0f, 1.0f, 0.0f);
 
-        return new ViewMatrix(eye,look,up);
+        return new ViewMatrix(eye, look, up);
     }
 
     public void onSurfaceCreated() {
@@ -55,11 +51,11 @@ public class ViewMatrix {
         Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
     }
 
-    public void multiplyWithMatrixAndStore(float[] matrix, float[] result) {
-        Matrix.multiplyMM(result, 0, viewMatrix, 0, matrix, 0);
+    public void multiplyWithMatrixAndStore(float[] matrix, float[] resultMatrix) {
+        Matrix.multiplyMM(resultMatrix, 0, viewMatrix, 0, matrix, 0);
     }
 
-    public void multiplyWithVectorAndStore(float[] vector, float[] result) {
-        Matrix.multiplyMV(result, 0, viewMatrix, 0, vector, 0);
+    public void multiplyWithVectorAndStore(float[] vector, float[] resultVector) {
+        Matrix.multiplyMV(resultVector, 0, viewMatrix, 0, vector, 0);
     }
 }

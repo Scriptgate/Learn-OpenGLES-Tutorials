@@ -28,8 +28,8 @@ import static java.nio.ByteOrder.nativeOrder;
 
 public class HeightMap {
 
-    /** Used for debug logs. */
-    private static final String TAG = "IndexBufferObjectRenderer";
+    /** Used for debug logs. max 23 characters*/
+    private static final String TAG = "HeightMap";
 
     /** Additional constants. */
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
