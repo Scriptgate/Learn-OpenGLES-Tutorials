@@ -5,6 +5,7 @@ import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -43,10 +44,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
     private ViewMatrix viewMatrix = createViewBehindOrigin();
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
-    /**
-     * Allocate storage for the final combined matrix. This will be passed into the shader program.
-     */
-    private float[] mvpMatrix = new float[16];
+    private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     private final List<Triangle> triangles = new ArrayList<>();
 

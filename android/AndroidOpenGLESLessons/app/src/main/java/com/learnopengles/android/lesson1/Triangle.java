@@ -2,6 +2,7 @@ package com.learnopengles.android.lesson1;
 
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -14,7 +15,6 @@ import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
-import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
@@ -42,7 +42,7 @@ public class Triangle {
         vertices = allocateBuffer(verticesData);
     }
 
-    public void draw(int programHandle, float[] mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
+    public void draw(int programHandle, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
@@ -54,24 +54,17 @@ public class Triangle {
 
         // Pass in the position information
         vertices.position(POSITION_DATA_OFFSET);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
-
         glEnableVertexAttribArray(positionHandle);
+        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
         // Pass in the color information
         vertices.position(COLOR_DATA_OFFSET);
+        glEnableVertexAttribArray(colorHandle);
         glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
-        glEnableVertexAttribArray(colorHandle);
+        mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
+        mvpMatrix.passTo(mvpMatrixHandle);
 
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        modelMatrix.multiplyWithMatrixAndStore(viewMatrix, mvpMatrix);
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
-        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
-
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glDisableVertexAttribArray(positionHandle);
