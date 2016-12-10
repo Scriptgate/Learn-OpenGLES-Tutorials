@@ -51,30 +51,12 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
-    private ModelMatrix lightModelMatrix = new ModelMatrix();
-
     /**
      * Store our model data in a float buffer.
      */
     private final FloatBuffer cubePositions;
     private final FloatBuffer cubeColors;
     private final FloatBuffer cubeNormals;
-
-    /**
-     * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
-     * we multiply this by our transformation matrices.
-     */
-    private final float[] lightPosInModelSpace = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
-
-    /**
-     * Used to hold the current position of the light in world space (after transformation via model matrix).
-     */
-    private final float[] lightPosInWorldSpace = new float[4];
-
-    /**
-     * Used to hold the transformed position of the light in eye space (after transformation via modelview matrix)
-     */
-    private final float[] lightPosInEyeSpace = new float[4];
 
     /**
      * This is a handle to our per-vertex cube shading program.
@@ -87,6 +69,8 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
     private int pointProgramHandle;
 
     private List<Cube> cubes;
+
+    private Light light;
 
     /**
      * Initialize the model data.
@@ -111,6 +95,8 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         cubes.add(new Cube(new Point(0.0f, 4.0f, -7.0f)));
         cubes.add(new Cube(new Point(0.0f, -4.0f, -7.0f)));
         cubes.add(new Cube(new Point(0.0f, 0.0f, -5.0f)));
+
+        light = new Light();
     }
 
     protected String getVertexShader() {
@@ -166,15 +152,15 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
 
+
+
         // Calculate position of the light. Rotate and then push into the distance.
-        lightModelMatrix.setIdentity();
-        lightModelMatrix.translate(new Point(0.0f, 0.0f, -5.0f));
-        lightModelMatrix.rotate(new Point(0.0f,angleInDegrees,0.0f));
-        lightModelMatrix.translate(new Point(0.0f, 0.0f, 2.0f));
+        light.setIdentity();
+        light.translate(new Point(0.0f, 0.0f, -5.0f));
+        light.rotate(new Point(0.0f, angleInDegrees, 0.0f));
+        light.translate(new Point(0.0f, 0.0f, 2.0f));
 
-        lightModelMatrix.multiplyWithVectorAndStore(lightPosInModelSpace, lightPosInWorldSpace);
-
-        viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
+        light.setView(viewMatrix);
 
         // Set our per-vertex lighting program.
         glUseProgram(perVertexProgramHandle);
@@ -187,11 +173,11 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cube.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+            cube.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
         }
 
         // Draw a point to indicate the light.
         glUseProgram(pointProgramHandle);
-        new Light().drawLight(pointProgramHandle, lightPosInModelSpace, mvpMatrix, lightModelMatrix, viewMatrix, projectionMatrix);
+        light.drawLight(pointProgramHandle, mvpMatrix, viewMatrix, projectionMatrix);
     }
 }

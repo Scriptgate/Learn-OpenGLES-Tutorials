@@ -48,7 +48,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
     private final List<Triangle> triangles = new ArrayList<>();
 
-    int programHandle;
+    private int programHandle;
 
     /**
      * Initialize the model data.

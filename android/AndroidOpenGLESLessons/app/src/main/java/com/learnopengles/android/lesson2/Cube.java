@@ -2,6 +2,7 @@ package com.learnopengles.android.lesson2;
 
 import android.opengl.Matrix;
 
+import com.learnopengles.android.common.Light;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
@@ -16,8 +17,6 @@ import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
-import static android.opengl.GLES20.glUniform3f;
-import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glVertexAttribPointer;
 
 public class Cube {
@@ -37,7 +36,7 @@ public class Cube {
     /**
      * Draws a cube.
      */
-    public void drawCube(int perVertexProgramHandle, FloatBuffer cubePositions, FloatBuffer cubeNormals, FloatBuffer cubeColors, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace) {
+    public void drawCube(int perVertexProgramHandle, FloatBuffer cubePositions, FloatBuffer cubeNormals, FloatBuffer cubeColors, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light lightPosInEyeSpace) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
@@ -69,14 +68,20 @@ public class Cube {
 
         glEnableVertexAttribArray(normalHandle);
 
+        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
+        // (which currently contains model * view).
         mvpMatrix.multiply(modelMatrix, viewMatrix);
+        // Pass in the modelview matrix.
         mvpMatrix.passTo(mvMatrixHandle);
 
+        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
+        // (which now contains model * view * projection).
         mvpMatrix.multiply(projectionMatrix);
+        // Pass in the combined matrix.
         mvpMatrix.passTo(mvpMatrixHandle);
 
         // Pass in the light position in eye space.
-        glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+        lightPosInEyeSpace.passTo(lightPosHandle);
 
         // Draw the cube.
         glDrawArrays(GL_TRIANGLES, 0, 36);

@@ -49,8 +49,6 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
-    private ModelMatrix lightModelMatrix = new ModelMatrix();
-
     /**
      * Store our model data in a float buffer.
      */
@@ -58,22 +56,6 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     private final FloatBuffer cubeColors;
     private final FloatBuffer cubeNormals;
     private final FloatBuffer cubeTextureCoordinates;
-
-    /**
-     * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
-     * we multiply this by our transformation matrices.
-     */
-    private final float[] lightPosInModelSpace = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
-
-    /**
-     * Used to hold the current position of the light in world space (after transformation via model matrix).
-     */
-    private final float[] lightPosInWorldSpace = new float[4];
-
-    /**
-     * Used to hold the transformed position of the light in eye space (after transformation via modelview matrix)
-     */
-    private final float[] lightPosInEyeSpace = new float[4];
 
     /**
      * This is a handle to our cube shading program.
@@ -91,6 +73,8 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     private int textureDataHandle;
 
     private List<Cube> cubes;
+
+    private Light light;
 
     /**
      * Initialize the model data.
@@ -173,6 +157,8 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubes.add(new Cube(new Point(0.0f, 4.0f, -7.0f)));
         cubes.add(new Cube(new Point(0.0f, -4.0f, -7.0f)));
         cubes.add(new Cube(new Point(0.0f, 0.0f, -5.0f)));
+
+        light = new Light();
     }
 
     protected String getVertexShader() {
@@ -249,14 +235,12 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         glUniform1i(textureUniformHandle, 0);
 
         // Calculate position of the light. Rotate and then push into the distance.
-        lightModelMatrix.setIdentity();
-        lightModelMatrix.translate(new Point(0.0f, 0.0f, -5.0f));
-        lightModelMatrix.rotate(new Point(0.0f, angleInDegrees, 0.0f));
-        lightModelMatrix.translate(new Point(0.0f, 0.0f, 2.0f));
+        light.setIdentity();
+        light.translate(new Point(0.0f, 0.0f, -5.0f));
+        light.rotate(new Point(0.0f, angleInDegrees, 0.0f));
+        light.translate(new Point(0.0f, 0.0f, 2.0f));
 
-        lightModelMatrix.multiplyWithVectorAndStore(lightPosInModelSpace, lightPosInWorldSpace);
-
-        viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
+        light.setView(viewMatrix);
 
         // Draw some cubes.
         cubes.get(0).setRotationX(angleInDegrees);
@@ -266,11 +250,11 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cube.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace);
+            cube.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
         }
 
         // Draw a point to indicate the light.
         glUseProgram(pointProgramHandle);
-        new Light().drawLight(pointProgramHandle, lightPosInModelSpace, mvpMatrix, lightModelMatrix, viewMatrix, projectionMatrix);
+        light.drawLight(pointProgramHandle, mvpMatrix, viewMatrix, projectionMatrix);
     }
 }
