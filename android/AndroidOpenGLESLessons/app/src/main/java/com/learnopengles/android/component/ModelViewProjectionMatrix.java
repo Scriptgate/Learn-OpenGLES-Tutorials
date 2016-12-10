@@ -18,7 +18,19 @@ public class ModelViewProjectionMatrix {
         projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
     }
 
-    public void passTo(int mvpMatrixHandle) {
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+    public void passTo(int matrixHandle) {
+        glUniformMatrix4fv(matrixHandle, 1, false, mvpMatrix, 0);
+    }
+
+    public void multiply(ModelMatrix modelMatrix, ViewMatrix viewMatrix) {
+        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
+        // (which currently contains model * view).
+        modelMatrix.multiplyWithMatrixAndStore(viewMatrix, mvpMatrix);
+    }
+
+    public void multiply(ProjectionMatrix projectionMatrix) {
+        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
+        // (which now contains model * view * projection).
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
     }
 }

@@ -9,6 +9,7 @@ import com.learnopengles.android.R;
 import com.learnopengles.android.common.Light;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -46,15 +47,9 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     private ViewMatrix viewMatrix = createViewInFrontOrigin();
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
-    /**
-     * Allocate storage for the final combined matrix. This will be passed into the shader program.
-     */
-    private float[] mvpMatrix = new float[16];
+    private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
-    /**
-     * Stores a copy of the model matrix specifically for the light position.
-     */
-    private float[] lightModelMatrix = new float[16];
+    private ModelMatrix lightModelMatrix = new ModelMatrix();
 
     /**
      * Store our model data in a float buffer.
@@ -254,12 +249,13 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         glUniform1i(textureUniformHandle, 0);
 
         // Calculate position of the light. Rotate and then push into the distance.
-        Matrix.setIdentityM(lightModelMatrix, 0);
-        Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(lightModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
-        Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, 2.0f);
+        lightModelMatrix.setIdentity();
+        lightModelMatrix.translate(new Point(0.0f, 0.0f, -5.0f));
+        lightModelMatrix.rotate(new Point(0.0f, angleInDegrees, 0.0f));
+        lightModelMatrix.translate(new Point(0.0f, 0.0f, 2.0f));
 
-        Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
+        lightModelMatrix.multiplyWithVectorAndStore(lightPosInModelSpace, lightPosInWorldSpace);
+
         viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
 
         // Draw some cubes.

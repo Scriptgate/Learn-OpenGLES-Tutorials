@@ -30,4 +30,8 @@ public class ModelMatrix {
         //TODO: refactor into mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         viewMatrix.multiplyWithMatrixAndStore(modelMatrix, resultMatrix);
     }
+
+    public void multiplyWithVectorAndStore(float[] vector, float[] resultVector) {
+        Matrix.multiplyMV(resultVector, 0, modelMatrix, 0, vector, 0);
+    }
 }

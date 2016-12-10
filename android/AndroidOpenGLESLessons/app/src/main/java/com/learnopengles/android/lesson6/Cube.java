@@ -30,15 +30,15 @@ public class Cube {
 
         // Pass in the position information
         cubePositions.position(0);
+        glEnableVertexAttribArray(positionHandle);
         glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
 
-        glEnableVertexAttribArray(positionHandle);
 
         // Pass in the normal information
         cubeNormals.position(0);
+        glEnableVertexAttribArray(normalHandle);
         glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, cubeNormals);
 
-        glEnableVertexAttribArray(normalHandle);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).

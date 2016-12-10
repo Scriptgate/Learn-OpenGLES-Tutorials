@@ -42,26 +42,26 @@ public class Triangle {
         vertices = allocateBuffer(verticesData);
     }
 
+    //TODO: remove magic strings
     public void draw(int programHandle, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
 
-        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int colorHandle = glGetAttribLocation(programHandle, "a_Color");
-
         // Pass in the position information
+        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
         vertices.position(POSITION_DATA_OFFSET);
         glEnableVertexAttribArray(positionHandle);
         glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
         // Pass in the color information
+        int colorHandle = glGetAttribLocation(programHandle, "a_Color");
         vertices.position(COLOR_DATA_OFFSET);
         glEnableVertexAttribArray(colorHandle);
         glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
+        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(mvpMatrixHandle);
 

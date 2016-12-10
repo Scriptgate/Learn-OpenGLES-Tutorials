@@ -12,6 +12,7 @@ public class Program {
         int vertexShaderHandle = loadShader(GL_VERTEX_SHADER, vertexShaderResource);
         int fragmentShaderHandle = loadShader(GL_FRAGMENT_SHADER, fragmentShaderResource);
 
+        //TODO: remove magic strings
         return createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[] {"a_Position","a_Color"});
     }
 

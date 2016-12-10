@@ -4,6 +4,7 @@ import android.opengl.Matrix;
 
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -36,7 +37,7 @@ public class Cube {
     /**
      * Draws a cube.
      */
-    public void drawCube(int perVertexProgramHandle, FloatBuffer cubePositions, FloatBuffer cubeNormals, FloatBuffer cubeColors, float[] mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace) {
+    public void drawCube(int perVertexProgramHandle, FloatBuffer cubePositions, FloatBuffer cubeNormals, FloatBuffer cubeColors, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
@@ -68,19 +69,11 @@ public class Cube {
 
         glEnableVertexAttribArray(normalHandle);
 
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        modelMatrix.multiplyWithMatrixAndStore(viewMatrix, mvpMatrix);
+        mvpMatrix.multiply(modelMatrix, viewMatrix);
+        mvpMatrix.passTo(mvMatrixHandle);
 
-        // Pass in the modelview matrix.
-        glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
-        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
-
-        // Pass in the combined matrix.
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+        mvpMatrix.multiply(projectionMatrix);
+        mvpMatrix.passTo(mvpMatrixHandle);
 
         // Pass in the light position in eye space.
         glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
