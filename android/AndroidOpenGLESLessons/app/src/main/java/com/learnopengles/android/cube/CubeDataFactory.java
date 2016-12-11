@@ -1,6 +1,7 @@
 package com.learnopengles.android.cube;
 
 import com.learnopengles.android.common.Color;
+import com.learnopengles.android.common.Point2D;
 import com.learnopengles.android.common.Point3D;
 
 import java.util.ArrayList;
@@ -54,11 +55,11 @@ public class CubeDataFactory {
     }
 
     public static float[] generateNormalData(Point3D front,
-                                            Point3D right,
-                                            Point3D back,
-                                            Point3D left,
-                                            Point3D top,
-                                            Point3D bottom) {
+                                             Point3D right,
+                                             Point3D back,
+                                             Point3D left,
+                                             Point3D top,
+                                             Point3D bottom) {
         List<Face> faces = new ArrayList<>();
         faces.add(new Point3DFace(front));
         faces.add(new Point3DFace(right));
@@ -108,6 +109,21 @@ public class CubeDataFactory {
         return generateData(faces);
     }
 
+    public static float[] generateTextureData() {
+        Point2D p1 = new Point2D(0.0f, 0.0f);
+        Point2D p2 = new Point2D(1.0f, 0.0f);
+        Point2D p3 = new Point2D(0.0f, 1.0f);
+        Point2D p4 = new Point2D(1.0f, 1.0f);
+
+        Point2DFace face = new Point2DFace(p1, p2, p3, p4);
+
+        List<Face> faces = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            faces.add(face);
+        }
+
+        return generateData(faces);
+    }
 
     private static float[] generateData(List<Face> faces) {
         final int size = faces.iterator().next().getNumberOfElements() * 6 * 6;
