@@ -47,12 +47,6 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     /**
-     * Store our model data in a float buffer.
-     */
-    private final FloatBuffer cubePositions;
-    private final FloatBuffer cubeColors;
-
-    /**
      * This is a handle to our cube shading program.
      */
     private int programHandle;
@@ -70,20 +64,14 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     public BlendingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
-        final float[] cubePositionData = CubeDataFactory.generatePositionData(1.0f,1.0f,1.0f);
-
-        final float[] cubeColorData = CubeDataFactory.generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN);
-
-        // Initialize the buffers.
-        cubePositions = allocateBuffer(cubePositionData);
-        cubeColors = allocateBuffer(cubeColorData);
+        CubeData cubeData = new CubeData();
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(new Point(4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(new Point(-4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, 4.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, -4.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, 0.0f, -5.0f)));
+        cubes.add(new Cube(cubeData, new Point(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point(0.0f, 0.0f, -5.0f)));
     }
 
     protected String getVertexShader() {
@@ -174,7 +162,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cube.drawCube(programHandle, cubePositions, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+            cube.drawCube(programHandle, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         }
     }
 }

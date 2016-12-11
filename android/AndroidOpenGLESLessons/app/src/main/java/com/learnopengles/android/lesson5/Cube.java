@@ -12,17 +12,16 @@ import static android.opengl.GLES20.*;
 
 public class Cube {
 
-    private static final int POSITION_DATA_SIZE = 3;
-    private static final int COLOR_DATA_SIZE = 4;
-
+    private CubeData cubeData;
     private Point position = new Point();
     private Point rotation = new Point();
 
-    public Cube(Point point) {
+    public Cube(CubeData cubeData, Point point) {
+        this.cubeData = cubeData;
         this.position = point;
     }
 
-    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
+    public void drawCube(int programHandle, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
@@ -33,16 +32,10 @@ public class Cube {
         int colorHandle = glGetAttribLocation(programHandle, "a_Color");
 
         // Pass in the position information
-        cubePositions.position(0);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
-
-        glEnableVertexAttribArray(positionHandle);
+        cubeData.passPositionTo(positionHandle);
 
         // Pass in the color information
-        cubeColors.position(0);
-        glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, 0, cubeColors);
-
-        glEnableVertexAttribArray(colorHandle);
+        cubeData.passColorTo(colorHandle);
 
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
 
