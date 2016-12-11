@@ -50,12 +50,12 @@ public class CubeDataFactory {
         return generateData(faces);
     }
 
-    public static float[] generateNormalData(Point front,
-                                            Point right,
-                                            Point back,
-                                            Point left,
-                                            Point top,
-                                            Point bottom) {
+    public static float[] generateNormalData(Point3D front,
+                                            Point3D right,
+                                            Point3D back,
+                                            Point3D left,
+                                            Point3D top,
+                                            Point3D bottom) {
         List<Face> faces = new ArrayList<>();
         faces.add(new PointFace(front));
         faces.add(new PointFace(right));
@@ -68,23 +68,23 @@ public class CubeDataFactory {
     }
 
     public static float[] generateNormalData() {
-        Point front = new Point(0.0f, 0.0f, 1.0f);
-        Point right = new Point(1.0f, 0.0f, 0.0f);
-        Point back = new Point(0.0f, 0.0f, -1.0f);
-        Point left = new Point(-1.0f, 0.0f, 0.0f);
-        Point top = new Point(0.0f, 1.0f, 0.0f);
-        Point bottom = new Point(0.0f, -1.0f, 0.0f);
+        Point3D front = new Point3D(0.0f, 0.0f, 1.0f);
+        Point3D right = new Point3D(1.0f, 0.0f, 0.0f);
+        Point3D back = new Point3D(0.0f, 0.0f, -1.0f);
+        Point3D left = new Point3D(-1.0f, 0.0f, 0.0f);
+        Point3D top = new Point3D(0.0f, 1.0f, 0.0f);
+        Point3D bottom = new Point3D(0.0f, -1.0f, 0.0f);
         return generateNormalData(front, right, back, left, top, bottom);
     }
 
-    public static float[] generatePositionData(Point frontA,
-                                               Point frontB,
-                                               Point frontC,
-                                               Point frontD,
-                                               Point backA,
-                                               Point backB,
-                                               Point backC,
-                                               Point backD) {
+    public static float[] generatePositionData(Point3D frontA,
+                                               Point3D frontB,
+                                               Point3D frontC,
+                                               Point3D frontD,
+                                               Point3D backA,
+                                               Point3D backB,
+                                               Point3D backC,
+                                               Point3D backD) {
         List<Face> faces = new ArrayList<>();
         //@formatter:off
         PointFace FRONT  = new PointFace(frontA, frontB, frontC, frontD);
@@ -122,14 +122,14 @@ public class CubeDataFactory {
 
     public static float[] generatePositionData(float width, float height, float depth) {
         //@formatter:off
-        final Point frontA = new Point(-width,  height,  depth);
-        final Point frontB = new Point( width,  height,  depth);
-        final Point frontC = new Point(-width, -height,  depth);
-        final Point frontD = new Point( width, -height,  depth);
-        final Point backA  = new Point(-width,  height, -depth);
-        final Point backB  = new Point( width,  height, -depth);
-        final Point backC  = new Point(-width, -height, -depth);
-        final Point backD  = new Point( width, -height, -depth);
+        final Point3D frontA = new Point3D(-width,  height,  depth);
+        final Point3D frontB = new Point3D( width,  height,  depth);
+        final Point3D frontC = new Point3D(-width, -height,  depth);
+        final Point3D frontD = new Point3D( width, -height,  depth);
+        final Point3D backA  = new Point3D(-width,  height, -depth);
+        final Point3D backB  = new Point3D( width,  height, -depth);
+        final Point3D backC  = new Point3D(-width, -height, -depth);
+        final Point3D backD  = new Point3D( width, -height, -depth);
         //@formatter:on
         return generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
     }
@@ -172,13 +172,13 @@ public class CubeDataFactory {
         abstract void addToArray(T element, float[] data, int offset);
     }
 
-    private static class PointFace extends Face<Point> {
+    private static class PointFace extends Face<Point3D> {
 
-        private PointFace(Point p1, Point p2, Point p3, Point p4) {
+        private PointFace(Point3D p1, Point3D p2, Point3D p3, Point3D p4) {
             super(p1, p2, p3, p4);
         }
 
-        private PointFace(Point face) {
+        private PointFace(Point3D face) {
             this(face, face, face, face);
         }
 
@@ -188,7 +188,7 @@ public class CubeDataFactory {
         }
 
         @Override
-        void addToArray(Point element, float[] data, int offset) {
+        void addToArray(Point3D element, float[] data, int offset) {
             data[offset] = element.x;
             data[offset + 1] = element.y;
             data[offset + 2] = element.z;

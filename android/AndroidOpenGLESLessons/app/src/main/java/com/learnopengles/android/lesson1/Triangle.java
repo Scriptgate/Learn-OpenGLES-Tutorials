@@ -1,6 +1,6 @@
 package com.learnopengles.android.lesson1;
 
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
@@ -35,8 +35,8 @@ public class Triangle {
     private static final int COLOR_DATA_SIZE = 4;
 
     private final FloatBuffer vertices;
-    private Point rotation = new Point();
-    private Point position = new Point();
+    private Point3D rotation = new Point3D();
+    private Point3D position = new Point3D();
 
     public Triangle(float[] verticesData) {
         vertices = allocateBuffer(verticesData);
@@ -71,7 +71,7 @@ public class Triangle {
         glDisableVertexAttribArray(colorHandle);
     }
 
-    public void setPosition(Point position) {
+    public void setPosition(Point3D position) {
         this.position = position;
     }
 

@@ -2,7 +2,7 @@ package com.learnopengles.android.lesson1;
 
 
 import com.learnopengles.android.common.Color;
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import static java.lang.Math.toRadians;
 public class TriangleBuilder {
 
     List<ColorPoint> points;
-    private Point position;
+    private Point3D position;
     private Integer rotationY;
     private Integer rotationX;
 
@@ -63,13 +63,13 @@ public class TriangleBuilder {
         float height = (float) sin(toRadians(60)) * length;
         float center = (float) tan(toRadians(30)) * length / 2;
         List<ColorPoint> points = new ArrayList<>();
-        points.add(new ColorPoint(new Point(-length / 2, -center, 0.0f), pointA));
-        points.add(new ColorPoint(new Point(length / 2, -center, 0.0f), pointB));
-        points.add(new ColorPoint(new Point(0.0f, height - center, 0.0f), pointC));
+        points.add(new ColorPoint(new Point3D(-length / 2, -center, 0.0f), pointA));
+        points.add(new ColorPoint(new Point3D(length / 2, -center, 0.0f), pointB));
+        points.add(new ColorPoint(new Point3D(0.0f, height - center, 0.0f), pointC));
         return points;
     }
 
-    public TriangleBuilder position(Point position) {
+    public TriangleBuilder position(Point3D position) {
         this.position = position;
         return this;
     }

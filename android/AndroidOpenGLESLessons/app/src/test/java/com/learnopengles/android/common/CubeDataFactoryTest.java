@@ -188,14 +188,14 @@ public class CubeDataFactoryTest {
     @Test
     public void generatePositionData_givenPoints() throws Exception {
         //@formatter:off
-        final Point frontA = new Point(-1.0f,  1.0f,  1.0f);
-        final Point frontB = new Point( 1.0f,  1.0f,  1.0f);
-        final Point frontC = new Point(-1.0f, -1.0f,  1.0f);
-        final Point frontD = new Point( 1.0f, -1.0f,  1.0f);
-        final Point backA  = new Point(-1.0f,  1.0f, -1.0f);
-        final Point backB  = new Point( 1.0f,  1.0f, -1.0f);
-        final Point backC  = new Point(-1.0f, -1.0f, -1.0f);
-        final Point backD  = new Point( 1.0f, -1.0f, -1.0f);
+        final Point3D frontA = new Point3D(-1.0f,  1.0f,  1.0f);
+        final Point3D frontB = new Point3D( 1.0f,  1.0f,  1.0f);
+        final Point3D frontC = new Point3D(-1.0f, -1.0f,  1.0f);
+        final Point3D frontD = new Point3D( 1.0f, -1.0f,  1.0f);
+        final Point3D backA  = new Point3D(-1.0f,  1.0f, -1.0f);
+        final Point3D backB  = new Point3D( 1.0f,  1.0f, -1.0f);
+        final Point3D backC  = new Point3D(-1.0f, -1.0f, -1.0f);
+        final Point3D backD  = new Point3D( 1.0f, -1.0f, -1.0f);
         //@formatter:on
 
         float[] positionData = generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
@@ -230,12 +230,12 @@ public class CubeDataFactoryTest {
 
     @Test
     public void generateNormalData_perFace() throws Exception {
-        Point front = new Point(0.0f, 0.0f, 1.0f);
-        Point right = new Point(1.0f, 0.0f, 0.0f);
-        Point back = new Point(0.0f, 0.0f, -1.0f);
-        Point left = new Point(-1.0f, 0.0f, 0.0f);
-        Point top = new Point(0.0f, 1.0f, 0.0f);
-        Point bottom = new Point(0.0f, -1.0f, 0.0f);
+        Point3D front = new Point3D(0.0f, 0.0f, 1.0f);
+        Point3D right = new Point3D(1.0f, 0.0f, 0.0f);
+        Point3D back = new Point3D(0.0f, 0.0f, -1.0f);
+        Point3D left = new Point3D(-1.0f, 0.0f, 0.0f);
+        Point3D top = new Point3D(0.0f, 1.0f, 0.0f);
+        Point3D bottom = new Point3D(0.0f, -1.0f, 0.0f);
 
         float[] normalData = CubeDataFactory.generateNormalData(front, right, back, left, top, bottom);
 

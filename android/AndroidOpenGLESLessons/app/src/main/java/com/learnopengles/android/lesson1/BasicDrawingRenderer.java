@@ -3,7 +3,7 @@ package com.learnopengles.android.lesson1;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
@@ -64,14 +64,14 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
         // Draw one translated a bit down and rotated to be flat on the ground.
         triangles.add(triangle()
                 .equilateral(1, YELLOW, CYAN, MAGENTA)
-                .position(new Point(0.0f, -1.0f, 0.0f))
+                .position(new Point3D(0.0f, -1.0f, 0.0f))
                 .rotateX(90)
                 .build());
 
         // Draw one translated a bit to the right and rotated to be facing to the left.
         triangles.add(triangle()
                 .equilateral(1, WHITE, GREY, BLACK)
-                .position(new Point(1.0f, 0.0f, 0.0f))
+                .position(new Point3D(1.0f, 0.0f, 0.0f))
                 .rotateY(90)
                 .build());
     }

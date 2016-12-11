@@ -6,7 +6,7 @@ import android.os.SystemClock;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Light;
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
@@ -151,11 +151,11 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(new Point(4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(new Point(-4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, 4.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, -4.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, 0.0f, -5.0f)));
+        cubes.add(new Cube(new Point3D(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(new Point3D(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(new Point3D(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(new Point3D(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(new Point3D(0.0f, 0.0f, -5.0f)));
 
         light = new Light();
     }
@@ -235,9 +235,9 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
         // Calculate position of the light. Rotate and then push into the distance.
         light.setIdentity();
-        light.translate(new Point(0.0f, 0.0f, -5.0f));
-        light.rotate(new Point(0.0f, angleInDegrees, 0.0f));
-        light.translate(new Point(0.0f, 0.0f, 2.0f));
+        light.translate(new Point3D(0.0f, 0.0f, -5.0f));
+        light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
+        light.translate(new Point3D(0.0f, 0.0f, 2.0f));
 
         light.setView(viewMatrix);
 

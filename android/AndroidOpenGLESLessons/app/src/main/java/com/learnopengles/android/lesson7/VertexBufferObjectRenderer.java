@@ -6,7 +6,7 @@ import android.opengl.Matrix;
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonSevenActivity;
 import com.learnopengles.android.common.CubeDataFactory;
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -255,14 +255,14 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
                             // Define points for a cube.
                             // X, Y, Z
-                            final Point p1p = new Point(x1, y2, z2);
-                            final Point p2p = new Point(x2, y2, z2);
-                            final Point p3p = new Point(x1, y1, z2);
-                            final Point p4p = new Point(x2, y1, z2);
-                            final Point p5p = new Point(x1, y2, z1);
-                            final Point p6p = new Point(x2, y2, z1);
-                            final Point p7p = new Point(x1, y1, z1);
-                            final Point p8p = new Point(x2, y1, z1);
+                            final Point3D p1p = new Point3D(x1, y2, z2);
+                            final Point3D p2p = new Point3D(x2, y2, z2);
+                            final Point3D p3p = new Point3D(x1, y1, z2);
+                            final Point3D p4p = new Point3D(x2, y1, z2);
+                            final Point3D p5p = new Point3D(x1, y2, z1);
+                            final Point3D p6p = new Point3D(x2, y2, z1);
+                            final Point3D p7p = new Point3D(x1, y1, z1);
+                            final Point3D p8p = new Point3D(x2, y1, z1);
 
                             final float[] thisCubePositionData = CubeDataFactory.generatePositionData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
 

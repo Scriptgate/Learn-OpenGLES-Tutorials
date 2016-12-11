@@ -1,27 +1,25 @@
 package com.learnopengles.android.lesson2;
 
 import com.learnopengles.android.common.Light;
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
-import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 
 public class Cube {
 
     private final CubeData cubeData;
-    private Point position = new Point();
-    private Point rotation = new Point();
+    private Point3D position = new Point3D();
+    private Point3D rotation = new Point3D();
 
-    public Cube(CubeData cubeData, Point point) {
+    public Cube(CubeData cubeData, Point3D point) {
         this.cubeData = cubeData;
         this.position = point;
     }
@@ -86,7 +84,7 @@ public class Cube {
         this.rotation.z = rotation;
     }
 
-    public void setPosition(Point position) {
+    public void setPosition(Point3D position) {
         this.position = position;
     }
 }

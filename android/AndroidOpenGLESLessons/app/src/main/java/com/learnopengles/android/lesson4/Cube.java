@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson4;
 
 import com.learnopengles.android.common.Light;
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
@@ -24,10 +24,10 @@ public class Cube {
     private static final int NORMAL_DATA_SIZE = 3;
     private static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
 
-    private Point position = new Point();
-    private Point rotation = new Point();
+    private Point3D position = new Point3D();
+    private Point3D rotation = new Point3D();
 
-    public Cube(Point point) {
+    public Cube(Point3D point) {
         this.position = point;
     }
 
@@ -103,7 +103,7 @@ public class Cube {
         this.rotation.z = rotation;
     }
 
-    public void setPosition(Point position) {
+    public void setPosition(Point3D position) {
         this.position = position;
     }
 

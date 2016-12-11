@@ -2,7 +2,7 @@ package com.learnopengles.android.component;
 
 import android.opengl.Matrix;
 
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 
 public class ModelMatrix {
 
@@ -16,11 +16,11 @@ public class ModelMatrix {
         Matrix.setIdentityM(modelMatrix, 0);
     }
 
-    public void translate(Point point) {
+    public void translate(Point3D point) {
         Matrix.translateM(modelMatrix, 0, point.x, point.y, point.z);
     }
 
-    public void rotate(Point rotation) {
+    public void rotate(Point3D rotation) {
         Matrix.rotateM(modelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
         Matrix.rotateM(modelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
         Matrix.rotateM(modelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);

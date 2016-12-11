@@ -2,13 +2,13 @@ package com.learnopengles.android.component;
 
 import android.opengl.Matrix;
 
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 
 public class ViewMatrix {
 
-    private final Point eye;
-    private final Point look;
-    private final Point up;
+    private final Point3D eye;
+    private final Point3D look;
+    private final Point3D up;
 
     /**
      * Store the view matrix. This can be thought of as our camera. This matrix transforms world space to eye space;
@@ -16,7 +16,7 @@ public class ViewMatrix {
      */
     private float[] viewMatrix = new float[16];
 
-    private ViewMatrix(Point eye, Point look, Point up) {
+    private ViewMatrix(Point3D eye, Point3D look, Point3D up) {
         this.eye = eye;
         this.look = look;
         this.up = up;
@@ -24,22 +24,22 @@ public class ViewMatrix {
 
     public static ViewMatrix createViewInFrontOrigin() {
         // Position the eye in front of the origin.
-        Point eye = new Point(0.0f, 0.0f, -0.5f);
+        Point3D eye = new Point3D(0.0f, 0.0f, -0.5f);
         return createViewMatrix(eye);
     }
 
     public static ViewMatrix createViewBehindOrigin() {
         // Position the eye behind the origin.
-        Point eye = new Point(0.0f, 0.0f, 1.5f);
+        Point3D eye = new Point3D(0.0f, 0.0f, 1.5f);
         return createViewMatrix(eye);
     }
 
-    private static ViewMatrix createViewMatrix(Point eye) {
+    private static ViewMatrix createViewMatrix(Point3D eye) {
         // We are looking toward the distance
-        Point look = new Point(0.0f, 0.0f, -5.0f);
+        Point3D look = new Point3D(0.0f, 0.0f, -5.0f);
 
         // Set our up vector. This is where our head would be pointing were we holding the camera.
-        Point up = new Point(0.0f, 1.0f, 0.0f);
+        Point3D up = new Point3D(0.0f, 1.0f, 0.0f);
 
         return new ViewMatrix(eye, look, up);
     }

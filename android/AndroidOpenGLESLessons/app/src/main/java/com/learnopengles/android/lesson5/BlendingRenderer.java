@@ -5,14 +5,12 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.CubeDataFactory;
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +18,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
@@ -67,11 +63,11 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         CubeData cubeData = new CubeData();
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(cubeData, new Point(4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point(-4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point(0.0f, 4.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point(0.0f, -4.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point(0.0f, 0.0f, -5.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, 0.0f, -5.0f)));
     }
 
     protected String getVertexShader() {

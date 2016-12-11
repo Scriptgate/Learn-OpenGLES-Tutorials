@@ -58,11 +58,11 @@ public class Light {
         lightModelMatrix.setIdentity();
     }
 
-    public void translate(Point point) {
+    public void translate(Point3D point) {
         lightModelMatrix.translate(point);
     }
 
-    public void rotate(Point rotation) {
+    public void rotate(Point3D rotation) {
         lightModelMatrix.rotate(rotation);
     }
 

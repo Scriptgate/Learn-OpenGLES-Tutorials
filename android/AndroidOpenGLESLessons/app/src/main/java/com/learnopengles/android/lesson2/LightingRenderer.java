@@ -4,13 +4,12 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Light;
-import com.learnopengles.android.common.Point;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,20 +17,10 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.BLUE;
-import static com.learnopengles.android.common.Color.CYAN;
-import static com.learnopengles.android.common.Color.GREEN;
-import static com.learnopengles.android.common.Color.MAGENTA;
-import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.common.Color.YELLOW;
-import static com.learnopengles.android.common.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.common.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.common.CubeDataFactory.generatePositionData;
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 
 /**
@@ -73,11 +62,11 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         CubeData cubeData = new CubeData();
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(cubeData, new Point(4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point(-4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point(0.0f, 4.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point(0.0f, -4.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point(0.0f, 0.0f, -5.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, 0.0f, -5.0f)));
 
         light = new Light();
     }
@@ -136,9 +125,9 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
         // Calculate position of the light. Rotate and then push into the distance.
         light.setIdentity();
-        light.translate(new Point(0.0f, 0.0f, -5.0f));
-        light.rotate(new Point(0.0f, angleInDegrees, 0.0f));
-        light.translate(new Point(0.0f, 0.0f, 2.0f));
+        light.translate(new Point3D(0.0f, 0.0f, -5.0f));
+        light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
+        light.translate(new Point3D(0.0f, 0.0f, 2.0f));
 
         light.setView(viewMatrix);
 
