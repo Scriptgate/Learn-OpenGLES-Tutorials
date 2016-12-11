@@ -1,9 +1,8 @@
 package com.learnopengles.android.lesson5;
 
-import android.opengl.Matrix;
-
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -23,7 +22,7 @@ public class Cube {
         this.position = point;
     }
 
-    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, float[] mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
+    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
@@ -45,16 +44,10 @@ public class Cube {
 
         glEnableVertexAttribArray(colorHandle);
 
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
-        modelMatrix.multiplyWithMatrixAndStore(viewMatrix, mvpMatrix);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
-        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
+        mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
 
         // Pass in the combined matrix.
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+        mvpMatrix.passTo(mvpMatrixHandle);
 
         // Draw the cube.
         glDrawArrays(GL_TRIANGLES, 0, 36);

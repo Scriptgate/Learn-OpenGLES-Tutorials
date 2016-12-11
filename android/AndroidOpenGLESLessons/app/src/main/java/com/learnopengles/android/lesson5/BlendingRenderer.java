@@ -8,6 +8,7 @@ import com.learnopengles.android.R;
 import com.learnopengles.android.common.CubeDataFactory;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 
@@ -43,10 +44,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     private ViewMatrix viewMatrix = createViewInFrontOrigin();
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
-    /**
-     * Allocate storage for the final combined matrix. This will be passed into the shader program.
-     */
-    private float[] mvpMatrix = new float[16];
+    private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     /**
      * Store our model data in a float buffer.
