@@ -2,7 +2,6 @@ package com.learnopengles.android.lesson4;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
@@ -22,7 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.common.CubeBuilder.*;
+import static com.learnopengles.android.common.CubeDataFactory.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;

@@ -8,12 +8,12 @@ import static com.learnopengles.android.common.Color.GREEN;
 import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.YELLOW;
-import static com.learnopengles.android.common.CubeBuilder.generateColorData;
-import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
-import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
+import static com.learnopengles.android.common.CubeDataFactory.generateColorData;
+import static com.learnopengles.android.common.CubeDataFactory.generateNormalData;
+import static com.learnopengles.android.common.CubeDataFactory.generatePositionData;
 import static org.junit.Assert.assertArrayEquals;
 
-public class CubeBuilderTest {
+public class CubeDataFactoryTest {
 
     public static final float DELTA = 0.000000001f;
 
@@ -223,7 +223,7 @@ public class CubeBuilderTest {
 
     @Test
     public void generateNormalData() throws Exception {
-        float[] normalData = CubeBuilder.generateNormalData();
+        float[] normalData = CubeDataFactory.generateNormalData();
 
         assertArrayEquals(normalData, NORMAL, DELTA);
     }
@@ -237,7 +237,7 @@ public class CubeBuilderTest {
         Point top = new Point(0.0f, 1.0f, 0.0f);
         Point bottom = new Point(0.0f, -1.0f, 0.0f);
 
-        float[] normalData = CubeBuilder.generateNormalData(front, right, back, left, top, bottom);
+        float[] normalData = CubeDataFactory.generateNormalData(front, right, back, left, top, bottom);
 
         assertArrayEquals(normalData, NORMAL, DELTA);
     }

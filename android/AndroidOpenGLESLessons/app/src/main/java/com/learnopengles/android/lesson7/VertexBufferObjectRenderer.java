@@ -5,7 +5,7 @@ import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonSevenActivity;
-import com.learnopengles.android.common.CubeBuilder;
+import com.learnopengles.android.common.CubeDataFactory;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
@@ -17,7 +17,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
+import static com.learnopengles.android.common.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
@@ -264,7 +264,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
                             final Point p7p = new Point(x1, y1, z1);
                             final Point p8p = new Point(x2, y1, z1);
 
-                            final float[] thisCubePositionData = CubeBuilder.generatePositionData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
+                            final float[] thisCubePositionData = CubeDataFactory.generatePositionData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
 
                             System.arraycopy(thisCubePositionData, 0, cubePositionData, cubePositionDataOffset, thisCubePositionData.length);
                             cubePositionDataOffset += thisCubePositionData.length;

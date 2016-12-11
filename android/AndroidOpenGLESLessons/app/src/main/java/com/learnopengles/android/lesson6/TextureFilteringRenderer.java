@@ -15,8 +15,8 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
-import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
+import static com.learnopengles.android.common.CubeDataFactory.generateNormalData;
+import static com.learnopengles.android.common.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;

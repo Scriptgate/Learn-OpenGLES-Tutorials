@@ -3,7 +3,7 @@ package com.learnopengles.android.common;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CubeBuilder {
+public class CubeDataFactory {
 
     public static float[] generateColorData(Color front,
                                             Color right,

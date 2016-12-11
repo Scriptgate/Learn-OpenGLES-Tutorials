@@ -1,7 +1,6 @@
 package com.learnopengles.android.lesson2;
 
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Light;
@@ -25,9 +24,9 @@ import static com.learnopengles.android.common.Color.GREEN;
 import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.YELLOW;
-import static com.learnopengles.android.common.CubeBuilder.generateColorData;
-import static com.learnopengles.android.common.CubeBuilder.generateNormalData;
-import static com.learnopengles.android.common.CubeBuilder.generatePositionData;
+import static com.learnopengles.android.common.CubeDataFactory.generateColorData;
+import static com.learnopengles.android.common.CubeDataFactory.generateNormalData;
+import static com.learnopengles.android.common.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readShaderFileFromResource;
@@ -150,9 +149,6 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         // Do a complete rotation every 10 seconds.
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-
-
-
 
         // Calculate position of the light. Rotate and then push into the distance.
         light.setIdentity();

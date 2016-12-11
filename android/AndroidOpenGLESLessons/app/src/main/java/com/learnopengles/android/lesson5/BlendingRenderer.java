@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.CubeBuilder;
+import com.learnopengles.android.common.CubeDataFactory;
 import com.learnopengles.android.common.Point;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
@@ -72,9 +72,9 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     public BlendingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
-        final float[] cubePositionData = CubeBuilder.generatePositionData(1.0f,1.0f,1.0f);
+        final float[] cubePositionData = CubeDataFactory.generatePositionData(1.0f,1.0f,1.0f);
 
-        final float[] cubeColorData = CubeBuilder.generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN);
+        final float[] cubeColorData = CubeDataFactory.generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN);
 
         // Initialize the buffers.
         cubePositions = allocateBuffer(cubePositionData);
