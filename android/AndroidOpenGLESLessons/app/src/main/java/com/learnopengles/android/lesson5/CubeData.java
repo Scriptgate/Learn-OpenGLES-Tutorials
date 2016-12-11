@@ -1,6 +1,6 @@
 package com.learnopengles.android.lesson5;
 
-import com.learnopengles.android.common.CubeDataFactory;
+import com.learnopengles.android.cube.CubeDataFactory;
 
 import java.nio.FloatBuffer;
 

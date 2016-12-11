@@ -5,7 +5,7 @@ import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonSevenActivity;
-import com.learnopengles.android.common.CubeDataFactory;
+import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
@@ -17,7 +17,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.CubeDataFactory.generateNormalData;
+import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;

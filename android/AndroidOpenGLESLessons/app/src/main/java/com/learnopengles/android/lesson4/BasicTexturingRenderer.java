@@ -21,7 +21,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.common.CubeDataFactory.*;
+import static com.learnopengles.android.cube.CubeDataFactory.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;

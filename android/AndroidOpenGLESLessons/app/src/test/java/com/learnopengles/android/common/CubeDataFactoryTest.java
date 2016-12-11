@@ -1,5 +1,7 @@
 package com.learnopengles.android.common;
 
+import com.learnopengles.android.cube.CubeDataFactory;
+
 import org.junit.Test;
 
 import static com.learnopengles.android.common.Color.BLUE;
@@ -8,9 +10,9 @@ import static com.learnopengles.android.common.Color.GREEN;
 import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.YELLOW;
-import static com.learnopengles.android.common.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.common.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.common.CubeDataFactory.generatePositionData;
+import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
+import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
+import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static org.junit.Assert.assertArrayEquals;
 
 public class CubeDataFactoryTest {
