@@ -51,13 +51,6 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     /**
-     * Store our model data in a float buffer.
-     */
-    private final FloatBuffer cubePositions;
-    private final FloatBuffer cubeColors;
-    private final FloatBuffer cubeNormals;
-
-    /**
      * This is a handle to our per-vertex cube shading program.
      */
     private int perVertexProgramHandle;
@@ -77,23 +70,14 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
     public LightingRenderer() {
         // Define points for a cube.
 
-        final float[] cubePositionData = generatePositionData(1.0f, 1.0f, 1.0f);
-
-        final float[] cubeColorData = generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
-
-        float[] cubeNormalData = generateNormalData();
-
-        // Initialize the buffers.
-        cubePositions = allocateBuffer(cubePositionData);
-        cubeColors = allocateBuffer(cubeColorData);
-        cubeNormals = allocateBuffer(cubeNormalData);
+        CubeData cubeData = new CubeData();
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(new Point(4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(new Point(-4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, 4.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, -4.0f, -7.0f)));
-        cubes.add(new Cube(new Point(0.0f, 0.0f, -5.0f)));
+        cubes.add(new Cube(cubeData, new Point(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point(0.0f, 0.0f, -5.0f)));
 
         light = new Light();
     }
@@ -169,7 +153,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cube.drawCube(perVertexProgramHandle, cubePositions, cubeNormals, cubeColors, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
+            cube.drawCube(perVertexProgramHandle, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
         }
 
         // Draw a point to indicate the light.
