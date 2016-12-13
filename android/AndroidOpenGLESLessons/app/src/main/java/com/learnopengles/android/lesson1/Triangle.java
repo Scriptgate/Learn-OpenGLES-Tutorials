@@ -16,6 +16,9 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.lesson1.program.AttributeVariable.COLOR;
+import static com.learnopengles.android.lesson1.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.lesson1.program.UniformVariable.MVP_MATRIX;
 
 
 public class Triangle {
@@ -48,18 +51,18 @@ public class Triangle {
 
         // Pass in the position information
 
-        int positionHandle = program.getPositionHandle();
+        int positionHandle = program.getHandle(POSITION);
         vertices.position(POSITION_DATA_OFFSET);
         glEnableVertexAttribArray(positionHandle);
         glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
         // Pass in the color information
-        int colorHandle = program.getColorHandle();
+        int colorHandle = program.getHandle(COLOR);
         vertices.position(COLOR_DATA_OFFSET);
         glEnableVertexAttribArray(colorHandle);
         glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
-        int mvpMatrixHandle = program.getMVPHandle();
+        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(mvpMatrixHandle);
 
