@@ -19,25 +19,12 @@ import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
 import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
 import static android.opengl.GLES20.glClear;
 import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glUseProgram;
-import static com.learnopengles.android.common.Color.BLACK;
-import static com.learnopengles.android.common.Color.BLUE;
-import static com.learnopengles.android.common.Color.CYAN;
-import static com.learnopengles.android.common.Color.GREEN;
-import static com.learnopengles.android.common.Color.GREY;
-import static com.learnopengles.android.common.Color.MAGENTA;
-import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.common.Color.WHITE;
-import static com.learnopengles.android.common.Color.YELLOW;
+import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewBehindOrigin;
 import static com.learnopengles.android.lesson1.Program.createProgram;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
 
-/**
- * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
- * renderers -- the static class GLES20 is used instead.
- */
 public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
@@ -48,7 +35,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
     private final List<Triangle> triangles = new ArrayList<>();
 
-    private int programHandle;
+    private Program program;
 
     /**
      * Initialize the model data.
@@ -83,11 +70,9 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        // Create a program object and store the handle to it.
-        programHandle = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
+        program = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
 
-        // Tell OpenGL to use this program when rendering.
-        glUseProgram(programHandle);
+        program.useForRendering();
     }
 
     @Override
@@ -105,7 +90,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
         for (Triangle triangle : triangles) {
             triangle.setRotationZ(angleInDegrees);
-            triangle.draw(programHandle, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
+            triangle.draw(program, mvpMatrix, viewMatrix, modelMatrix, projectionMatrix);
         }
     }
 }

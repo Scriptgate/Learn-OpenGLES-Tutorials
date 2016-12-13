@@ -13,8 +13,6 @@ import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
@@ -42,26 +40,26 @@ public class Triangle {
         vertices = allocateBuffer(verticesData);
     }
 
-    //TODO: remove magic strings
-    public void draw(int programHandle, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
+    public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
 
         // Pass in the position information
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
+
+        int positionHandle = program.getPositionHandle();
         vertices.position(POSITION_DATA_OFFSET);
         glEnableVertexAttribArray(positionHandle);
         glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
         // Pass in the color information
-        int colorHandle = glGetAttribLocation(programHandle, "a_Color");
+        int colorHandle = program.getColorHandle();
         vertices.position(COLOR_DATA_OFFSET);
         glEnableVertexAttribArray(colorHandle);
         glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
-        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
+        int mvpMatrixHandle = program.getMVPHandle();
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(mvpMatrixHandle);
 
