@@ -76,12 +76,12 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+    public void onSurfaceChanged(GL10 unused, int width, int height) {
         projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override
-    public void onDrawFrame(GL10 glUnused) {
+    public void onDrawFrame(GL10 unused) {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         // Do a complete rotation every 10 seconds.
