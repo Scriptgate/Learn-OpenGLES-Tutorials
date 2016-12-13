@@ -8,6 +8,7 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,11 @@ import static android.opengl.GLES20.glClearColor;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewBehindOrigin;
-import static com.learnopengles.android.lesson1.Program.createProgram;
+import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
+import static com.learnopengles.android.program.AttributeVariable.COLOR;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static java.util.Arrays.asList;
 
 public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
@@ -70,7 +74,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader");
+        program = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader", asList(POSITION, COLOR));
 
         program.useForRendering();
     }

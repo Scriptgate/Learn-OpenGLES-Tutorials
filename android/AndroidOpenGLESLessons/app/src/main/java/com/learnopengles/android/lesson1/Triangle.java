@@ -5,6 +5,7 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 
@@ -16,9 +17,9 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
-import static com.learnopengles.android.lesson1.program.AttributeVariable.COLOR;
-import static com.learnopengles.android.lesson1.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.lesson1.program.UniformVariable.MVP_MATRIX;
+import static com.learnopengles.android.program.AttributeVariable.COLOR;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 
 public class Triangle {

@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson1.program;
+package com.learnopengles.android.program;
 
 
 import java.util.List;
