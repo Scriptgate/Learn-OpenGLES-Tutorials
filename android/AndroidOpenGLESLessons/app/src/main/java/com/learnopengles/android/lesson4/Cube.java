@@ -6,6 +6,9 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.AttributeVariable;
+import com.learnopengles.android.program.Program;
+import com.learnopengles.android.program.UniformVariable;
 
 import java.nio.FloatBuffer;
 
@@ -16,6 +19,13 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
+import static com.learnopengles.android.program.AttributeVariable.COLOR;
+import static com.learnopengles.android.program.AttributeVariable.NORMAL;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
+import static com.learnopengles.android.program.UniformVariable.LIGHT_POSITION;
+import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
+import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
 
 public class Cube {
 
@@ -31,20 +41,20 @@ public class Cube {
         this.position = point;
     }
 
-    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeColors, FloatBuffer cubeNormals, FloatBuffer cubeTextureCoordinates, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light) {
+    public void drawCube(Program program, FloatBuffer cubePositions, FloatBuffer cubeColors, FloatBuffer cubeNormals, FloatBuffer cubeTextureCoordinates, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
 
         // Set program handles for cube drawing.
-        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        int mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
-        int lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int colorHandle = glGetAttribLocation(programHandle, "a_Color");
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
+        int mvMatrixHandle = program.getHandle(MV_MATRIX);
+        int lightPosHandle = program.getHandle(LIGHT_POSITION);
+        int positionHandle = program.getHandle(POSITION);
+        int colorHandle = program.getHandle(COLOR);
+        int normalHandle = program.getHandle(NORMAL);
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
 
         // Pass in the position information
         cubePositions.position(0);

@@ -2,11 +2,7 @@ package com.learnopengles.android.program;
 
 import java.util.List;
 
-import static android.opengl.GLES20.GL_FRAGMENT_SHADER;
-import static android.opengl.GLES20.GL_VERTEX_SHADER;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glGetUniformLocation;
-import static android.opengl.GLES20.glUseProgram;
+import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static com.learnopengles.android.lesson1.Shader.loadShader;
 import static com.learnopengles.android.program.AttributeVariable.toStringArray;

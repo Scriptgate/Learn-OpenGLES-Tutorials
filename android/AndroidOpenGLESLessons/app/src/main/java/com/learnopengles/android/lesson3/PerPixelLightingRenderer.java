@@ -12,12 +12,12 @@ public class PerPixelLightingRenderer extends LightingRenderer {
     @Override
     protected String getVertexShader() {
         // Define our per-pixel lighting shader.
-        return readShaderFileFromResource("lesson_three_vertex_shader");
+        return "lesson_three_vertex_shader";
     }
 
     @Override
     protected String getFragmentShader() {
         // Define our per-pixel shader
-        return readShaderFileFromResource("lesson_three_fragment_shader");
+        return "lesson_three_fragment_shader";
     }
 }

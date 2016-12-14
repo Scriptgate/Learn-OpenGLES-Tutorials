@@ -6,7 +6,10 @@ import java.util.List;
 public enum AttributeVariable {
 
     POSITION("a_Position"),
-    COLOR("a_Color");
+    COLOR("a_Color"),
+    NORMAL("a_Normal"),
+    TEXTURE_COORDINATE("a_TexCoordinate");
+
 
     private final String name;
 

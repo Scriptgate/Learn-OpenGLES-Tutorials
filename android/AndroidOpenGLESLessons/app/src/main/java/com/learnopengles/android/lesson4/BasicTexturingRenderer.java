@@ -11,6 +11,7 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -21,14 +22,19 @@ import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.cube.CubeDataFactory.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
-import static com.learnopengles.android.common.ShaderHelper.compileShader;
-import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
+import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
+import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
+import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
+import static com.learnopengles.android.program.AttributeVariable.*;
+import static com.learnopengles.android.program.Program.createProgram;
+import static com.learnopengles.android.program.UniformVariable.TEXTURE;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -59,12 +65,12 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     /**
      * This is a handle to our cube shading program.
      */
-    private int programHandle;
+    private Program program;
 
     /**
      * This is a handle to our light point program.
      */
-    private int pointProgramHandle;
+    private Program pointProgram;
 
     /**
      * This is a handle to our texture data.
@@ -104,11 +110,11 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     }
 
     protected String getVertexShader() {
-        return readTextFileFromRawResource(activityContext, R.raw.per_pixel_vertex_shader);
+        return "per_pixel_vertex_shader";
     }
 
     protected String getFragmentShader() {
-        return readTextFileFromRawResource(activityContext, R.raw.per_pixel_fragment_shader);
+        return "per_pixel_fragment_shader";
     }
 
     @Override
@@ -128,21 +134,8 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        final String vertexShader = getVertexShader();
-        final String fragmentShader = getFragmentShader();
-
-        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color", "a_Normal", "a_TexCoordinate"});
-
-        // Define a simple shader program for our point.
-        final String pointVertexShader = readTextFileFromRawResource(activityContext, R.raw.point_vertex_shader);
-        final String pointFragmentShader = readTextFileFromRawResource(activityContext, R.raw.point_fragment_shader);
-
-        final int pointVertexShaderHandle = compileShader(GL_VERTEX_SHADER, pointVertexShader);
-        final int pointFragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, pointFragmentShader);
-        pointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle, new String[]{"a_Position"});
+        program = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
+        pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
 
         // Load the texture
         textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
@@ -162,10 +155,10 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Set our per-vertex lighting program.
-        glUseProgram(programHandle);
+        program.useForRendering();
 
         // Set program handles for cube drawing.
-        int textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
+        int textureUniformHandle = program.getHandle(TEXTURE);
 
         // Set the active texture unit to texture unit 0.
         glActiveTexture(GL_TEXTURE0);
@@ -192,11 +185,11 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cube.drawCube(programHandle, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
+            cube.drawCube(program, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
         }
 
         // Draw a point to indicate the light.
-        glUseProgram(pointProgramHandle);
-        light.drawLight(pointProgramHandle, mvpMatrix, viewMatrix, projectionMatrix);
+        pointProgram.useForRendering();
+        light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix);
     }
 }

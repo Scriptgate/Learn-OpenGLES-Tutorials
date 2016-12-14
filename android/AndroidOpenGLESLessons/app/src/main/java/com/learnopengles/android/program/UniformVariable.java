@@ -3,7 +3,10 @@ package com.learnopengles.android.program;
 
 public enum UniformVariable {
 
-    MVP_MATRIX("u_MVPMatrix");
+    MV_MATRIX("u_MVMatrix"),
+    MVP_MATRIX("u_MVPMatrix"),
+    LIGHT_POSITION("u_LightPos"),
+    TEXTURE("u_Texture");
 
     private final String name;
 
