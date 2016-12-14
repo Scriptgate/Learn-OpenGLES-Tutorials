@@ -36,7 +36,7 @@ public class LessonFiveActivity extends Activity
 			mGLSurfaceView.setEGLContextClientVersion(2);
 
 			// Set the renderer to our demo renderer, defined below.
-			mGLSurfaceView.setRenderer(new BlendingRenderer(this));
+			mGLSurfaceView.setRenderer(new BlendingRenderer());
 		} 
 		else 
 		{

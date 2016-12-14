@@ -1,15 +1,14 @@
 package com.learnopengles.android.lesson5;
 
-import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
-import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +17,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
-import static com.learnopengles.android.common.ShaderHelper.compileShader;
-import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static com.learnopengles.android.program.AttributeVariable.COLOR;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.Program.createProgram;
+import static java.util.Arrays.asList;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -34,18 +34,17 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
      */
     private static final String TAG = "BlendingRenderer";
 
-    private final Context activityContext;
-
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewInFrontOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
+    private ProjectionMatrix projectionMatrix = createProjectionMatrix()
+            ;
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     /**
-     * This is a handle to our cube shading program.
+     * This is a our cube shading program.
      */
-    private int programHandle;
+    private Program program;
 
     /**
      * This will be used to switch between blending mode and regular mode.
@@ -57,8 +56,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public BlendingRenderer(final Context activityContext) {
-        this.activityContext = activityContext;
+    public BlendingRenderer() {
 
         CubeData cubeData = new CubeData();
 
@@ -71,11 +69,11 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     }
 
     protected String getVertexShader() {
-        return readTextFileFromRawResource(activityContext, R.raw.color_vertex_shader);
+        return "color_vertex_shader";
     }
 
     protected String getFragmentShader() {
-        return readTextFileFromRawResource(activityContext, R.raw.color_fragment_shader);
+        return "color_fragment_shader";
     }
 
     public void switchMode() {
@@ -121,13 +119,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        final String vertexShader = getVertexShader();
-        final String fragmentShader = getFragmentShader();
-
-        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Color"});
+        program = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR));
     }
 
     @Override
@@ -148,7 +140,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Set our program
-        glUseProgram(programHandle);
+        program.useForRendering();
 
         // Draw some cubes.
         cubes.get(0).setRotationX(angleInDegrees);
@@ -158,7 +150,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cube.drawCube(programHandle, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+            cube.drawCube(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         }
     }
 }

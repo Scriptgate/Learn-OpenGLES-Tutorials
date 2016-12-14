@@ -5,8 +5,12 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.program.AttributeVariable.COLOR;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 public class Cube {
 
@@ -19,15 +23,15 @@ public class Cube {
         this.position = point;
     }
 
-    public void drawCube(int programHandle, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
+    public void drawCube(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
 
-        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int colorHandle = glGetAttribLocation(programHandle, "a_Color");
+        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
+        int positionHandle = program.getHandle(POSITION);
+        int colorHandle = program.getHandle(COLOR);
 
         // Pass in the position information
         cubeData.passPositionTo(positionHandle);
