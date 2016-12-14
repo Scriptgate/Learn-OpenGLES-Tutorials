@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import com.learnopengles.android.R;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 
@@ -15,15 +16,19 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.TextureHelper.loadTexture;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
+import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
-import static com.learnopengles.android.common.ShaderHelper.compileShader;
-import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
-import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static com.learnopengles.android.program.AttributeVariable.NORMAL;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
+import static com.learnopengles.android.program.Program.createProgram;
+import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
+import static com.learnopengles.android.program.UniformVariable.TEXTURE;
+import static java.util.Arrays.asList;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -96,14 +101,14 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     private final float[] lightPosInEyeSpace = new float[4];
 
     /**
-     * This is a handle to our cube shading program.
+     * This is our cube shading program.
      */
-    private int programHandle;
+    private Program program;
 
     /**
-     * This is a handle to our light point program.
+     * This is our light point program.
      */
-    private int pointProgramHandle;
+    private Program pointProgram;
 
     /**
      * These are handles to our texture data.
@@ -275,21 +280,10 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        final String vertexShader = readTextFileFromRawResource(activityContext, R.raw.per_pixel_vertex_shader_tex_and_light);
-        final String fragmentShader = readTextFileFromRawResource(activityContext, R.raw.per_pixel_fragment_shader_tex_and_light);
-
-        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
+        program = createProgram("per_pixel_vertex_shader_tex_and_light", "per_pixel_fragment_shader_tex_and_light", asList(POSITION, NORMAL, TEXTURE_COORDINATE));
 
         // Define a simple shader program for our point.
-        final String pointVertexShader = readTextFileFromRawResource(activityContext, R.raw.point_vertex_shader);
-        final String pointFragmentShader = readTextFileFromRawResource(activityContext, R.raw.point_fragment_shader);
-
-        final int pointVertexShaderHandle = compileShader(GL_VERTEX_SHADER, pointVertexShader);
-        final int pointFragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, pointFragmentShader);
-        pointProgramHandle = createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle, new String[]{"a_Position"});
+        pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", asList(POSITION));
 
         // Load the texture
         brickDataHandle = loadTexture(activityContext, R.drawable.stone_wall_public_domain);
@@ -326,11 +320,11 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         float slowAngleInDegrees = (360.0f / 100000.0f) * ((int) slowTime);
 
         // Set our per-vertex lighting program.
-        glUseProgram(programHandle);
+        program.useForRendering();
 
         // Set program handles for cube drawing.
-        int textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+        int textureUniformHandle = program.getHandle(TEXTURE);
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
 
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(lightModelMatrix, 0);
@@ -378,7 +372,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         glEnableVertexAttribArray(textureCoordinateHandle);
 
-        cube1.drawCube(programHandle, cubePositions, cubeNormals, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace, temporaryMatrix);
+        cube1.drawCube(program, cubePositions, cubeNormals, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace, temporaryMatrix);
 
         // Draw a plane
         Matrix.setIdentityM(modelMatrix, 0);
@@ -401,10 +395,10 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         glEnableVertexAttribArray(textureCoordinateHandle);
 
-        cube2.drawCube(programHandle, cubePositions, cubeNormals, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace, temporaryMatrix);
+        cube2.drawCube(program, cubePositions, cubeNormals, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lightPosInEyeSpace, temporaryMatrix);
 
         // Draw a point to indicate the light.
-        glUseProgram(pointProgramHandle);
+        pointProgram.useForRendering();
         drawLight();
     }
 
@@ -434,8 +428,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
      * Draws a point representing the position of the light.
      */
     private void drawLight() {
-        final int pointMVPMatrixHandle = glGetUniformLocation(pointProgramHandle, "u_MVPMatrix");
-        final int pointPositionHandle = glGetAttribLocation(pointProgramHandle, "a_Position");
+        final int pointMVPMatrixHandle = pointProgram.getHandle(MVP_MATRIX);
+        final int pointPositionHandle = pointProgram.getHandle(POSITION);
 
         // Pass in the position.
         glVertexAttrib3f(pointPositionHandle, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2]);

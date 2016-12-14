@@ -2,6 +2,7 @@ package com.learnopengles.android.lesson6;
 
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 
@@ -9,24 +10,27 @@ import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glGetUniformLocation;
 import static android.opengl.GLES20.glUniform3f;
 import static android.opengl.GLES20.glUniformMatrix4fv;
 import static android.opengl.GLES20.glVertexAttribPointer;
+import static com.learnopengles.android.program.AttributeVariable.NORMAL;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.UniformVariable.LIGHT_POSITION;
+import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
+import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
 
 public class Cube {
 
     private static final int POSITION_DATA_SIZE = 3;
     private static final int NORMAL_DATA_SIZE = 3;
 
-    public void drawCube(int programHandle, FloatBuffer cubePositions, FloatBuffer cubeNormals, float[] mvpMatrix, float[] modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace, float[] temporaryMatrix) {
+    public void drawCube(Program program, FloatBuffer cubePositions, FloatBuffer cubeNormals, float[] mvpMatrix, float[] modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace, float[] temporaryMatrix) {
 
-        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        int mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
-        int lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
+        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
+        int mvMatrixHandle = program.getHandle(MV_MATRIX);
+        int lightPosHandle = program.getHandle(LIGHT_POSITION);
+        int positionHandle = program.getHandle(POSITION);
+        int normalHandle = program.getHandle(NORMAL);
 
         // Pass in the position information
         cubePositions.position(0);
