@@ -36,8 +36,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewInFrontOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectionMatrix()
-            ;
+    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
@@ -80,32 +79,24 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         blending = !blending;
 
         if (blending) {
-            // No culling of back faces
-            glDisable(GL_CULL_FACE);
-
-            // No depth testing
-            glDisable(GL_DEPTH_TEST);
-
-            // Enable blending
-            glEnable(GL_BLEND);
-            glBlendFunc(GL_ONE, GL_ONE);
+            enableBlending();
         } else {
-            // Cull back faces
-            glEnable(GL_CULL_FACE);
-
-            // Enable depth testing
-            glEnable(GL_DEPTH_TEST);
-
-            // Disable blending
-            glDisable(GL_BLEND);
+            disableBlending();
         }
     }
 
-    @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        // Set the background clear color to black.
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    private void disableBlending() {
+        // Cull back faces
+        glEnable(GL_CULL_FACE);
 
+        // Enable depth testing
+        glEnable(GL_DEPTH_TEST);
+
+        // Disable blending
+        glDisable(GL_BLEND);
+    }
+
+    private void enableBlending() {
         // No culling of back faces
         glDisable(GL_CULL_FACE);
 
@@ -115,7 +106,14 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         // Enable blending
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
-//		glBlendEquation(GL_FUNC_ADD);
+    }
+
+    @Override
+    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+        // Set the background clear color to black.
+        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        enableBlending();
 
         viewMatrix.onSurfaceCreated();
 
