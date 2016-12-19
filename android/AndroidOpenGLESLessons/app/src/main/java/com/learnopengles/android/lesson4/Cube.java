@@ -6,6 +6,7 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
 
 import static android.opengl.GLES20.GL_TRIANGLES;
@@ -20,11 +21,11 @@ import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
 
 public class Cube {
 
-    private CubeData cubeData;
+    private CubeDataCollection cubeData;
     private Point3D position = new Point3D();
     private Point3D rotation = new Point3D();
 
-    public Cube(CubeData cubeData, Point3D point) {
+    public Cube(CubeDataCollection cubeData, Point3D point) {
         this.cubeData = cubeData;
         this.position = point;
     }

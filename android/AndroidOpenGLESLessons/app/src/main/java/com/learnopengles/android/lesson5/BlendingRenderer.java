@@ -8,6 +8,7 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
@@ -17,8 +18,12 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
+import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
+import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.Program.createProgram;
@@ -57,7 +62,10 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
      */
     public BlendingRenderer() {
 
-        CubeData cubeData = new CubeData();
+        CubeDataCollection cubeData = cubeData()
+                .positions(generatePositionData(1.0f, 1.0f, 1.0f))
+                .colors(generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN))
+                .build();
 
         cubes = new ArrayList<>();
         cubes.add(new Cube(cubeData, new Point3D(4.0f, 0.0f, -7.0f)));
