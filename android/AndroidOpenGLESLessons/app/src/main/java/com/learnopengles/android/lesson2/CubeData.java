@@ -31,10 +31,8 @@ public class CubeData {
 
     public CubeData() {
         final float[] cubePositionData = generatePositionData(1.0f, 1.0f, 1.0f);
-
         final float[] cubeColorData = generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
-
-        float[] cubeNormalData = generateNormalData();
+        final float[] cubeNormalData = generateNormalData();
 
         // Initialize the buffers.
         cubePositions = allocateBuffer(cubePositionData);

@@ -7,14 +7,7 @@ import java.nio.FloatBuffer;
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.common.Color.BLACK;
-import static com.learnopengles.android.common.Color.BLUE;
-import static com.learnopengles.android.common.Color.CYAN;
-import static com.learnopengles.android.common.Color.GREEN;
-import static com.learnopengles.android.common.Color.MAGENTA;
-import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.common.Color.WHITE;
-import static com.learnopengles.android.common.Color.YELLOW;
+import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 
 public class CubeData {
@@ -30,7 +23,6 @@ public class CubeData {
 
     public CubeData() {
         final float[] cubePositionData = CubeDataFactory.generatePositionData(1.0f, 1.0f, 1.0f);
-
         final float[] cubeColorData = CubeDataFactory.generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN);
 
         // Initialize the buffers.
