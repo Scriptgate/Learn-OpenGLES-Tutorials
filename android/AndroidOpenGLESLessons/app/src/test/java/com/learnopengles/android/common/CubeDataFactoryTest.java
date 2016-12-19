@@ -11,7 +11,6 @@ import static com.learnopengles.android.common.Color.MAGENTA;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.Color.YELLOW;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static org.junit.Assert.assertArrayEquals;
 
@@ -306,6 +305,5 @@ public class CubeDataFactoryTest {
         float[] textureData = CubeDataFactory.generateTextureData();
 
         assertArrayEquals(textureData, TEXTURE, DELTA);
-
     }
 }

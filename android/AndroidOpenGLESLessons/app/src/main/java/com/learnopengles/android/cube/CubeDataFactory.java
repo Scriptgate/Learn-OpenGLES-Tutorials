@@ -110,10 +110,14 @@ public class CubeDataFactory {
     }
 
     public static float[] generateTextureData() {
+        return generateTextureData(1.0f, 1.0f);
+    }
+
+    public static float[] generateTextureData(float width, float height) {
         Point2D p1 = new Point2D(0.0f, 0.0f);
-        Point2D p2 = new Point2D(1.0f, 0.0f);
-        Point2D p3 = new Point2D(0.0f, 1.0f);
-        Point2D p4 = new Point2D(1.0f, 1.0f);
+        Point2D p2 = new Point2D(width, 0.0f);
+        Point2D p3 = new Point2D(0.0f, height);
+        Point2D p4 = new Point2D(width, height);
 
         Point2DFace face = new Point2DFace(p1, p2, p3, p4);
 
