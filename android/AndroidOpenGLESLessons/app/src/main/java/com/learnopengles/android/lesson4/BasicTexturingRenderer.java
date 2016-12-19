@@ -55,14 +55,6 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     /**
-     * Store our model data in a float buffer.
-     */
-    private final FloatBuffer cubePositions;
-    private final FloatBuffer cubeColors;
-    private final FloatBuffer cubeNormals;
-    private final FloatBuffer cubeTextureCoordinates;
-
-    /**
      * This is a handle to our cube shading program.
      */
     private Program program;
@@ -87,24 +79,14 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     public BasicTexturingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
-        // Define points for a cube.
-        final float[] cubePositionData = generatePositionData(1.0f, 1.0f, 1.0f);
-        final float[] cubeColorData = generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
-        final float[] cubeNormalData = generateNormalData();
-        final float[] cubeTextureCoordinateData = generateTextureData();
-
-        // Initialize the buffers.
-        cubePositions = allocateBuffer(cubePositionData);
-        cubeColors = allocateBuffer(cubeColorData);
-        cubeNormals = allocateBuffer(cubeNormalData);
-        cubeTextureCoordinates = allocateBuffer(cubeTextureCoordinateData);
+        CubeData cubeData = new CubeData();
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(new Point3D(4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(new Point3D(-4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(new Point3D(0.0f, 4.0f, -7.0f)));
-        cubes.add(new Cube(new Point3D(0.0f, -4.0f, -7.0f)));
-        cubes.add(new Cube(new Point3D(0.0f, 0.0f, -5.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(-4.0f, 0.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, 4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, -4.0f, -7.0f)));
+        cubes.add(new Cube(cubeData, new Point3D(0.0f, 0.0f, -5.0f)));
 
         light = new Light();
     }
@@ -185,7 +167,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cube.drawCube(program, cubePositions, cubeColors, cubeNormals, cubeTextureCoordinates, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
+            cube.drawCube(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
         }
 
         // Draw a point to indicate the light.

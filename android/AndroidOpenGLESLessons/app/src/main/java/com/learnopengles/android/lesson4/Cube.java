@@ -6,19 +6,10 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.program.UniformVariable;
 
-import java.nio.FloatBuffer;
-
-import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glGetUniformLocation;
-import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
@@ -29,19 +20,16 @@ import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
 
 public class Cube {
 
-    private static final int POSITION_DATA_SIZE = 3;
-    private static final int COLOR_DATA_SIZE = 4;
-    private static final int NORMAL_DATA_SIZE = 3;
-    private static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
-
+    private CubeData cubeData;
     private Point3D position = new Point3D();
     private Point3D rotation = new Point3D();
 
-    public Cube(Point3D point) {
+    public Cube(CubeData cubeData, Point3D point) {
+        this.cubeData = cubeData;
         this.position = point;
     }
 
-    public void drawCube(Program program, FloatBuffer cubePositions, FloatBuffer cubeColors, FloatBuffer cubeNormals, FloatBuffer cubeTextureCoordinates, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light) {
+    public void drawCube(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
@@ -57,28 +45,16 @@ public class Cube {
         int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
 
         // Pass in the position information
-        cubePositions.position(0);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
-
-        glEnableVertexAttribArray(positionHandle);
+        cubeData.passPositionTo(positionHandle);
 
         // Pass in the color information
-        cubeColors.position(0);
-        glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, 0, cubeColors);
-
-        glEnableVertexAttribArray(colorHandle);
+        cubeData.passColorTo(colorHandle);
 
         // Pass in the normal information
-        cubeNormals.position(0);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, cubeNormals);
-
-        glEnableVertexAttribArray(normalHandle);
+        cubeData.passNormalTo(normalHandle);
 
         // Pass in the texture coordinate information
-        cubeTextureCoordinates.position(0);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, cubeTextureCoordinates);
-
-        glEnableVertexAttribArray(textureCoordinateHandle);
+        cubeData.passTextureTo(textureCoordinateHandle);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
