@@ -1,4 +1,4 @@
-package com.learnopengles.android.cube.data.type;
+package com.learnopengles.android.cube.data;
 
 
 public enum CubeDataType {

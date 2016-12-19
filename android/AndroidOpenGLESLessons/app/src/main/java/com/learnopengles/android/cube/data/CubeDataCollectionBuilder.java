@@ -6,7 +6,7 @@ import com.learnopengles.android.cube.data.type.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.learnopengles.android.cube.data.type.CubeDataType.*;
+import static com.learnopengles.android.cube.data.CubeDataType.*;
 
 public class CubeDataCollectionBuilder {
 

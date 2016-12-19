@@ -1,11 +1,9 @@
 package com.learnopengles.android.cube.data;
 
 
-import com.learnopengles.android.cube.data.type.CubeDataType;
-
 import java.util.Map;
 
-import static com.learnopengles.android.cube.data.type.CubeDataType.*;
+import static com.learnopengles.android.cube.data.CubeDataType.*;
 
 public class CubeDataCollection {
 
