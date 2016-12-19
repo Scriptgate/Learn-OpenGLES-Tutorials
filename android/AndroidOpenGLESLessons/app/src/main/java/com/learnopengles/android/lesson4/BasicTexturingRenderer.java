@@ -13,7 +13,6 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
 
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +20,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
@@ -79,7 +76,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     public BasicTexturingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
-        CubeData cubeData = new CubeData();
+        TextureCubeData cubeData = new TextureCubeData();
 
         cubes = new ArrayList<>();
         cubes.add(new Cube(cubeData, new Point3D(4.0f, 0.0f, -7.0f)));

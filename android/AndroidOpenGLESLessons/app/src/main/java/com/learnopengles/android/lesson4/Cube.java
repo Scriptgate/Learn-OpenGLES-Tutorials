@@ -20,11 +20,11 @@ import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
 
 public class Cube {
 
-    private CubeData cubeData;
+    private TextureCubeData cubeData;
     private Point3D position = new Point3D();
     private Point3D rotation = new Point3D();
 
-    public Cube(CubeData cubeData, Point3D point) {
+    public Cube(TextureCubeData cubeData, Point3D point) {
         this.cubeData = cubeData;
         this.position = point;
     }

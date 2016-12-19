@@ -18,7 +18,7 @@ import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 
-public class CubeData {
+public class TextureCubeData {
 
     private static final int POSITION_DATA_SIZE = 3;
     private static final int COLOR_DATA_SIZE = 4;
@@ -30,7 +30,7 @@ public class CubeData {
     private final FloatBuffer cubeNormals;
     private final FloatBuffer cubeTextureCoordinates;
 
-    public CubeData() {
+    public TextureCubeData() {
         // Define points for a cube.
         final float[] cubePositionData = generatePositionData(1.0f, 1.0f, 1.0f);
         final float[] cubeColorData = generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA);
