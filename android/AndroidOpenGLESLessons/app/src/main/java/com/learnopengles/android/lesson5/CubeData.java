@@ -1,44 +1,34 @@
 package com.learnopengles.android.lesson5;
 
 import com.learnopengles.android.cube.CubeDataFactory;
+import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.data.type.ColorCubeData;
+import com.learnopengles.android.cube.data.type.PositionCubeData;
 
-import java.nio.FloatBuffer;
-
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.cube.data.type.CubeDataType.COLOR;
+import static com.learnopengles.android.cube.data.type.CubeDataType.POSITION;
 
 public class CubeData {
 
-    private static final int POSITION_DATA_SIZE = 3;
-    private static final int COLOR_DATA_SIZE = 4;
-
-    /**
-     * Store our model data in a float buffer.
-     */
-    private final FloatBuffer cubePositions;
-    private final FloatBuffer cubeColors;
+    private final CubeDataCollection cubeDataCollection;
 
     public CubeData() {
         final float[] cubePositionData = CubeDataFactory.generatePositionData(1.0f, 1.0f, 1.0f);
         final float[] cubeColorData = CubeDataFactory.generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN);
 
-        // Initialize the buffers.
-        cubePositions = allocateBuffer(cubePositionData);
-        cubeColors = allocateBuffer(cubeColorData);
+        cubeDataCollection = cubeData()
+                .addData(POSITION, new PositionCubeData(cubePositionData))
+                .addData(COLOR, new ColorCubeData(cubeColorData))
+                .build();
     }
 
     public void passPositionTo(int handle) {
-        cubePositions.position(0);
-        glVertexAttribPointer(handle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
-        glEnableVertexAttribArray(handle);
+        cubeDataCollection.passTo(POSITION, handle);
     }
 
     public void passColorTo(int handle) {
-        cubeColors.position(0);
-        glVertexAttribPointer(handle, COLOR_DATA_SIZE, GL_FLOAT, false, 0, cubeColors);
-        glEnableVertexAttribArray(handle);
+        cubeDataCollection.passTo(COLOR, handle);
     }
 }

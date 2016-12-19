@@ -76,7 +76,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     public BasicTexturingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
-        TextureCubeData cubeData = new TextureCubeData();
+        CubeData cubeData = new CubeData();
 
         cubes = new ArrayList<>();
         cubes.add(new Cube(cubeData, new Point3D(4.0f, 0.0f, -7.0f)));
