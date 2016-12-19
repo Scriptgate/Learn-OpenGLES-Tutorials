@@ -5,6 +5,8 @@ import com.learnopengles.android.cube.data.type.CubeDataType;
 
 import java.util.Map;
 
+import static com.learnopengles.android.cube.data.type.CubeDataType.*;
+
 public class CubeDataCollection {
 
 
@@ -16,5 +18,21 @@ public class CubeDataCollection {
 
     public void passTo(CubeDataType type, int handle) {
         cubeData.get(type).passTo(handle);
+    }
+
+    public void passPositionTo(int handle) {
+        passTo(POSITION, handle);
+    }
+
+    public void passColorTo(int handle) {
+        passTo(COLOR, handle);
+    }
+
+    public void passNormalTo(int handle) {
+        passTo(NORMAL, handle);
+    }
+
+    public void passTextureTo(int handle) {
+        passTo(TEXTURE, handle);
     }
 }
