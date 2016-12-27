@@ -113,6 +113,11 @@ public class CubeDataFactory {
         return generateTextureData(1.0f, 1.0f);
     }
 
+    // S, T (or X, Y)
+    // Texture coordinate data.
+    // Because images have a Y axis pointing downward (values increase as you move down the image) while
+    // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
+    // What's more is that the texture coordinates are the same for every face.
     public static float[] generateTextureData(float width, float height) {
         Point2D p1 = new Point2D(0.0f, 0.0f);
         Point2D p2 = new Point2D(width, 0.0f);

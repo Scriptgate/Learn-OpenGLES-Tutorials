@@ -16,7 +16,7 @@ import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 public class Light {
 
-    private ModelMatrix lightModelMatrix = new ModelMatrix();
+    private ModelMatrix modelMatrix = new ModelMatrix();
 
     /**
      * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
@@ -38,38 +38,59 @@ public class Light {
      * Draws a point representing the position of the light.
      */
     public void drawLight(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
-        final int pointMVPMatrixHandle = program.getHandle(MVP_MATRIX);
-        final int pointPositionHandle = program.getHandle(POSITION);
-
-        // Pass in the position.
-        glVertexAttrib3f(pointPositionHandle, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2]);
-
-        // Since we are not using a buffer object, disable vertex arrays for this attribute.
-        glDisableVertexAttribArray(pointPositionHandle);
+        passPositionTo(program);
 
         // Pass in the transformation matrix.
-        mvpMatrix.multiply(lightModelMatrix, viewMatrix, projectionMatrix);
-        mvpMatrix.passTo(pointMVPMatrixHandle);
+        mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
 
+        passMVPMatrix(program, mvpMatrix);
         // Draw the point.
         glDrawArrays(GL_POINTS, 0, 1);
     }
 
+    /**
+     * Draws a point representing the position of the light.
+     */
+    public void drawLight(Program pointProgram, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] temporaryMatrix) {
+        passPositionTo(pointProgram);
+
+        // Pass in the transformation matrix.
+        mvpMatrix.multiply(modelMatrix, viewMatrix);
+        mvpMatrix.multiply(projectionMatrix, temporaryMatrix);
+
+        passMVPMatrix(pointProgram, mvpMatrix);
+        // Draw the point.
+        glDrawArrays(GL_POINTS, 0, 1);
+    }
+
+    private void passPositionTo(Program program) {
+        final int pointPositionHandle = program.getHandle(POSITION);
+        // Pass in the position.
+        glVertexAttrib3f(pointPositionHandle, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2]);
+        // Since we are not using a buffer object, disable vertex arrays for this attribute.
+        glDisableVertexAttribArray(pointPositionHandle);
+    }
+
+    private void passMVPMatrix(Program program, ModelViewProjectionMatrix mvpMatrix) {
+        final int pointMVPMatrixHandle = program.getHandle(MVP_MATRIX);
+        mvpMatrix.passTo(pointMVPMatrixHandle);
+    }
+
     public void setIdentity() {
-        lightModelMatrix.setIdentity();
+        modelMatrix.setIdentity();
     }
 
     public void translate(Point3D point) {
-        lightModelMatrix.translate(point);
+        modelMatrix.translate(point);
     }
 
     public void rotate(Point3D rotation) {
-        lightModelMatrix.rotate(rotation);
+        modelMatrix.rotate(rotation);
     }
 
     public void setView(ViewMatrix viewMatrix) {
-        //TODO: lightPosInWorldSpace = lightPosInModelSpace * lightModelMatrix
-        lightModelMatrix.multiplyWithVectorAndStore(lightPosInModelSpace, lightPosInWorldSpace);
+        //TODO: lightPosInWorldSpace = lightPosInModelSpace * modelMatrix
+        modelMatrix.multiplyWithVectorAndStore(lightPosInModelSpace, lightPosInWorldSpace);
 
         //TODO: lightPosInEyeSpace = lightPosInWorldSpace * viewMatrix
         viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);

@@ -26,6 +26,15 @@ public class ModelMatrix {
         Matrix.rotateM(modelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
     }
 
+    public void multiplyWithMatrixAndStore(float[] matrix, float[] temporaryMatrix, float[] resultMatrix) {
+        Matrix.multiplyMM(temporaryMatrix, 0, modelMatrix, 0, matrix, 0);
+        System.arraycopy(temporaryMatrix, 0, resultMatrix, 0, 16);
+    }
+
+    public void multiplyWithMatrixAndStore(float[] matrix, float[] temporaryMatrix) {
+        multiplyWithMatrixAndStore(matrix, temporaryMatrix, modelMatrix);
+    }
+
     public void multiplyWithMatrixAndStore(ViewMatrix viewMatrix, float[] resultMatrix) {
         //TODO: refactor into mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         viewMatrix.multiplyWithMatrixAndStore(modelMatrix, resultMatrix);
@@ -33,5 +42,9 @@ public class ModelMatrix {
 
     public void multiplyWithVectorAndStore(float[] vector, float[] resultVector) {
         Matrix.multiplyMV(resultVector, 0, modelMatrix, 0, vector, 0);
+    }
+
+    public void scale(Point3D scale) {
+        Matrix.scaleM(modelMatrix, 0, scale.x, scale.y, scale.z);
     }
 }

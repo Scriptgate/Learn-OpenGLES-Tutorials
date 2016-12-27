@@ -1,69 +1,97 @@
 package com.learnopengles.android.lesson6;
 
+import com.learnopengles.android.common.Light;
+import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
 
-import java.nio.FloatBuffer;
+import static android.opengl.GLES20.*;
+import static com.learnopengles.android.program.AttributeVariable.*;
+import static com.learnopengles.android.program.UniformVariable.*;
 
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glUniform3f;
-import static android.opengl.GLES20.glUniformMatrix4fv;
-import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.program.AttributeVariable.NORMAL;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.program.UniformVariable.LIGHT_POSITION;
-import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
-import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
+public class Cube  {
 
-public class Cube {
+    private CubeDataCollection cubeData;
 
-    private static final int POSITION_DATA_SIZE = 3;
-    private static final int NORMAL_DATA_SIZE = 3;
+    public Cube(CubeDataCollection cubeData) {
+        this.cubeData = cubeData;
+    }
 
-    public void drawCube(Program program, FloatBuffer cubePositions, FloatBuffer cubeNormals, float[] mvpMatrix, float[] modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] lightPosInEyeSpace, float[] temporaryMatrix) {
+    public void drawCube(Program program,  int textureDataHandle, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light, float[] temporaryMatrix) {
+        // Set the active texture unit to texture unit 0.
+        drawTexture(textureDataHandle, program);
 
-        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
-        int mvMatrixHandle = program.getHandle(MV_MATRIX);
-        int lightPosHandle = program.getHandle(LIGHT_POSITION);
-        int positionHandle = program.getHandle(POSITION);
-        int normalHandle = program.getHandle(NORMAL);
-
-        // Pass in the position information
-        cubePositions.position(0);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
-
-
-        // Pass in the normal information
-        cubeNormals.position(0);
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, cubeNormals);
-
+        passPositionData(program);
+        passNormalData(program);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
-        viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
+        mvpMatrix.multiply(modelMatrix, viewMatrix);
 
-        // Pass in the modelview matrix.
-        glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
+        passMVMatrix(program, mvpMatrix);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
-        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix, temporaryMatrix);
-        System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
+        mvpMatrix.multiply(projectionMatrix, temporaryMatrix);
 
-        // Pass in the combined matrix.
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+        passMVPMatrix(program, mvpMatrix);
 
         // Pass in the light position in eye space.
-        glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+        passLightTo(program, light);
 
         // Draw the cube.
         glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    private void drawTexture(int textureHandle, Program program) {
+        // Set the active texture unit to texture unit 0.
+        glActiveTexture(GL_TEXTURE0);
+        // Bind the texture to this unit.
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        int textureUniformHandle = program.getHandle(TEXTURE);
+        glUniform1i(textureUniformHandle, 0);
+
+        passTextureData(program);
+    }
+
+    private void passPositionData(Program program) {
+        // Pass in the position information
+        int positionHandle = program.getHandle(POSITION);
+        cubeData.passPositionTo(positionHandle);
+    }
+
+    private void passNormalData(Program program) {
+        // Pass in the normal information
+        int normalHandle = program.getHandle(NORMAL);
+        cubeData.passNormalTo(normalHandle);
+    }
+
+    private void passTextureData(Program program) {
+        // Pass in the texture coordinate information
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
+        cubeData.passTextureTo(textureCoordinateHandle);
+    }
+
+    private void passMVPMatrix(Program program, ModelViewProjectionMatrix mvpMatrix) {
+        // Pass in the combined matrix.
+        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
+        mvpMatrix.passTo(mvpMatrixHandle);
+    }
+
+    private void passMVMatrix(Program program, ModelViewProjectionMatrix mvpMatrix) {
+        // Pass in the modelview matrix.
+        int mvMatrixHandle = program.getHandle(MV_MATRIX);
+        mvpMatrix.passTo(mvMatrixHandle);
+    }
+
+    private void passLightTo(Program program, Light light) {
+        // Pass in the light position in eye space.
+        int lightPosHandle = program.getHandle(LIGHT_POSITION);
+        light.passTo(lightPosHandle);
     }
 
 }

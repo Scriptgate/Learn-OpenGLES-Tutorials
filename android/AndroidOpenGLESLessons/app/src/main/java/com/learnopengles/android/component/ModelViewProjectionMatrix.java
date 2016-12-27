@@ -33,4 +33,9 @@ public class ModelViewProjectionMatrix {
         // (which now contains model * view * projection).
         projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
     }
+
+    public void multiply(ProjectionMatrix projectionMatrix, float[] temporaryMatrix) {
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix, temporaryMatrix);
+        System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
+    }
 }
