@@ -10,8 +10,10 @@ import com.learnopengles.android.program.Program;
 
 import static android.opengl.GLES20.GL_TEXTURE0;
 import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.GL_TRIANGLES;
 import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glUniform1i;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
@@ -106,5 +108,9 @@ public class Cube {
 
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
+    }
+
+    public void drawArrays() {
+        glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 }

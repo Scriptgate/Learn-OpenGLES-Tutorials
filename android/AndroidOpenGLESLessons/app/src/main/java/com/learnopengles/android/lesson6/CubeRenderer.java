@@ -34,7 +34,6 @@ public class CubeRenderer {
         // Pass in the light position in eye space.
         cube.passLightTo(program, light);
 
-        // Draw the cube.
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        cube.drawArrays();
     }
 }
