@@ -199,7 +199,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         modelMatrix.scale(new Point3D(25.0f, 1.0f, 25.0f));
         modelMatrix.rotate(new Point3D(0.0f, slowAngleInDegrees, 0.0f));
 
-        CubeRenderer.drawCube(plane, program, grassDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
+        CubeRendererChain.drawCube(plane, program, grassDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
     }
 
     private void drawCube() {
@@ -219,7 +219,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Rotate the cube taking the overall rotation into account.
         modelMatrix.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix);
 
-        CubeRenderer.drawCube(cube, program, brickDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
+        CubeRendererChain.drawCube(cube, program, brickDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
     }
 
     public void setMinFilter(final int filter) {

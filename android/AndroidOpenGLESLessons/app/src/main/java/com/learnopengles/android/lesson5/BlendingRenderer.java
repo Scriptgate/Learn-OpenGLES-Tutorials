@@ -157,7 +157,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            CubeRenderer.drawCube(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+            CubeRendererChain.drawCube(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         }
     }
 }

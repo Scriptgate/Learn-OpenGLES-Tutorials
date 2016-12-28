@@ -173,7 +173,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            CubeRenderer.drawCube(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
+            CubeRendererChain.drawCube(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
         }
 
         // Draw a point to indicate the light.

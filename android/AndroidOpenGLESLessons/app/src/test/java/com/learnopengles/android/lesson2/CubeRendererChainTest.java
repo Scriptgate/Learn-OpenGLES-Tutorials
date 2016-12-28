@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CubeRendererTest {
+public class CubeRendererChainTest {
 
     @Mock private Cube cube;
 
@@ -31,7 +31,7 @@ public class CubeRendererTest {
     @Test
     public void drawCube() throws Exception {
 
-        CubeRenderer.drawCube(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
+        CubeRendererChain.drawCube(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
 
         verify(cube).apply(modelMatrix);
         verify(cube).passPositionData(program);
