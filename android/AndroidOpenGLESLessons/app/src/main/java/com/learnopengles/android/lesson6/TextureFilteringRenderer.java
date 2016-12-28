@@ -91,8 +91,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     public volatile float deltaX;
     public volatile float deltaY;
 
-    private Cube cube;
-    private Cube plane;
+    private CubeRenderer cube;
+    private CubeRenderer plane;
 
     private Light light;
 
@@ -106,12 +106,12 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         float[] positionData = generatePositionData(1.0f, 1.0f, 1.0f);
         float[] normalData = generateNormalData();
 
-        cube = new Cube(cubeData()
+        cube = new CubeRenderer(cubeData()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData())
                 .build());
-        plane = new Cube(cubeData()
+        plane = new CubeRenderer(cubeData()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData(25.0f, 25.0f))

@@ -12,15 +12,15 @@ import static android.opengl.GLES20.*;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 
-public class Cube  {
+public class CubeRenderer {
 
     private CubeDataCollection cubeData;
 
-    public Cube(CubeDataCollection cubeData) {
+    public CubeRenderer(CubeDataCollection cubeData) {
         this.cubeData = cubeData;
     }
 
-    public void drawCube(Program program,  int textureDataHandle, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light, float[] temporaryMatrix) {
+    public void drawCube(Program program, int textureDataHandle, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light, float[] temporaryMatrix) {
         // Set the active texture unit to texture unit 0.
         drawTexture(textureDataHandle, program);
 
