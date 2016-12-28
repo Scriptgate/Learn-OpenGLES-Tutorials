@@ -8,11 +8,10 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.program.Program;
 
-import static android.opengl.GLES20.*;
-
 public class CubeRenderer {
 
     public static void drawCube(Cube cube, Program program, int textureDataHandle, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light, float[] temporaryMatrix) {
+
         // Set the active texture unit to texture unit 0.
         cube.drawTexture(textureDataHandle, program);
 

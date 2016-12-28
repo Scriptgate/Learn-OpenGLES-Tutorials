@@ -12,17 +12,9 @@ public class CubeRenderer {
 
     public static void drawCube(Cube cube, Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light) {
         cube.apply(modelMatrix);
+
         cube.passPositionData(program);
         cube.passColorData(program);
-
-        passData(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
-
-        cube.passLightTo(program, light);
-
-        cube.drawArrays();
-    }
-
-    private static void passData(Cube cube, Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         cube.passNormalData(program);
 
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
@@ -34,5 +26,9 @@ public class CubeRenderer {
         // (which now contains model * view * projection).
         mvpMatrix.multiply(projectionMatrix);
         cube.passMVPMatrix(program, mvpMatrix);
+
+        cube.passLightTo(program, light);
+
+        cube.drawArrays();
     }
 }

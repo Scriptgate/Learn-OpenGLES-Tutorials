@@ -11,17 +11,14 @@ public class CubeRenderer {
 
     public static void drawCube(Cube cube, Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         cube.apply(modelMatrix);
+
         cube.passPositionData(program);
         cube.passColorData(program);
 
-        passData(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
-
-        cube.drawArrays();
-    }
-
-    private static void passData(Cube cube, Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
 
         cube.passMVPMatrix(program, mvpMatrix);
+
+        cube.drawArrays();
     }
 }
