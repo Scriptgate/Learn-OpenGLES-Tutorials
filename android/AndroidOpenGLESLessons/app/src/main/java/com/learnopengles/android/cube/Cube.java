@@ -8,6 +8,11 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
 
+import static android.opengl.GLES20.GL_TEXTURE0;
+import static android.opengl.GLES20.GL_TEXTURE_2D;
+import static android.opengl.GLES20.glActiveTexture;
+import static android.opengl.GLES20.glBindTexture;
+import static android.opengl.GLES20.glUniform1i;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 
@@ -16,6 +21,10 @@ public class Cube {
     protected final CubeDataCollection cubeData;
     protected Point3D position = new Point3D();
     protected Point3D rotation = new Point3D();
+
+    public Cube(CubeDataCollection cubeData) {
+        this.cubeData = cubeData;
+    }
 
     public Cube(CubeDataCollection cubeData, Point3D position) {
         this.cubeData = cubeData;
@@ -36,6 +45,18 @@ public class Cube {
 
     public void setPosition(Point3D position) {
         this.position = position;
+    }
+
+    public void drawTexture(int textureHandle, Program program) {
+        // Set the active texture unit to texture unit 0.
+        glActiveTexture(GL_TEXTURE0);
+        // Bind the texture to this unit.
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        int textureUniformHandle = program.getHandle(TEXTURE);
+        glUniform1i(textureUniformHandle, 0);
+
+        passTextureData(program);
     }
 
     public void passPositionData(Program program) {

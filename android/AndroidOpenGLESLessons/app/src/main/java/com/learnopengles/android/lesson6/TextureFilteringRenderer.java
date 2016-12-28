@@ -12,6 +12,7 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.program.Program;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -91,8 +92,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     public volatile float deltaX;
     public volatile float deltaY;
 
-    private CubeRenderer cube;
-    private CubeRenderer plane;
+    private Cube cube;
+    private Cube plane;
 
     private Light light;
 
@@ -106,12 +107,12 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         float[] positionData = generatePositionData(1.0f, 1.0f, 1.0f);
         float[] normalData = generateNormalData();
 
-        cube = new CubeRenderer(cubeData()
+        cube = new Cube(cubeData()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData())
                 .build());
-        plane = new CubeRenderer(cubeData()
+        plane = new Cube(cubeData()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData(25.0f, 25.0f))
@@ -198,7 +199,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         modelMatrix.scale(new Point3D(25.0f, 1.0f, 25.0f));
         modelMatrix.rotate(new Point3D(0.0f, slowAngleInDegrees, 0.0f));
 
-        plane.drawCube(program, grassDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
+        CubeRenderer.drawCube(plane, program, grassDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
     }
 
     private void drawCube() {
@@ -218,7 +219,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Rotate the cube taking the overall rotation into account.
         modelMatrix.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix);
 
-        cube.drawCube(program, brickDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
+        CubeRenderer.drawCube(cube, program, brickDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
     }
 
     public void setMinFilter(final int filter) {
