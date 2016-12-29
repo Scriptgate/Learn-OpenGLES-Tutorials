@@ -6,14 +6,7 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.renderer.ColorCubeRenderer;
-import com.learnopengles.android.cube.renderer.CubeRendererChain;
-import com.learnopengles.android.cube.renderer.LightCubeRenderer;
-import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.ModelViewCubeRenderer;
-import com.learnopengles.android.cube.renderer.NormalCubeRenderer;
-import com.learnopengles.android.cube.renderer.PositionCubeRenderer;
-import com.learnopengles.android.cube.renderer.ProjectionCubeRenderer;
+import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import org.junit.Before;
@@ -57,8 +50,7 @@ public class CubeRendererChainTest {
                         new ColorCubeRenderer(program),
                         new NormalCubeRenderer(program),
 
-                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, program),
-                        new ProjectionCubeRenderer(mvpMatrix, projectionMatrix, program),
+                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
 
                         new LightCubeRenderer(light, program)
                 )

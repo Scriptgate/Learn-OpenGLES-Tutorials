@@ -15,10 +15,9 @@ import com.learnopengles.android.cube.renderer.ColorCubeRenderer;
 import com.learnopengles.android.cube.renderer.CubeRendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.ModelViewCubeRenderer;
+import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.cube.renderer.NormalCubeRenderer;
 import com.learnopengles.android.cube.renderer.PositionCubeRenderer;
-import com.learnopengles.android.cube.renderer.ProjectionCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
@@ -127,8 +126,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
                         new ColorCubeRenderer(perVertexProgram),
                         new NormalCubeRenderer(perVertexProgram),
 
-                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, perVertexProgram),
-                        new ProjectionCubeRenderer(mvpMatrix, projectionMatrix, perVertexProgram),
+                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, perVertexProgram),
 
                         new LightCubeRenderer(light, perVertexProgram)
                 )

@@ -15,10 +15,10 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.renderer.CubeRendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
-import com.learnopengles.android.cube.renderer.ModelViewCubeRenderer;
+import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.cube.renderer.NormalCubeRenderer;
 import com.learnopengles.android.cube.renderer.PositionCubeRenderer;
-import com.learnopengles.android.cube.renderer.ProjectionThroughTemporaryMatrixCubeRenderer;
+import com.learnopengles.android.cube.renderer.mvp.ProjectionThroughTemporaryMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
 import com.learnopengles.android.program.Program;
 
@@ -173,8 +173,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
                         new NormalCubeRenderer(program),
                         new TextureCubeRenderer(program),
 
-                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, program),
-                        new ProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, projectionMatrix, program, temporaryMatrix),
+                        new ProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
 
                         new LightCubeRenderer(light, program)
                 )
