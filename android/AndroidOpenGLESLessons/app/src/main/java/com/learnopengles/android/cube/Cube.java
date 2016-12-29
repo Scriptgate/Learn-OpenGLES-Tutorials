@@ -4,6 +4,8 @@ package com.learnopengles.android.cube;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.data.CubeDataType;
+import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
 import static android.opengl.GLES20.GL_TEXTURE0;
@@ -13,7 +15,6 @@ import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glUniform1i;
-import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 
 public class Cube {
@@ -54,27 +55,9 @@ public class Cube {
         // Bind the texture to this unit.
         glBindTexture(GL_TEXTURE_2D, texture);
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        int textureUniformHandle = program.getHandle(TEXTURE);
-        glUniform1i(textureUniformHandle, 0);
+        glUniform1i(program.getHandle(TEXTURE), 0);
 
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
-        passTextureData(textureCoordinateHandle);
-    }
-
-    public void passPositionData(int positionHandle) {
-        cubeData.passPositionTo(positionHandle);
-    }
-
-    public void passColorData(int colorHandle) {
-        cubeData.passColorTo(colorHandle);
-    }
-
-    public void passNormalData(int normalHandle) {
-        cubeData.passNormalTo(normalHandle);
-    }
-
-    public void passTextureData(int textureCoordinateHandle) {
-        cubeData.passTextureTo(textureCoordinateHandle);
+        cubeData.passTo(CubeDataType.TEXTURE_COORDINATE, program.getHandle(AttributeVariable.TEXTURE_COORDINATE));
     }
 
     public void apply(ModelMatrix modelMatrix) {
@@ -90,5 +73,9 @@ public class Cube {
 
     public void setTexture(int texture) {
         this.texture = texture;
+    }
+
+    public void passTo(CubeDataType cubeDataType, int handle) {
+        cubeData.passTo(cubeDataType, handle);
     }
 }

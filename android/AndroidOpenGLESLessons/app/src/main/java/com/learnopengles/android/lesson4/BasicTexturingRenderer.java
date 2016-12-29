@@ -171,7 +171,6 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         program.useForRendering();
 
         // Set program handles for cube drawing.
-        int textureUniformHandle = program.getHandle(TEXTURE);
 
         // Set the active texture unit to texture unit 0.
         glActiveTexture(GL_TEXTURE0);
@@ -180,7 +179,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         glBindTexture(GL_TEXTURE_2D, textureDataHandle);
 
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(textureUniformHandle, 0);
+        glUniform1i(program.getHandle(TEXTURE), 0);
 
         // Calculate position of the light. Rotate and then push into the distance.
         light.setIdentity();

@@ -38,7 +38,7 @@ public class CubeDataCollectionBuilder {
     }
 
     public CubeDataCollectionBuilder textures(float[] textureData) {
-        return addData(TEXTURE, new TextureCubeData(textureData));
+        return addData(TEXTURE_COORDINATE, new TextureCubeData(textureData));
     }
 
     public CubeDataCollection build() {

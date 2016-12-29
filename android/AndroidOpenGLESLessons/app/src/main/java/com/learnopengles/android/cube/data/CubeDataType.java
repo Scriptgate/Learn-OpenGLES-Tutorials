@@ -5,5 +5,5 @@ public enum CubeDataType {
     POSITION,
     COLOR,
     NORMAL,
-    TEXTURE
+    TEXTURE_COORDINATE
 }
