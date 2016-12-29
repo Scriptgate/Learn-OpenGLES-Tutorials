@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
+import com.learnopengles.android.activity.LessonNineActivity;
 import com.learnopengles.android.activity.LessonOneActivity;
 import com.learnopengles.android.activity.LessonTwoActivity;
 import com.learnopengles.android.activity.LessonThreeActivity;
@@ -38,13 +39,13 @@ public class TableOfContents extends ListActivity
 		setContentView(R.layout.table_of_contents);
 		
 		// Initialize data
-		final List<Map<String, Object>> data = new ArrayList<Map<String, Object>>();
-		final SparseArray<Class<? extends Activity>> activityMapping = new SparseArray<Class<? extends Activity>>();
+		final List<Map<String, Object>> data = new ArrayList<>();
+		final SparseArray<Class<? extends Activity>> activityMapping = new SparseArray<>();
 		
 		int i = 0;
 		
 		{
-			final Map<String, Object> item = new HashMap<String, Object>();
+			final Map<String, Object> item = new HashMap<>();
 			item.put(ITEM_IMAGE, R.drawable.ic_lesson_one);
 			item.put(ITEM_TITLE, getText(R.string.lesson_one));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_one_subtitle));
@@ -53,7 +54,7 @@ public class TableOfContents extends ListActivity
 		}
 		
 		{
-			final Map<String, Object> item = new HashMap<String, Object>();
+			final Map<String, Object> item = new HashMap<>();
 			item.put(ITEM_IMAGE, R.drawable.ic_lesson_two);
 			item.put(ITEM_TITLE, getText(R.string.lesson_two));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_two_subtitle));
@@ -62,7 +63,7 @@ public class TableOfContents extends ListActivity
 		}
 		
 		{
-			final Map<String, Object> item = new HashMap<String, Object>();
+			final Map<String, Object> item = new HashMap<>();
 			item.put(ITEM_IMAGE, R.drawable.ic_lesson_three);
 			item.put(ITEM_TITLE, getText(R.string.lesson_three));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_three_subtitle));
@@ -71,7 +72,7 @@ public class TableOfContents extends ListActivity
 		}
 		
 		{
-			final Map<String, Object> item = new HashMap<String, Object>();
+			final Map<String, Object> item = new HashMap<>();
 			item.put(ITEM_IMAGE, R.drawable.ic_lesson_four);
 			item.put(ITEM_TITLE, getText(R.string.lesson_four));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_four_subtitle));
@@ -80,7 +81,7 @@ public class TableOfContents extends ListActivity
 		}
 		
 		{
-			final Map<String, Object> item = new HashMap<String, Object>();
+			final Map<String, Object> item = new HashMap<>();
 			item.put(ITEM_IMAGE, R.drawable.ic_lesson_five);
 			item.put(ITEM_TITLE, getText(R.string.lesson_five));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_five_subtitle));
@@ -89,7 +90,7 @@ public class TableOfContents extends ListActivity
 		}
 		
 		{
-			final Map<String, Object> item = new HashMap<String, Object>();
+			final Map<String, Object> item = new HashMap<>();
 			item.put(ITEM_IMAGE, R.drawable.ic_lesson_six);
 			item.put(ITEM_TITLE, getText(R.string.lesson_six));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_six_subtitle));
@@ -98,7 +99,7 @@ public class TableOfContents extends ListActivity
 		}
 		
 		{
-			final Map<String, Object> item = new HashMap<String, Object>();
+			final Map<String, Object> item = new HashMap<>();
 			item.put(ITEM_IMAGE, R.drawable.ic_lesson_seven);
 			item.put(ITEM_TITLE, getText(R.string.lesson_seven));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_seven_subtitle));
@@ -107,13 +108,22 @@ public class TableOfContents extends ListActivity
 		}
 		
 		{
-			final Map<String, Object> item = new HashMap<String, Object>();
+			final Map<String, Object> item = new HashMap<>();
 			item.put(ITEM_IMAGE, R.drawable.ic_lesson_eight);
 			item.put(ITEM_TITLE, getText(R.string.lesson_eight));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eight_subtitle));
 			data.add(item);
 			activityMapping.put(i++, LessonEightActivity.class);
 		}
+		{
+			final Map<String, Object> item = new HashMap<>();
+			item.put(ITEM_IMAGE, R.drawable.ic_lesson_eight);
+			item.put(ITEM_TITLE, getText(R.string.lesson_nine));
+			item.put(ITEM_SUBTITLE, getText(R.string.lesson_nine_subtitle));
+			data.add(item);
+			activityMapping.put(i++, LessonNineActivity.class);
+		}
+
 		
 		final SimpleAdapter dataAdapter = new SimpleAdapter(this, data, R.layout.toc_item, new String[] {ITEM_IMAGE, ITEM_TITLE, ITEM_SUBTITLE}, new int[] {R.id.Image, R.id.Title, R.id.SubTitle});
 		setListAdapter(dataAdapter);	
