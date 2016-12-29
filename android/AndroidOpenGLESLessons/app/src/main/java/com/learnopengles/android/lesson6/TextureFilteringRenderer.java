@@ -13,8 +13,10 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.cube.renderer.AccumulatedRotationCubeRenderer;
 import com.learnopengles.android.cube.renderer.CubeRendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
+import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.data.NormalCubeRenderer;
 import com.learnopengles.android.cube.renderer.data.PositionCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ProjectionThroughTemporaryMatrixCubeRenderer;
@@ -104,6 +106,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     private Light light;
 
     private CubeRendererChain cubeRendererChain;
+    private CubeRendererChain planeRendererChain;
 
     /**
      * Initialize the model data.
@@ -119,12 +122,15 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData())
-                .build());
+                .build(),
+                new Point3D(0.0f, 0.8f, -3.5f));
         plane = new Cube(cubeData()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData(25.0f, 25.0f))
-                .build());
+                .build(),
+                new Point3D(0.0f, -2.0f, -5.0f));
+        plane.setScale(new Point3D(25.0f, 1.0f, 25.0f));
         light = new Light();
     }
 
@@ -168,6 +174,24 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         cubeRendererChain = new CubeRendererChain(
                 asList(
+                        new ModelMatrixCubeRenderer(modelMatrix),
+
+                        new AccumulatedRotationCubeRenderer(accumulatedRotation, currentRotation, temporaryMatrix, modelMatrix),
+
+                        new PositionCubeRenderer(program),
+                        new NormalCubeRenderer(program),
+                        new TextureCubeRenderer(program),
+
+                        new ProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
+
+                        new LightCubeRenderer(light, program)
+                )
+        );
+
+        planeRendererChain = new CubeRendererChain(
+                asList(
+                        new ModelMatrixCubeRenderer(modelMatrix),
+
                         new PositionCubeRenderer(program),
                         new NormalCubeRenderer(program),
                         new TextureCubeRenderer(program),
@@ -206,40 +230,21 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         light.setView(viewMatrix);
 
         drawCube();
-        drawPlane(slowAngleInDegrees);
+        plane.setRotationY(slowAngleInDegrees);
+        planeRendererChain.drawCube(plane);
 
         // Draw a point to indicate the light.
         pointProgram.useForRendering();
         light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix, temporaryMatrix);
     }
 
-    private void drawPlane(float slowAngleInDegrees) {
-        // Draw a plane
-        modelMatrix.setIdentity();
-        modelMatrix.translate(new Point3D(0.0f, -2.0f, -5.0f));
-
-        modelMatrix.scale(new Point3D(25.0f, 1.0f, 25.0f));
-        modelMatrix.rotate(new Point3D(0.0f, slowAngleInDegrees, 0.0f));
-
-        cubeRendererChain.drawCube(plane);
-    }
-
     private void drawCube() {
-        // Draw a cube.
-        // Translate the cube into the screen.
-        modelMatrix.setIdentity();
-        modelMatrix.translate(new Point3D(0.0f, 0.8f, -3.5f));
-
         // Set a matrix that contains the current rotation.
         currentRotation.setIdentity();
         currentRotation.rotate(new Point3D(deltaY, deltaX, 0.0f));
+
         deltaX = 0.0f;
         deltaY = 0.0f;
-
-        // Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
-        currentRotation.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix, accumulatedRotation);
-        // Rotate the cube taking the overall rotation into account.
-        modelMatrix.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix);
 
         cubeRendererChain.drawCube(cube);
     }

@@ -22,6 +22,7 @@ public class Cube {
     protected final CubeDataCollection cubeData;
     protected Point3D position = new Point3D();
     protected Point3D rotation = new Point3D();
+    protected Point3D scale = new Point3D(1.0f, 1.0f, 1.0f);
     private int texture;
 
     public Cube(CubeDataCollection cubeData) {
@@ -63,8 +64,10 @@ public class Cube {
     public void apply(ModelMatrix modelMatrix) {
         modelMatrix.setIdentity();
 
+        //TODO: Not all cubes have all these properties, some have separate ways to handle rotation
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
+        modelMatrix.scale(scale);
     }
 
     public void drawArrays() {
@@ -77,5 +80,9 @@ public class Cube {
 
     public void passTo(CubeDataType cubeDataType, int handle) {
         cubeData.passTo(cubeDataType, handle);
+    }
+
+    public void setScale(Point3D scale) {
+        this.scale = scale;
     }
 }
