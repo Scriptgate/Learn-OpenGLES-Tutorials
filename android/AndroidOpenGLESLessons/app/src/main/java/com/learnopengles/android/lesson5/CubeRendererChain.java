@@ -17,6 +17,8 @@ import java.util.List;
 
 public class CubeRendererChain {
 
+
+
     public static void drawCube(Cube cube, Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         List<CubeRenderer> renderChain = new ArrayList<>();
 

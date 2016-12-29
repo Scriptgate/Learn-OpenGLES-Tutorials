@@ -20,16 +20,18 @@ import java.util.List;
 
 public class CubeRendererChain {
 
-    public static void drawCube(Cube cube, Program program, int textureDataHandle, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light, float[] temporaryMatrix) {
-        List<CubeRenderer> renderChain = new ArrayList<>();
+    private List<CubeRenderer> renderChain = new ArrayList<>();
 
+    public CubeRendererChain(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Light light, float[] temporaryMatrix) {
         renderChain.add(new PositionCubeRenderer(program));
         renderChain.add(new NormalCubeRenderer(program));
-        renderChain.add(new TextureCubeRenderer(program, textureDataHandle));
+        renderChain.add(new TextureCubeRenderer(program));
         renderChain.add(new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, program));
         renderChain.add(new ProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, projectionMatrix, program, temporaryMatrix));
         renderChain.add(new LightCubeRenderer(light, program));
+    }
 
+    public void drawCube(Cube cube) {
         for (CubeRenderer cubeRenderer : renderChain) {
             cubeRenderer.apply(cube);
         }

@@ -97,6 +97,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
     private Light light;
 
+    private CubeRendererChain cubeRendererChain;
+
     /**
      * Initialize the model data.
      */
@@ -141,9 +143,11 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Load the texture
         brickDataHandle = loadTexture(activityContext, R.drawable.stone_wall_public_domain);
         glGenerateMipmap(GL_TEXTURE_2D);
+        cube.setTexture(brickDataHandle);
 
         grassDataHandle = loadTexture(activityContext, R.drawable.noisy_grass_public_domain);
         glGenerateMipmap(GL_TEXTURE_2D);
+        plane.setTexture(grassDataHandle);
 
         if (queuedMinFilter != 0) {
             setMinFilter(queuedMinFilter);
@@ -155,6 +159,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         // Initialize the accumulated rotation matrix
         Matrix.setIdentityM(accumulatedRotation, 0);
+
+        cubeRendererChain = new CubeRendererChain(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
     }
 
     @Override
@@ -199,7 +205,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         modelMatrix.scale(new Point3D(25.0f, 1.0f, 25.0f));
         modelMatrix.rotate(new Point3D(0.0f, slowAngleInDegrees, 0.0f));
 
-        CubeRendererChain.drawCube(plane, program, grassDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
+        cubeRendererChain.drawCube(plane);
     }
 
     private void drawCube() {
@@ -219,7 +225,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Rotate the cube taking the overall rotation into account.
         modelMatrix.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix);
 
-        CubeRendererChain.drawCube(cube, program, brickDataHandle,  mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
+        cubeRendererChain.drawCube(cube);
     }
 
     public void setMinFilter(final int filter) {

@@ -23,6 +23,7 @@ public class Cube {
     protected final CubeDataCollection cubeData;
     protected Point3D position = new Point3D();
     protected Point3D rotation = new Point3D();
+    private int texture;
 
     public Cube(CubeDataCollection cubeData) {
         this.cubeData = cubeData;
@@ -49,11 +50,11 @@ public class Cube {
         this.position = position;
     }
 
-    public void drawTexture(int textureHandle, Program program) {
+    public void drawTexture(Program program) {
         // Set the active texture unit to texture unit 0.
         glActiveTexture(GL_TEXTURE0);
         // Bind the texture to this unit.
-        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        glBindTexture(GL_TEXTURE_2D, texture);
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         int textureUniformHandle = program.getHandle(TEXTURE);
         glUniform1i(textureUniformHandle, 0);
@@ -112,5 +113,9 @@ public class Cube {
 
     public void drawArrays() {
         glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
+    public void setTexture(int texture) {
+        this.texture = texture;
     }
 }
