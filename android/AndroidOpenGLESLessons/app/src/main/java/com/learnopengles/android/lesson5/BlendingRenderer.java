@@ -10,11 +10,11 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.renderer.ColorCubeRenderer;
+import com.learnopengles.android.cube.renderer.data.ColorCubeRenderer;
 import com.learnopengles.android.cube.renderer.CubeRendererChain;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.MVPCubeRenderer;
-import com.learnopengles.android.cube.renderer.PositionCubeRenderer;
+import com.learnopengles.android.cube.renderer.data.PositionCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;

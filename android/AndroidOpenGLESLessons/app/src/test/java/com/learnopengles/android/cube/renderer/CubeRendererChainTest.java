@@ -6,6 +6,9 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.cube.renderer.data.ColorCubeRenderer;
+import com.learnopengles.android.cube.renderer.data.NormalCubeRenderer;
+import com.learnopengles.android.cube.renderer.data.PositionCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
 
