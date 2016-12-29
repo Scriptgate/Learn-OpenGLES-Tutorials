@@ -8,6 +8,9 @@ import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.renderer.CubeRenderer;
 import com.learnopengles.android.program.Program;
 
+import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
+import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
+
 public class ProjectionThroughTemporaryMatrixCubeRenderer implements CubeRenderer {
 
     private ModelViewProjectionMatrix mvpMatrix;
@@ -31,11 +34,13 @@ public class ProjectionThroughTemporaryMatrixCubeRenderer implements CubeRendere
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
         // (which currently contains model * view).
         mvpMatrix.multiply(modelMatrix, viewMatrix);
-        cube.passMVMatrix(program, mvpMatrix);
+        // Pass in the modelview matrix.
+        mvpMatrix.passTo(program.getHandle(MV_MATRIX));
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
         // (which now contains model * view * projection).
         mvpMatrix.multiply(projectionMatrix, temporaryMatrix);
-        cube.passMVPMatrix(program, mvpMatrix);
+        // Pass in the combined matrix.
+        mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
     }
 }

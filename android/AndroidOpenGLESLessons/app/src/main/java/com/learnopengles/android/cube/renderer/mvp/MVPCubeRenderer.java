@@ -8,6 +8,8 @@ import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.renderer.CubeRenderer;
 import com.learnopengles.android.program.Program;
 
+import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
+
 public class MVPCubeRenderer implements CubeRenderer {
 
     private final ModelViewProjectionMatrix mvpMatrix;
@@ -27,6 +29,7 @@ public class MVPCubeRenderer implements CubeRenderer {
     @Override
     public void apply(Cube cube) {
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
-        cube.passMVPMatrix(program, mvpMatrix);
+        // Pass in the combined matrix.
+        mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
     }
 }

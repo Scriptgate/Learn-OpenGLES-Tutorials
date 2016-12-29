@@ -4,6 +4,8 @@ import com.learnopengles.android.common.Light;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.program.Program;
 
+import static com.learnopengles.android.program.UniformVariable.LIGHT_POSITION;
+
 public class LightCubeRenderer implements CubeRenderer {
 
 
@@ -17,6 +19,7 @@ public class LightCubeRenderer implements CubeRenderer {
 
     @Override
     public void apply(Cube cube) {
-        cube.passLightTo(program, light);
+        // Pass in the light position in eye space.
+        light.passTo(program.getHandle(LIGHT_POSITION));
     }
 }

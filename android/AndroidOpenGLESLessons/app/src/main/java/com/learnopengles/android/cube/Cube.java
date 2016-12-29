@@ -1,10 +1,8 @@
 package com.learnopengles.android.cube;
 
 
-import com.learnopengles.android.common.Light;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
 
@@ -15,8 +13,8 @@ import static android.opengl.GLES20.glActiveTexture;
 import static android.opengl.GLES20.glBindTexture;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glUniform1i;
-import static com.learnopengles.android.program.AttributeVariable.*;
-import static com.learnopengles.android.program.UniformVariable.*;
+import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
+import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 
 public class Cube {
 
@@ -59,49 +57,24 @@ public class Cube {
         int textureUniformHandle = program.getHandle(TEXTURE);
         glUniform1i(textureUniformHandle, 0);
 
-        passTextureData(program);
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
+        passTextureData(textureCoordinateHandle);
     }
 
-    public void passPositionData(Program program) {
-        // Pass in the position information
-        int positionHandle = program.getHandle(POSITION);
+    public void passPositionData(int positionHandle) {
         cubeData.passPositionTo(positionHandle);
     }
 
-    public void passColorData(Program program) {
-        // Pass in the color information
-        int colorHandle = program.getHandle(COLOR);
+    public void passColorData(int colorHandle) {
         cubeData.passColorTo(colorHandle);
     }
 
-    public void passNormalData(Program program) {
-        // Pass in the normal information
-        int normalHandle = program.getHandle(NORMAL);
+    public void passNormalData(int normalHandle) {
         cubeData.passNormalTo(normalHandle);
     }
 
-    public void passTextureData(Program program) {
-        // Pass in the texture coordinate information
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
+    public void passTextureData(int textureCoordinateHandle) {
         cubeData.passTextureTo(textureCoordinateHandle);
-    }
-
-    public void passMVPMatrix(Program program, ModelViewProjectionMatrix mvpMatrix) {
-        // Pass in the combined matrix.
-        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
-        mvpMatrix.passTo(mvpMatrixHandle);
-    }
-
-    public void passMVMatrix(Program program, ModelViewProjectionMatrix mvpMatrix) {
-        // Pass in the modelview matrix.
-        int mvMatrixHandle = program.getHandle(MV_MATRIX);
-        mvpMatrix.passTo(mvMatrixHandle);
-    }
-
-    public void passLightTo(Program program, Light light) {
-        // Pass in the light position in eye space.
-        int lightPosHandle = program.getHandle(LIGHT_POSITION);
-        light.passTo(lightPosHandle);
     }
 
     public void apply(ModelMatrix modelMatrix) {

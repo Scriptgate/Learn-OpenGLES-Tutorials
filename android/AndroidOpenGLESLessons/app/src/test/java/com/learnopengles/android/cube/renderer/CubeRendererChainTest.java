@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -62,12 +63,9 @@ public class CubeRendererChainTest {
         cubeRendererChain.drawCube(cube);
 
         verify(cube).apply(modelMatrix);
-        verify(cube).passPositionData(program);
-        verify(cube).passColorData(program);
-        verify(cube).passNormalData(program);
-        verify(cube).passMVMatrix(program, mvpMatrix);
-        verify(cube).passMVPMatrix(program, mvpMatrix);
-        verify(cube).passLightTo(program, light);
+        verify(cube).passPositionData(anyInt());
+        verify(cube).passColorData(anyInt());
+        verify(cube).passNormalData(anyInt());
         verify(cube).drawArrays();
         Mockito.verifyNoMoreInteractions(cube);
     }
