@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson2.renderer;
+package com.learnopengles.android.cube.renderer;
 
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.program.Program;
