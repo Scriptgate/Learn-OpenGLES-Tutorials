@@ -10,6 +10,11 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.renderer.ColorCubeRenderer;
+import com.learnopengles.android.cube.renderer.CubeRendererChain;
+import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
+import com.learnopengles.android.cube.renderer.ModelViewProjectionCubeRenderer;
+import com.learnopengles.android.cube.renderer.PositionCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
@@ -57,6 +62,8 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     private boolean blending = true;
 
     private List<Cube> cubes;
+
+    private CubeRendererChain cubeRendererChain;
 
     /**
      * Initialize the model data.
@@ -127,6 +134,15 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         viewMatrix.onSurfaceCreated();
 
         program = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR));
+
+        cubeRendererChain = new CubeRendererChain(
+                asList(
+                        new ModelMatrixCubeRenderer(modelMatrix),
+                        new PositionCubeRenderer(program),
+                        new ColorCubeRenderer(program),
+                        new ModelViewProjectionCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program)
+                )
+        );
     }
 
     @Override
@@ -157,7 +173,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            CubeRendererChain.drawCube(cube, program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+            cubeRendererChain.drawCube(cube);
         }
     }
 }

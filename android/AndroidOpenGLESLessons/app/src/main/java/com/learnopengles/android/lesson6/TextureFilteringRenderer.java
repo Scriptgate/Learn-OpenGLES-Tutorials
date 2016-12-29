@@ -13,6 +13,13 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.cube.renderer.CubeRendererChain;
+import com.learnopengles.android.cube.renderer.LightCubeRenderer;
+import com.learnopengles.android.cube.renderer.ModelViewCubeRenderer;
+import com.learnopengles.android.cube.renderer.NormalCubeRenderer;
+import com.learnopengles.android.cube.renderer.PositionCubeRenderer;
+import com.learnopengles.android.cube.renderer.ProjectionThroughTemporaryMatrixCubeRenderer;
+import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -160,7 +167,18 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Initialize the accumulated rotation matrix
         Matrix.setIdentityM(accumulatedRotation, 0);
 
-        cubeRendererChain = new CubeRendererChain(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light, temporaryMatrix);
+        cubeRendererChain = new CubeRendererChain(
+                asList(
+                        new PositionCubeRenderer(program),
+                        new NormalCubeRenderer(program),
+                        new TextureCubeRenderer(program),
+
+                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, program),
+                        new ProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, projectionMatrix, program, temporaryMatrix),
+
+                        new LightCubeRenderer(light, program)
+                )
+        );
     }
 
     @Override

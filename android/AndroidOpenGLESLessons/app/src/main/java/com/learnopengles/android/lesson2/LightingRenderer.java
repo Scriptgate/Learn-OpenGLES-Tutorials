@@ -11,6 +11,14 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.renderer.ColorCubeRenderer;
+import com.learnopengles.android.cube.renderer.CubeRendererChain;
+import com.learnopengles.android.cube.renderer.LightCubeRenderer;
+import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
+import com.learnopengles.android.cube.renderer.ModelViewCubeRenderer;
+import com.learnopengles.android.cube.renderer.NormalCubeRenderer;
+import com.learnopengles.android.cube.renderer.PositionCubeRenderer;
+import com.learnopengles.android.cube.renderer.ProjectionCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
@@ -62,6 +70,8 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
     private Light light;
 
+    private CubeRendererChain cubeRendererChain;
+
     /**
      * Initialize the model data.
      */
@@ -108,6 +118,21 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
         perVertexProgram = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL));
         pointProgram = createProgram("lesson_two_point_vertex_shader", "lesson_two_point_fragment_shader", singletonList(POSITION));
+
+        cubeRendererChain = new CubeRendererChain(
+                asList(
+                        new ModelMatrixCubeRenderer(modelMatrix),
+
+                        new PositionCubeRenderer(perVertexProgram),
+                        new ColorCubeRenderer(perVertexProgram),
+                        new NormalCubeRenderer(perVertexProgram),
+
+                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, perVertexProgram),
+                        new ProjectionCubeRenderer(mvpMatrix, projectionMatrix, perVertexProgram),
+
+                        new LightCubeRenderer(light, perVertexProgram)
+                )
+        );
     }
 
     @Override
@@ -142,7 +167,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            CubeRendererChain.drawCube(cube, perVertexProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, light);
+            cubeRendererChain.drawCube(cube);
         }
 
         // Draw a point to indicate the light.
