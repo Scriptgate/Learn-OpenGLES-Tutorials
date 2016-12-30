@@ -26,4 +26,8 @@ public class Color {
         this.blue = blue;
         this.alpha = alpha;
     }
+
+    public float[] toArray() {
+        return new float[]{red, green, blue, alpha};
+    }
 }

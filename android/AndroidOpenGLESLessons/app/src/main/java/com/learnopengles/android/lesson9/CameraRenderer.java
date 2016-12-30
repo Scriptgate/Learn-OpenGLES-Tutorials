@@ -4,6 +4,7 @@ package com.learnopengles.android.lesson9;
 import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
+import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
@@ -48,6 +49,10 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
     private CubeRendererChain cubeRendererChain;
 
+    private List<Line> lines = new ArrayList<>();
+
+    private static final Color BACKGROUND_COLOR = BLACK;
+
     public CameraRenderer() {
         modelMatrix = new ModelMatrix();
 
@@ -69,13 +74,30 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         cubes = new ArrayList<>();
 
-        int squareSize = 5;
+        int squareSize = 4;
         for (int j = 0; j < squareSize; j++) {
             for (int i = 0; i < squareSize; i++) {
-                cubes.add(new Cube(cubeData, new Point3D(i*0.2f, 0.0f, j*0.2f)));
+                cubes.add(new Cube(cubeData, new Point3D(i * 0.2f, 0.0f, j * 0.2f)));
             }
         }
 
+        float height = 0.12f;
+        float boundSize = 0.8f;
+        lines.add(new Line(WHITE, new Point3D(0.0f, height, 0.0f), new Point3D(boundSize, height, 0.0f)));
+        lines.add(new Line(WHITE, new Point3D(boundSize, height, 0.0f), new Point3D(boundSize, height, boundSize)));
+        lines.add(new Line(WHITE, new Point3D(boundSize, height, boundSize), new Point3D(0.0f, height, boundSize)));
+        lines.add(new Line(WHITE, new Point3D(0.0f, height, boundSize), new Point3D(0.0f, height, 0.0f)));
+
+        lines.add(new Line(WHITE, new Point3D(0.0f, height, 0.0f), new Point3D(0.0f, height + boundSize, 0.0f)));
+        lines.add(new Line(WHITE, new Point3D(boundSize, height, 0.0f), new Point3D(boundSize, height + boundSize, 0.0f)));
+        lines.add(new Line(WHITE, new Point3D(boundSize, height, boundSize), new Point3D(boundSize, height + boundSize, boundSize)));
+        lines.add(new Line(WHITE, new Point3D(0.0f, height, boundSize), new Point3D(0.0f, height + boundSize, boundSize)));
+
+        height += boundSize;
+        lines.add(new Line(WHITE, new Point3D(0.0f, height, 0.0f), new Point3D(boundSize, height, 0.0f)));
+        lines.add(new Line(WHITE, new Point3D(boundSize, height, 0.0f), new Point3D(boundSize, height, boundSize)));
+        lines.add(new Line(WHITE, new Point3D(boundSize, height, boundSize), new Point3D(0.0f, height, boundSize)));
+        lines.add(new Line(WHITE, new Point3D(0.0f, height, boundSize), new Point3D(0.0f, height, 0.0f)));
     }
 
     protected String getVertexShader() {
@@ -88,8 +110,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        // Set the background clear color to black.
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(BACKGROUND_COLOR.red, BACKGROUND_COLOR.green, BACKGROUND_COLOR.blue, BACKGROUND_COLOR.alpha);
 
         // Use culling to remove back faces.
         glEnable(GL_CULL_FACE);
@@ -135,6 +156,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         for (Cube cube : cubes) {
             cubeRendererChain.drawCube(cube);
+        }
+        for (Line line : lines) {
+            line.draw(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         }
     }
 }
