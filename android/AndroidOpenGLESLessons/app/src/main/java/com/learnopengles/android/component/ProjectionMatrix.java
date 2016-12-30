@@ -6,9 +6,9 @@ import static android.opengl.GLES20.glViewport;
 
 public class ProjectionMatrix {
 
-    private final float far;
+    protected final float far;
 
-    private ProjectionMatrix(float far) {
+    public ProjectionMatrix(float far) {
         this.far = far;
     }
 
@@ -23,7 +23,7 @@ public class ProjectionMatrix {
     /**
      * Store the projection matrix. This is used to project the scene onto a 2D viewport.
      */
-    private float[] projectionMatrix = new float[16];
+    protected float[] projectionMatrix = new float[16];
 
     public void onSurfaceChanged(int width, int height) {
         // Set the OpenGL viewport to the same size as the surface.

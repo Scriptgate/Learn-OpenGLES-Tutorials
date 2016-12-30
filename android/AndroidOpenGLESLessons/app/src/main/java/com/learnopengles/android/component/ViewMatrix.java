@@ -16,7 +16,7 @@ public class ViewMatrix {
      */
     private float[] viewMatrix = new float[16];
 
-    private ViewMatrix(Point3D eye, Point3D look, Point3D up) {
+    public ViewMatrix(Point3D eye, Point3D look, Point3D up) {
         this.eye = eye;
         this.look = look;
         this.up = up;

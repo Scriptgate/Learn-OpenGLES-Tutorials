@@ -24,25 +24,8 @@ import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static android.opengl.GLES20.GL_BLEND;
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_CULL_FACE;
-import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
-import static android.opengl.GLES20.GL_DEPTH_TEST;
-import static android.opengl.GLES20.glClear;
-import static android.opengl.GLES20.glClearColor;
-import static android.opengl.GLES20.glDisable;
-import static android.opengl.GLES20.glEnable;
-import static com.learnopengles.android.common.Color.BLACK;
-import static com.learnopengles.android.common.Color.BLUE;
-import static com.learnopengles.android.common.Color.CYAN;
-import static com.learnopengles.android.common.Color.GREEN;
-import static com.learnopengles.android.common.Color.MAGENTA;
-import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.common.Color.WHITE;
-import static com.learnopengles.android.common.Color.YELLOW;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
@@ -53,11 +36,11 @@ import static java.util.Arrays.asList;
 
 public class CameraRenderer implements GLSurfaceView.Renderer {
 
-    private ModelMatrix modelMatrix = new ModelMatrix();
-    private ViewMatrix viewMatrix = createViewInFrontOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
+    private ModelMatrix modelMatrix;
+    private ViewMatrix viewMatrix;
+    private ProjectionMatrix projectionMatrix;
 
-    private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
+    private ModelViewProjectionMatrix mvpMatrix;
 
     private Program program;
 
@@ -66,13 +49,33 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private CubeRendererChain cubeRendererChain;
 
     public CameraRenderer() {
+        modelMatrix = new ModelMatrix();
+
+        float dist = 5;
+
+        Point3D eye = new Point3D(dist, dist, dist);
+        Point3D look = new Point3D(0.0f, 0.0f, 0.0f);
+        Point3D up = new Point3D(0.0f, 1.0f, 0.0f);
+
+        viewMatrix = new ViewMatrix(eye, look, up);
+
+        projectionMatrix = new IsometricProjectionMatrix(10.0f);
+        mvpMatrix = new ModelViewProjectionMatrix();
+
         CubeDataCollection cubeData = cubeData()
-                .positions(generatePositionData(1.0f, 1.0f, 1.0f))
+                .positions(generatePositionData(0.1f, 0.02f, 0.1f))
                 .colors(generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN))
                 .build();
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(cubeData, new Point3D(0.0f, 0.0f, -5.0f)));
+
+        int squareSize = 5;
+        for (int j = 0; j < squareSize; j++) {
+            for (int i = 0; i < squareSize; i++) {
+                cubes.add(new Cube(cubeData, new Point3D(i*0.2f, 0.0f, j*0.2f)));
+            }
+        }
+
     }
 
     protected String getVertexShader() {
@@ -129,9 +132,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         // Set our program
         program.useForRendering();
-
-        cubes.get(0).setRotationX(angleInDegrees);
-        cubes.get(0).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
             cubeRendererChain.drawCube(cube);
