@@ -21,7 +21,9 @@ import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
+import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
 import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 public class Line {
