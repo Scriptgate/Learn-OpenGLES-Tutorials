@@ -22,7 +22,6 @@ import com.learnopengles.android.cube.renderer.data.ColorCubeRenderer;
 import com.learnopengles.android.cube.renderer.data.NormalCubeRenderer;
 import com.learnopengles.android.cube.renderer.data.PositionCubeRenderer;
 import com.learnopengles.android.cube.renderer.data.TextureDataCubeRenderer;
-import com.learnopengles.android.cube.renderer.mvp.MVPCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
 
@@ -58,6 +57,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private ModelViewProjectionMatrix mvpMatrix;
 
     private Program program;
+    private Program pointProgram;
+    private Program lineProgram;
 
     private List<Cube> cubes;
 
@@ -72,11 +73,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private int textureDataHandle;
 
     private Light light;
-
-    /**
-     * This is a handle to our light point program.
-     */
-    private Program pointProgram;
 
     public CameraRenderer(final Context activityContext) {
         this.activityContext = activityContext;
@@ -95,7 +91,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         CubeDataCollection cubeData = cubeData()
                 .positions(generatePositionData(0.1f, 0.02f, 0.1f))
-//                .positions(generatePositionData(0.1f, 0.1f, 0.1f))
                 .colors(generateColorData(WHITE, WHITE, GREY, GREY, GREY, WHITE, GREY, GREY))
                 .normals(generateNormalData())
                 .textures(generateTextureData())
@@ -131,14 +126,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         light = new Light();
     }
 
-    protected String getVertexShader() {
-        return "per_pixel_vertex_shader";
-    }
-
-    protected String getFragmentShader() {
-        return "per_pixel_fragment_shader";
-    }
-
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         glClearColor(BACKGROUND_COLOR.red, BACKGROUND_COLOR.green, BACKGROUND_COLOR.blue, BACKGROUND_COLOR.alpha);
@@ -150,12 +137,14 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         glEnable(GL_DEPTH_TEST);
 
         // Disable blending
-//        glDisable(GL_BLEND);
+        glDisable(GL_BLEND);
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
+        program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
         pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
+        lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
+
 
         cubeRendererChain = new CubeRendererChain(
                 asList(
@@ -203,7 +192,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         glUniform1i(program.getHandle(TEXTURE), 0);
 
         light.setIdentity();
-//        light.translate(new Point3D(0.0f, 0.2f, 0.0f));
         light.translate(new Point3D(0.5f, 0.2f, 0.5f));
         light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
         light.translate(new Point3D(0.2f, 0.0f, 0.0f));
@@ -214,8 +202,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         for (Cube cube : cubes) {
             cubeRendererChain.drawCube(cube);
         }
+        lineProgram.useForRendering();
         for (Line line : lines) {
-//            line.draw(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+            line.draw(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         }
         // Draw a point to indicate the light.
         pointProgram.useForRendering();
