@@ -126,9 +126,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         lines.add(new Line(WHITE, new Point3D(0.0f, height, boundSize), new Point3D(0.0f, height, 0.0f)));
 
         light = new Light();
-        circles.add(createCircleInXPlane(WHITE, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
-        circles.add(createCircleInYPlane(WHITE, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
-        circles.add(createCircleInZPlane(WHITE, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
+        circles.add(createCircleInXPlane(RED, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
+        circles.add(createCircleInYPlane(GREEN, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
+        circles.add(createCircleInZPlane(BLUE, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
     }
 
     @Override
