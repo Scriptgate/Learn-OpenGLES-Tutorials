@@ -13,6 +13,7 @@ import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_LINE_LOOP;
+import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawArrays;
 import static android.opengl.GLES20.glEnableVertexAttribArray;
@@ -64,9 +65,9 @@ public class Circle {
         float increment = 360.0f / NUMBER_OF_POINTS;
         for (float angle = 0; angle < 360; angle += increment) {
             float degInRad = angle * DEG2RAD;
-            vertices[index++] = (float) (center.x + radius * cos(degInRad));
+            vertices[index++] = (float) (center.x + radius * sin(degInRad));
             vertices[index++] = center.y;
-            vertices[index++] = (float) (center.z + radius * sin(degInRad));
+            vertices[index++] = (float) (center.z + radius * cos(degInRad));
         }
         return new Circle(color, vertices);
     }
@@ -89,7 +90,7 @@ public class Circle {
         this.color = color;
     }
 
-    public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
+    private void passData(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
         int positionHandle = program.getHandle(POSITION);
@@ -103,7 +104,15 @@ public class Circle {
         int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(mvpMatrixHandle);
+    }
 
+    public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
+        passData(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         glDrawArrays(GL_LINE_LOOP, 0, NUMBER_OF_POINTS);
+    }
+
+    public void fill(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
+        passData(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, NUMBER_OF_POINTS);
     }
 }

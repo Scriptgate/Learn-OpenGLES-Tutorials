@@ -212,7 +212,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
             line.draw(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         }
         for (Circle circle : circles) {
-            circle.draw(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+            circle.fill(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         }
 
         // Draw a point to indicate the light.
