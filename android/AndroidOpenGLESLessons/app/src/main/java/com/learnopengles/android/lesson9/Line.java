@@ -30,9 +30,7 @@ public class Line {
 
     private FloatBuffer vertexBuffer;
 
-    private static final int COORDS_PER_VERTEX = 3;
-    private static final int VERTEX_COUNT = 2;
-    private static final int VERTEX_STRIDE = COORDS_PER_VERTEX * BYTES_PER_FLOAT;
+    private static final int VERTEX_DATA_SIZE = 3;
 
     private Color color = RED;
 
@@ -54,7 +52,7 @@ public class Line {
 
         int positionHandle = program.getHandle(POSITION);
         glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX, GL_FLOAT, false, VERTEX_STRIDE, vertexBuffer);
+        glVertexAttribPointer(positionHandle, VERTEX_DATA_SIZE, GL_FLOAT, false, 0, vertexBuffer);
 
         int colorHandle = program.getHandle(COLOR);
         glDisableVertexAttribArray(colorHandle);
@@ -64,6 +62,6 @@ public class Line {
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(mvpMatrixHandle);
 
-        glDrawArrays(GL_LINES, 0, VERTEX_COUNT);
+        glDrawArrays(GL_LINES, 0, 2);
     }
 }

@@ -18,6 +18,7 @@ public class CubeData {
         this.dataSize = dataSize;
     }
 
+    //TODO: I'm convinced OpenGL code doesn't belong in data
     public void passTo(int handle) {
         data.position(0);
         glVertexAttribPointer(handle, dataSize, GL_FLOAT, false, 0, data);
