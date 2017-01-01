@@ -3,8 +3,6 @@ package com.learnopengles.android.cube.data;
 
 import java.util.Map;
 
-import static com.learnopengles.android.cube.data.CubeDataType.*;
-
 public class CubeDataCollection {
 
 
