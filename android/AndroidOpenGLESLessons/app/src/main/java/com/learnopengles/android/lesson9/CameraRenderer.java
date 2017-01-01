@@ -39,6 +39,9 @@ import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.lesson9.Circle.createCircleInXPlane;
+import static com.learnopengles.android.lesson9.Circle.createCircleInYPlane;
+import static com.learnopengles.android.lesson9.Circle.createCircleInZPlane;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
@@ -60,11 +63,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private Program pointProgram;
     private Program lineProgram;
 
-    private List<Cube> cubes;
-
     private CubeRendererChain cubeRendererChain;
-
-    private List<Line> lines = new ArrayList<>();
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -72,6 +71,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
     private int textureDataHandle;
 
+    private List<Cube> cubes;
+    private List<Line> lines = new ArrayList<>();
+    private List<Circle> circles = new ArrayList<>();
     private Light light;
 
     public CameraRenderer(final Context activityContext) {
@@ -124,6 +126,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         lines.add(new Line(WHITE, new Point3D(0.0f, height, boundSize), new Point3D(0.0f, height, 0.0f)));
 
         light = new Light();
+        circles.add(createCircleInXPlane(WHITE, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
+        circles.add(createCircleInYPlane(WHITE, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
+        circles.add(createCircleInZPlane(WHITE, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
     }
 
     @Override
@@ -206,6 +211,10 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         for (Line line : lines) {
             line.draw(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
         }
+        for (Circle circle : circles) {
+            circle.draw(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+        }
+
         // Draw a point to indicate the light.
         pointProgram.useForRendering();
         light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix);
