@@ -40,7 +40,7 @@ public class Circle {
     private Color color;
 
     private Circle(Color color, float[] vertices) {
-        this.color= color;
+        this.color = color;
         this.vertexBuffer = allocateBuffer(vertices);
     }
 

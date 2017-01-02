@@ -58,4 +58,8 @@ public class ViewMatrix {
     public void multiplyWithVectorAndStore(float[] vector, float[] resultVector) {
         Matrix.multiplyMV(resultVector, 0, viewMatrix, 0, vector, 0);
     }
+
+    public void translate(Point3D point) {
+        Matrix.translateM(viewMatrix, 0, point.x, point.y, point.z);
+    }
 }
