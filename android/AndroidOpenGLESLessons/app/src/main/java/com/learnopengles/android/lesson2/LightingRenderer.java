@@ -131,7 +131,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
                 )
         );
 
-        Program pointProgram = createProgram("lesson_two_point_vertex_shader", "lesson_two_point_fragment_shader", singletonList(POSITION));
+        Program pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
         lightRenderer = new Renderer<>(pointProgram,
                 asList(
                         new LightPositionInModelSpaceRenderer(),
