@@ -15,13 +15,15 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.RendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.DrawArraysRenderer;
+import com.learnopengles.android.renderer.IdentityModelMatrixRenderer;
+import com.learnopengles.android.renderer.MVPRenderer;
+import com.learnopengles.android.renderer.RendererChain;
+import com.learnopengles.android.renderer.drawable.Drawable;
 import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
 import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
 
@@ -34,24 +36,14 @@ import javax.microedition.khronos.opengles.GL10;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
+import static com.learnopengles.android.cube.CubeDataFactory.*;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.textureCoordinateCubeRenderer;
-import static com.learnopengles.android.lesson9.Circle.createCircleInXPlane;
-import static com.learnopengles.android.lesson9.Circle.createCircleInYPlane;
-import static com.learnopengles.android.lesson9.Circle.createCircleInZPlane;
-import static com.learnopengles.android.program.AttributeVariable.COLOR;
-import static com.learnopengles.android.program.AttributeVariable.NORMAL;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.*;
+import static com.learnopengles.android.lesson9.Circle.*;
+import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
+import static com.learnopengles.android.renderer.circle.DrawCircleRendererFactory.fillCircleRenderer;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -69,6 +61,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
     private RendererChain<Cube> cubeRenderer;
     private RendererChain<Line> lineRenderer;
+    private RendererChain<Circle> circleRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -172,14 +165,17 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
                 )
         );
 
-        lineRenderer = new RendererChain<>(
+        RendererChain<Drawable> drawableRenderer = new RendererChain<>(
                 asList(
-                        new DrawablePositionRenderer<Line>(program),
-                        new DrawableColorRenderer<Line>(program),
-                        new MVPRenderer<Line>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
-                        new DrawArraysRenderer<Line>(GL_LINES, 2)
+                        new IdentityModelMatrixRenderer<Drawable>(modelMatrix),
+                        new DrawablePositionRenderer<>(lineProgram),
+                        new DrawableColorRenderer<>(lineProgram),
+                        new MVPRenderer<Drawable>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lineProgram)
                 )
         );
+
+        lineRenderer = drawableRenderer.andThen(new DrawArraysRenderer<Line>(GL_LINES, 2));
+        circleRenderer = drawableRenderer.andThen(fillCircleRenderer());
 
         // Load the texture
         textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
@@ -223,11 +219,10 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         }
         lineProgram.useForRendering();
         for (Line line : lines) {
-            modelMatrix.setIdentity();
             lineRenderer.draw(line);
         }
         for (Circle circle : circles) {
-            circle.fill(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+            circleRenderer.draw(circle);
         }
 
         // Draw a point to indicate the light.

@@ -3,29 +3,17 @@ package com.learnopengles.android.lesson9;
 
 import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.drawable.Drawable;
-import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
 
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_LINE_LOOP;
-import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class Circle implements Drawable {
 
-
-    private static final int NUMBER_OF_POINTS = 360;
+    public static final int NUMBER_OF_POINTS = 360;
 
     private FloatBuffer vertexBuffer;
 
@@ -84,22 +72,6 @@ public class Circle implements Drawable {
 
     public void setColor(Color color) {
         this.color = color;
-    }
-
-    public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
-        modelMatrix.setIdentity();
-        new DrawablePositionRenderer<>(program).apply(this);
-        new DrawableColorRenderer<>(program).apply(this);
-        new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
-        new DrawArraysRenderer<>(GL_LINE_LOOP, NUMBER_OF_POINTS).apply(this);
-    }
-
-    public void fill(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
-        modelMatrix.setIdentity();
-        new DrawablePositionRenderer<>(program).apply(this);
-        new DrawableColorRenderer<>(program).apply(this);
-        new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
-        new DrawArraysRenderer<>(GL_TRIANGLE_FAN, NUMBER_OF_POINTS).apply(this);
     }
 
     @Override
