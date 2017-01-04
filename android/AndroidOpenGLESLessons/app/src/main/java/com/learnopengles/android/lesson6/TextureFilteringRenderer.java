@@ -35,6 +35,7 @@ import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.textureCoordinateCubeRenderer;
 import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
@@ -74,11 +75,6 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
      * A temporary matrix.
      */
     private float[] temporaryMatrix = new float[16];
-
-    /**
-     * This is our cube shading program.
-     */
-    private Program program;
 
     /**
      * This is our light point program.
@@ -148,7 +144,6 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram("per_pixel_vertex_shader_tex_and_light", "per_pixel_fragment_shader_tex_and_light", asList(POSITION, NORMAL, TEXTURE_COORDINATE));
 
         // Define a simple shader program for our point.
         pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
@@ -173,6 +168,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Initialize the accumulated rotation matrix
         Matrix.setIdentityM(accumulatedRotation, 0);
 
+        Program program = createProgram("per_pixel_vertex_shader_tex_and_light", "per_pixel_fragment_shader_tex_and_light", asList(POSITION, NORMAL, TEXTURE_COORDINATE));
         cubeRenderer = new Renderer<>(program,
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
@@ -182,6 +178,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
                         positionCubeRenderer(),
                         normalCubeRenderer(),
                         new TextureCubeRenderer(),
+                        textureCoordinateCubeRenderer(),
 
                         new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix),
 
@@ -197,6 +194,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
                         positionCubeRenderer(),
                         normalCubeRenderer(),
                         new TextureCubeRenderer(),
+                        textureCoordinateCubeRenderer(),
+
 
                         new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix),
 
@@ -221,8 +220,6 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10_000.0f) * ((int) time);
         float slowAngleInDegrees = (360.0f / 100_000.0f) * ((int) slowTime);
 
-        // Set our per-vertex lighting program.
-        program.useForRendering();
 
         // Calculate position of the light. Rotate and then push into the distance.
         light.setIdentity();
@@ -232,16 +229,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         light.setView(viewMatrix);
 
-        drawCube();
-        plane.setRotationY(slowAngleInDegrees);
-        planeRenderer.draw(plane);
-
-        // Draw a point to indicate the light.
-        pointProgram.useForRendering();
-        light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix, temporaryMatrix);
-    }
-
-    private void drawCube() {
+        cubeRenderer.useForRendering();
         // Set a matrix that contains the current rotation.
         currentRotation.setIdentity();
         currentRotation.rotate(new Point3D(deltaY, deltaX, 0.0f));
@@ -250,6 +238,15 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         deltaY = 0.0f;
 
         cubeRenderer.draw(cube);
+
+        //TODO: cubeRenderer and planeRenderer use the same program, so this call is redundant
+        planeRenderer.useForRendering();
+        plane.setRotationY(slowAngleInDegrees);
+        planeRenderer.draw(plane);
+
+        // Draw a point to indicate the light.
+        pointProgram.useForRendering();
+        light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix, temporaryMatrix);
     }
 
     public void setMinFilter(final int filter) {

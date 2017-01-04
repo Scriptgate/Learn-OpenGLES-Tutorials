@@ -13,6 +13,7 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
@@ -133,6 +134,9 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
         // Load the texture
         textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
+        for (Cube cube : cubes) {
+            cube.setTexture(textureDataHandle);
+        }
 
         renderer = new Renderer<>(program,
                 asList(
@@ -141,6 +145,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
                         positionCubeRenderer(),
                         colorCubeRenderer(),
                         normalCubeRenderer(),
+                        new TextureCubeRenderer(),
                         textureCoordinateCubeRenderer(),
 
                         new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix),
@@ -168,17 +173,6 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
         // Set our per-vertex lighting program.
         renderer.useForRendering();
-
-        // Set program handles for cube drawing.
-
-        // Set the active texture unit to texture unit 0.
-        glActiveTexture(GL_TEXTURE0);
-
-        // Bind the texture to this unit.
-        glBindTexture(GL_TEXTURE_2D, textureDataHandle);
-
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(program.getHandle(TEXTURE), 0);
 
         // Calculate position of the light. Rotate and then push into the distance.
         light.setIdentity();

@@ -15,6 +15,7 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
 import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
@@ -26,7 +27,6 @@ import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.drawable.Drawable;
 import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
 import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
-import com.learnopengles.android.renderer.light.LightPositionInModelSpaceRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +43,9 @@ import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFacto
 import static com.learnopengles.android.lesson9.Circle.*;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
-import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 import static com.learnopengles.android.renderer.circle.DrawCircleRendererFactory.fillCircleRenderer;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 public class CameraRenderer implements GLSurfaceView.Renderer {
 
@@ -57,7 +55,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
     private ModelViewProjectionMatrix mvpMatrix;
 
-    private Program program;
     private Program lineProgram;
 
     private Renderer<Cube> cubeRenderer;
@@ -68,8 +65,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private static final Color BACKGROUND_COLOR = BLACK;
 
     private final Context activityContext;
-
-    private int textureDataHandle;
 
     private List<Cube> cubes;
     private List<Line> lines = new ArrayList<>();
@@ -146,10 +141,10 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
         lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
 
 
+        Program program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
         cubeRenderer = new Renderer<>(program,
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
@@ -157,6 +152,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
                         positionCubeRenderer(),
                         colorCubeRenderer(),
                         normalCubeRenderer(),
+                        new TextureCubeRenderer(),
                         textureCoordinateCubeRenderer(),
 
                         new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix),
@@ -180,7 +176,10 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         lightRenderer = createLightRenderer(light, mvpMatrix, viewMatrix, projectionMatrix);
 
         // Load the texture
-        textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
+        int textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
+        for (Cube cube : cubes) {
+            cube.setTexture(textureDataHandle);
+        }
     }
 
     @Override
@@ -196,28 +195,18 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
-        // Set our program
-        cubeRenderer.useForRendering();
-
-        // Set the active texture unit to texture unit 0.
-        glActiveTexture(GL_TEXTURE0);
-
-        // Bind the texture to this unit.
-        glBindTexture(GL_TEXTURE_2D, textureDataHandle);
-
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(program.getHandle(TEXTURE), 0);
-
         light.setIdentity();
         light.translate(new Point3D(0.5f, 0.2f, 0.5f));
         light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
         light.translate(new Point3D(0.2f, 0.0f, 0.0f));
         light.setView(viewMatrix);
 
+        cubeRenderer.useForRendering();
         for (Cube cube : cubes) {
             cubeRenderer.draw(cube);
         }
 
+        //TODO: same program in lineRenderer as circleRenderer
         lineProgram.useForRendering();
         for (Line line : lines) {
             lineRenderer.draw(line);
