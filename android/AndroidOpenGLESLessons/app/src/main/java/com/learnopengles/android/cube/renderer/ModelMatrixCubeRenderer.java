@@ -2,6 +2,7 @@ package com.learnopengles.android.cube.renderer;
 
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.RendererLink;
 
 public class ModelMatrixCubeRenderer implements RendererLink<Cube> {
@@ -13,7 +14,7 @@ public class ModelMatrixCubeRenderer implements RendererLink<Cube> {
     }
 
     @Override
-    public void apply(Cube cube) {
+    public void apply(Program program, Cube cube) {
         cube.apply(modelMatrix);
     }
 }

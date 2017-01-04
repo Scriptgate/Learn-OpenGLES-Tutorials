@@ -11,15 +11,13 @@ public class LightPositionInEyeSpaceRenderer<T> implements RendererLink<T> {
 
 
     private Light light;
-    private Program program;
 
-    public LightPositionInEyeSpaceRenderer(Light light, Program program) {
+    public LightPositionInEyeSpaceRenderer(Light light) {
         this.light = light;
-        this.program = program;
     }
 
     @Override
-    public void apply(T t) {
+    public void apply(Program program, T t) {
         glUniform3fv(program.getHandle(LIGHT_POSITION), 1, light.getPositionInEyeSpace(), 0);
     }
 }

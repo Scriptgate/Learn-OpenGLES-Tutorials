@@ -3,6 +3,7 @@ package com.learnopengles.android.cube.renderer;
 
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.RendererLink;
 
 public class AccumulatedRotationCubeRenderer implements RendererLink<Cube> {
@@ -20,7 +21,7 @@ public class AccumulatedRotationCubeRenderer implements RendererLink<Cube> {
     }
 
     @Override
-    public void apply(Cube cube) {
+    public void apply(Program program, Cube cube) {
         // Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
         //TODO: accumulatedRotation = currentRotation * accumulatedRotation
         currentRotation.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix, accumulatedRotation);

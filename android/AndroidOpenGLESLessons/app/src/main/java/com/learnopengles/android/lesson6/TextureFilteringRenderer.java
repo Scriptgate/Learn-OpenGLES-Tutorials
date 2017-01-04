@@ -15,7 +15,7 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.renderer.AccumulatedRotationCubeRenderer;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.RendererChain;
+import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer;
@@ -106,8 +106,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
     private Light light;
 
-    private RendererChain<Cube> cubeRendererChain;
-    private RendererChain<Cube> planeRendererChain;
+    private Renderer<Cube> cubeRenderer;
+    private Renderer<Cube> planeRenderer;
 
     /**
      * Initialize the model data.
@@ -173,34 +173,34 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Initialize the accumulated rotation matrix
         Matrix.setIdentityM(accumulatedRotation, 0);
 
-        cubeRendererChain = new RendererChain<>(
+        cubeRenderer = new Renderer<>(program,
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
                         new AccumulatedRotationCubeRenderer(accumulatedRotation, currentRotation, temporaryMatrix, modelMatrix),
 
-                        positionCubeRenderer(program),
-                        normalCubeRenderer(program),
-                        new TextureCubeRenderer(program),
+                        positionCubeRenderer(),
+                        normalCubeRenderer(),
+                        new TextureCubeRenderer(),
 
-                        new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
+                        new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix),
 
-                        new LightPositionInEyeSpaceRenderer<Cube>(light, program),
+                        new LightPositionInEyeSpaceRenderer<Cube>(light),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
 
-        planeRendererChain = new RendererChain<>(
+        planeRenderer = new Renderer<>(program,
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
-                        positionCubeRenderer(program),
-                        normalCubeRenderer(program),
-                        new TextureCubeRenderer(program),
+                        positionCubeRenderer(),
+                        normalCubeRenderer(),
+                        new TextureCubeRenderer(),
 
-                        new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
+                        new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix),
 
-                        new LightPositionInEyeSpaceRenderer<Cube>(light, program),
+                        new LightPositionInEyeSpaceRenderer<Cube>(light),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
@@ -234,7 +234,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         drawCube();
         plane.setRotationY(slowAngleInDegrees);
-        planeRendererChain.draw(plane);
+        planeRenderer.draw(plane);
 
         // Draw a point to indicate the light.
         pointProgram.useForRendering();
@@ -249,7 +249,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         deltaX = 0.0f;
         deltaY = 0.0f;
 
-        cubeRendererChain.draw(cube);
+        cubeRenderer.draw(cube);
     }
 
     public void setMinFilter(final int filter) {

@@ -21,14 +21,8 @@ import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 
 public class TextureCubeRenderer implements RendererLink<Cube> {
 
-    private final Program program;
-
-    public TextureCubeRenderer(Program program) {
-        this.program = program;
-    }
-
     @Override
-    public void apply(Cube cube) {
+    public void apply(Program program, Cube cube) {
         // Set the active texture unit to texture unit 0.
         glActiveTexture(GL_TEXTURE0);
         // Bind the texture to this unit.

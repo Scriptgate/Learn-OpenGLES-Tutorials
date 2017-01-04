@@ -15,18 +15,16 @@ public class MVPRenderer<T> implements RendererLink<T> {
     private final ModelMatrix modelMatrix;
     private final ViewMatrix viewMatrix;
     private final ProjectionMatrix projectionMatrix;
-    private final Program program;
 
-    public MVPRenderer(ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Program program) {
+    public MVPRenderer(ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         this.mvpMatrix = mvpMatrix;
         this.modelMatrix = modelMatrix;
         this.viewMatrix = viewMatrix;
         this.projectionMatrix = projectionMatrix;
-        this.program = program;
     }
 
     @Override
-    public void apply(T t) {
+    public void apply(Program program, T t) {
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         // Pass in the combined matrix.
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));

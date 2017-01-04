@@ -22,7 +22,7 @@ import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.IdentityModelMatrixRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.RendererChain;
+import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.drawable.Drawable;
 import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
 import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
@@ -59,9 +59,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private Program pointProgram;
     private Program lineProgram;
 
-    private RendererChain<Cube> cubeRenderer;
-    private RendererChain<Line> lineRenderer;
-    private RendererChain<Circle> circleRenderer;
+    private Renderer<Cube> cubeRenderer;
+    private Renderer<Line> lineRenderer;
+    private Renderer<Circle> circleRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -149,28 +149,28 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
 
 
-        cubeRenderer = new RendererChain<>(
+        cubeRenderer = new Renderer<>(program,
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
-                        positionCubeRenderer(program),
-                        colorCubeRenderer(program),
-                        normalCubeRenderer(program),
-                        textureCoordinateCubeRenderer(program),
+                        positionCubeRenderer(),
+                        colorCubeRenderer(),
+                        normalCubeRenderer(),
+                        textureCoordinateCubeRenderer(),
 
-                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
+                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix),
 
-                        new LightPositionInEyeSpaceRenderer<Cube>(light, program),
+                        new LightPositionInEyeSpaceRenderer<Cube>(light),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
 
-        RendererChain<Drawable> drawableRenderer = new RendererChain<>(
+        Renderer<Drawable> drawableRenderer = new Renderer<>(lineProgram,
                 asList(
                         new IdentityModelMatrixRenderer<Drawable>(modelMatrix),
-                        new DrawablePositionRenderer<>(lineProgram),
-                        new DrawableColorRenderer<>(lineProgram),
-                        new MVPRenderer<Drawable>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, lineProgram)
+                        new DrawablePositionRenderer<>(),
+                        new DrawableColorRenderer<>(),
+                        new MVPRenderer<Drawable>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix)
                 )
         );
 

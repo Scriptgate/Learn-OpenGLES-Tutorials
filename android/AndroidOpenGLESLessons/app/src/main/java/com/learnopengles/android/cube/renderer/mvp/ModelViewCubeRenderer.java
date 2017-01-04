@@ -17,18 +17,16 @@ public class ModelViewCubeRenderer implements RendererLink<Cube> {
     private ModelMatrix modelMatrix;
     private ViewMatrix viewMatrix;
     private ProjectionMatrix projectionMatrix;
-    private Program program;
 
-    public ModelViewCubeRenderer(ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Program program) {
+    public ModelViewCubeRenderer(ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         this.mvpMatrix = mvpMatrix;
         this.modelMatrix = modelMatrix;
         this.viewMatrix = viewMatrix;
         this.projectionMatrix = projectionMatrix;
-        this.program = program;
     }
 
     @Override
-    public void apply(Cube cube) {
+    public void apply(Program program, Cube cube) {
         mvpMatrix.multiply(modelMatrix, viewMatrix);
         mvpMatrix.passTo(program.getHandle(MV_MATRIX));
 

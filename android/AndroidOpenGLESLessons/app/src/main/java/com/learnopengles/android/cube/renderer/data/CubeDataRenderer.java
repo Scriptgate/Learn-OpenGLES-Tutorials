@@ -11,16 +11,14 @@ import com.learnopengles.android.renderer.VertexAttribPointerRenderer;
 public class CubeDataRenderer extends VertexAttribPointerRenderer<Cube> {
 
     private CubeDataType cubeDataType;
-    private Program program;
     private AttributeVariable attributeVariable;
 
-    public CubeDataRenderer(CubeDataType cubeDataType, Program program, AttributeVariable attributeVariable) {
+    public CubeDataRenderer(CubeDataType cubeDataType, AttributeVariable attributeVariable) {
         this.cubeDataType = cubeDataType;
-        this.program = program;
         this.attributeVariable = attributeVariable;
     }
 
-    public void apply(Cube cube) {
+    public void apply(Program program, Cube cube) {
         CubeData cubeData = cube.getCubeData(cubeDataType);
         int handle = program.getHandle(attributeVariable);
 

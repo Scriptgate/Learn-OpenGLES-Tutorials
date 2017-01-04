@@ -14,7 +14,7 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.RendererChain;
+import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
@@ -83,7 +83,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
     private Light light;
 
-    private RendererChain<Cube> rendererChain;
+    private Renderer<Cube> renderer;
 
     /**
      * Initialize the model data.
@@ -139,18 +139,18 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         // Load the texture
         textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
 
-        rendererChain = new RendererChain<>(
+        renderer = new Renderer<>(program,
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
-                        positionCubeRenderer(program),
-                        colorCubeRenderer(program),
-                        normalCubeRenderer(program),
-                        textureCoordinateCubeRenderer(program),
+                        positionCubeRenderer(),
+                        colorCubeRenderer(),
+                        normalCubeRenderer(),
+                        textureCoordinateCubeRenderer(),
 
-                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
+                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix),
 
-                        new LightPositionInEyeSpaceRenderer<Cube>(light, program),
+                        new LightPositionInEyeSpaceRenderer<Cube>(light),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
@@ -199,7 +199,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            rendererChain.draw(cube);
+            renderer.draw(cube);
         }
 
         // Draw a point to indicate the light.

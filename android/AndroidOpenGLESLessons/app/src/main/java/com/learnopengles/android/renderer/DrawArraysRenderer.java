@@ -1,6 +1,8 @@
 package com.learnopengles.android.renderer;
 
 
+import com.learnopengles.android.program.Program;
+
 import static android.opengl.GLES20.glDrawArrays;
 
 public class DrawArraysRenderer<T> implements RendererLink<T> {
@@ -14,7 +16,7 @@ public class DrawArraysRenderer<T> implements RendererLink<T> {
     }
 
     @Override
-    public void apply(T t) {
+    public void apply(Program program, T t) {
         glDrawArrays(mode, 0, count);
     }
 }

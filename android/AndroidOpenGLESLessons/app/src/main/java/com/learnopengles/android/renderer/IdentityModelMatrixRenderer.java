@@ -2,6 +2,7 @@ package com.learnopengles.android.renderer;
 
 
 import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.program.Program;
 
 public class IdentityModelMatrixRenderer<T> implements RendererLink<T> {
 
@@ -12,7 +13,7 @@ public class IdentityModelMatrixRenderer<T> implements RendererLink<T> {
     }
 
     @Override
-    public void apply(T t) {
+    public void apply(Program program, T t) {
         modelMatrix.setIdentity();
     }
 }

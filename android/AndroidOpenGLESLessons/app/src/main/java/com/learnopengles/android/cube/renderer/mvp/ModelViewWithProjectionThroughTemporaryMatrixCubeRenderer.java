@@ -17,20 +17,18 @@ public class ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer implement
     private ModelMatrix modelMatrix;
     private ViewMatrix viewMatrix;
     private ProjectionMatrix projectionMatrix;
-    private Program program;
     private float[] temporaryMatrix;
 
-    public ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Program program, float[] temporaryMatrix) {
+    public ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] temporaryMatrix) {
         this.mvpMatrix = mvpMatrix;
         this.modelMatrix = modelMatrix;
         this.viewMatrix = viewMatrix;
         this.projectionMatrix = projectionMatrix;
-        this.program = program;
         this.temporaryMatrix = temporaryMatrix;
     }
 
     @Override
-    public void apply(Cube cube) {
+    public void apply(Program program, Cube cube) {
         mvpMatrix.multiply(modelMatrix, viewMatrix);
         mvpMatrix.passTo(program.getHandle(MV_MATRIX));
 
