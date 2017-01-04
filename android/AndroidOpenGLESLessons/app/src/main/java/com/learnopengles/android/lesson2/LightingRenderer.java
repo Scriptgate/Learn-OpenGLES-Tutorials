@@ -11,7 +11,8 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.renderer.CubeRendererChain;
+import com.learnopengles.android.renderer.DrawArraysRenderer;
+import com.learnopengles.android.renderer.RendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
@@ -69,7 +70,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
     private Light light;
 
-    private CubeRendererChain cubeRendererChain;
+    private RendererChain<Cube> rendererChain;
 
     /**
      * Initialize the model data.
@@ -118,7 +119,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         perVertexProgram = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL));
         pointProgram = createProgram("lesson_two_point_vertex_shader", "lesson_two_point_fragment_shader", singletonList(POSITION));
 
-        cubeRendererChain = new CubeRendererChain(
+        rendererChain = new RendererChain<>(
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
@@ -128,7 +129,8 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
                         new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, perVertexProgram),
 
-                        new LightCubeRenderer(light, perVertexProgram)
+                        new LightCubeRenderer(light, perVertexProgram),
+                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
     }
@@ -165,7 +167,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cubeRendererChain.drawCube(cube);
+            rendererChain.draw(cube);
         }
 
         // Draw a point to indicate the light.

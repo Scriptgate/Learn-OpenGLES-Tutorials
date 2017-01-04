@@ -15,10 +15,10 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.renderer.CubeRendererChain;
+import com.learnopengles.android.renderer.DrawArraysRenderer;
+import com.learnopengles.android.renderer.RendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
 
@@ -64,7 +64,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private Program pointProgram;
     private Program lineProgram;
 
-    private CubeRendererChain cubeRendererChain;
+    private RendererChain<Cube> rendererChain;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -152,7 +152,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
 
 
-        cubeRendererChain = new CubeRendererChain(
+        rendererChain = new RendererChain<>(
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
@@ -163,7 +163,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
                         new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
 
-                        new LightCubeRenderer(light, program)
+                        new LightCubeRenderer(light, program),
+                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
 
@@ -206,7 +207,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         light.setView(viewMatrix);
 
         for (Cube cube : cubes) {
-            cubeRendererChain.drawCube(cube);
+            rendererChain.draw(cube);
         }
         lineProgram.useForRendering();
         for (Line line : lines) {

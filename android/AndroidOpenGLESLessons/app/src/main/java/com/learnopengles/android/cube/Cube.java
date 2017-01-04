@@ -52,10 +52,6 @@ public class Cube {
         modelMatrix.scale(scale);
     }
 
-    public void drawArrays() {
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-    }
-
     public void setTexture(int texture) {
         this.texture = texture;
     }

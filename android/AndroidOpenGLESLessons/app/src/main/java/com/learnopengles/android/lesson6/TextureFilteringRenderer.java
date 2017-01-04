@@ -14,10 +14,10 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.renderer.AccumulatedRotationCubeRenderer;
-import com.learnopengles.android.cube.renderer.CubeRendererChain;
+import com.learnopengles.android.renderer.DrawArraysRenderer;
+import com.learnopengles.android.renderer.RendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
 import com.learnopengles.android.program.Program;
@@ -106,8 +106,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
     private Light light;
 
-    private CubeRendererChain cubeRendererChain;
-    private CubeRendererChain planeRendererChain;
+    private RendererChain<Cube> cubeRendererChain;
+    private RendererChain<Cube> planeRendererChain;
 
     /**
      * Initialize the model data.
@@ -173,7 +173,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Initialize the accumulated rotation matrix
         Matrix.setIdentityM(accumulatedRotation, 0);
 
-        cubeRendererChain = new CubeRendererChain(
+        cubeRendererChain = new RendererChain<>(
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
@@ -185,11 +185,12 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
                         new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
 
-                        new LightCubeRenderer(light, program)
+                        new LightCubeRenderer(light, program),
+                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
 
-        planeRendererChain = new CubeRendererChain(
+        planeRendererChain = new RendererChain<>(
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
@@ -199,7 +200,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
                         new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
 
-                        new LightCubeRenderer(light, program)
+                        new LightCubeRenderer(light, program),
+                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
     }
@@ -232,7 +234,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         drawCube();
         plane.setRotationY(slowAngleInDegrees);
-        planeRendererChain.drawCube(plane);
+        planeRendererChain.draw(plane);
 
         // Draw a point to indicate the light.
         pointProgram.useForRendering();
@@ -247,7 +249,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         deltaX = 0.0f;
         deltaY = 0.0f;
 
-        cubeRendererChain.drawCube(cube);
+        cubeRendererChain.draw(cube);
     }
 
     public void setMinFilter(final int filter) {

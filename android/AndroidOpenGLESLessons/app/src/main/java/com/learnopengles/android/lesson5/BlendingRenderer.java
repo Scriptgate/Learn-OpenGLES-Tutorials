@@ -10,9 +10,9 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.renderer.CubeRendererChain;
+import com.learnopengles.android.renderer.DrawArraysRenderer;
+import com.learnopengles.android.renderer.RendererChain;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory;
 import com.learnopengles.android.cube.renderer.mvp.MVPCubeRenderer;
 import com.learnopengles.android.program.Program;
 
@@ -64,7 +64,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
 
     private List<Cube> cubes;
 
-    private CubeRendererChain cubeRendererChain;
+    private RendererChain<Cube> rendererChain;
 
     /**
      * Initialize the model data.
@@ -136,12 +136,13 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
 
         program = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR));
 
-        cubeRendererChain = new CubeRendererChain(
+        rendererChain = new RendererChain<>(
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
                         positionCubeRenderer(program),
                         colorCubeRenderer(program),
-                        new MVPCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program)
+                        new MVPCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
+                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
     }
@@ -174,7 +175,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         cubes.get(4).setRotationY(angleInDegrees);
 
         for (Cube cube : cubes) {
-            cubeRendererChain.drawCube(cube);
+            rendererChain.draw(cube);
         }
     }
 }
