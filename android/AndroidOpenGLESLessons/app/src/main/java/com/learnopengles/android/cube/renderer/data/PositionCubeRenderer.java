@@ -15,9 +15,6 @@ public class PositionCubeRenderer extends CubeDataRenderer {
 
     @Override
     public void apply(Cube cube) {
-        CubeDataType cubeDataType = CubeDataType.POSITION;
-        int handle = program.getHandle(AttributeVariable.POSITION);
-
-        apply(cube, cubeDataType, handle);
+        apply(cube, CubeDataType.POSITION, program, AttributeVariable.POSITION);
     }
 }

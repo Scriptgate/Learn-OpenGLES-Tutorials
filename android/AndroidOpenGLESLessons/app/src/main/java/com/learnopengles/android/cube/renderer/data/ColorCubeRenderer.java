@@ -15,9 +15,6 @@ public class ColorCubeRenderer extends CubeDataRenderer {
 
     @Override
     public void apply(Cube cube) {
-        CubeDataType cubeDataType = CubeDataType.COLOR;
-        int handle = program.getHandle(AttributeVariable.COLOR);
-
-        apply(cube, cubeDataType, handle);
+        apply(cube, CubeDataType.COLOR, program, AttributeVariable.COLOR);
     }
 }

@@ -15,9 +15,6 @@ public class TextureDataCubeRenderer extends CubeDataRenderer {
 
     @Override
     public void apply(Cube cube) {
-        CubeDataType cubeDataType = CubeDataType.TEXTURE_COORDINATE;
-        int handle = program.getHandle(AttributeVariable.TEXTURE_COORDINATE);
-
-        apply(cube, cubeDataType, handle);
+        apply(cube, CubeDataType.TEXTURE_COORDINATE, program, AttributeVariable.TEXTURE_COORDINATE);
     }
 }

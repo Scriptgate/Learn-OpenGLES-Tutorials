@@ -15,9 +15,6 @@ public class NormalCubeRenderer extends CubeDataRenderer {
 
     @Override
     public void apply(Cube cube) {
-        CubeDataType cubeDataType = CubeDataType.NORMAL;
-        int handle = program.getHandle(AttributeVariable.NORMAL);
-
-        apply(cube, cubeDataType, handle);
+        apply(cube, CubeDataType.NORMAL, program, AttributeVariable.NORMAL);
     }
 }
