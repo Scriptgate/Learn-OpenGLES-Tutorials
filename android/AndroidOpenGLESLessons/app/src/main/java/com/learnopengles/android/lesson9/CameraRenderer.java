@@ -15,7 +15,7 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.renderer.LightCubeRenderer;
+import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
@@ -160,7 +160,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
                         new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
 
-                        new LightCubeRenderer(light, program),
+                        new LightPositionInEyeSpaceRenderer<Cube>(light, program),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );

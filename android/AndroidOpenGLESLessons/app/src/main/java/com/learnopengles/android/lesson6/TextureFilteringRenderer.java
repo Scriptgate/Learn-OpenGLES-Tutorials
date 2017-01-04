@@ -16,7 +16,7 @@ import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.renderer.AccumulatedRotationCubeRenderer;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.RendererChain;
-import com.learnopengles.android.cube.renderer.LightCubeRenderer;
+import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
@@ -185,7 +185,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
                         new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
 
-                        new LightCubeRenderer(light, program),
+                        new LightPositionInEyeSpaceRenderer<Cube>(light, program),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );
@@ -200,7 +200,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
                         new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
 
-                        new LightCubeRenderer(light, program),
+                        new LightPositionInEyeSpaceRenderer<Cube>(light, program),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );

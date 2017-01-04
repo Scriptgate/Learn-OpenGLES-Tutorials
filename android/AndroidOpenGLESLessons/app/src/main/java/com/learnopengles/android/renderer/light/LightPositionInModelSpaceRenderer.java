@@ -9,11 +9,11 @@ import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glVertexAttrib3fv;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 
-public class LightPositionRenderer implements RendererLink<Light> {
+public class LightPositionInModelSpaceRenderer implements RendererLink<Light> {
 
     private final Program program;
 
-    public LightPositionRenderer(Program program) {
+    public LightPositionInModelSpaceRenderer(Program program) {
         this.program = program;
     }
 

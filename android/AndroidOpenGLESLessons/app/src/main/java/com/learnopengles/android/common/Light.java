@@ -8,10 +8,9 @@ import com.learnopengles.android.renderer.MVPWithProjectionThroughTemporaryMatri
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.light.LightPositionRenderer;
+import com.learnopengles.android.renderer.light.LightPositionInModelSpaceRenderer;
 
 import static android.opengl.GLES20.GL_POINTS;
-import static android.opengl.GLES20.glUniform3fv;
 
 public class Light {
 
@@ -37,7 +36,7 @@ public class Light {
      * Draws a point representing the position of the light.
      */
     public void drawLight(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
-        new LightPositionRenderer(program).apply(this);
+        new LightPositionInModelSpaceRenderer(program).apply(this);
         new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
         new DrawArraysRenderer<>(GL_POINTS, 1).apply(this);
     }
@@ -46,7 +45,7 @@ public class Light {
      * Draws a point representing the position of the light.
      */
     public void drawLight(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] temporaryMatrix) {
-        new LightPositionRenderer(program).apply(this);
+        new LightPositionInModelSpaceRenderer(program).apply(this);
         new MVPWithProjectionThroughTemporaryMatrixRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix).apply(this);
         new DrawArraysRenderer<>(GL_POINTS, 1);
     }
@@ -71,8 +70,8 @@ public class Light {
         viewMatrix.multiplyWithVectorAndStore(positionInWorldSpace, positionInEyeSpace);
     }
 
-    public void passTo(int handle) {
-        glUniform3fv(handle, 1, positionInEyeSpace, 0);
+    public float[] getPositionInEyeSpace() {
+        return positionInEyeSpace;
     }
 
     public float[] getPositionInModelSpace() {
