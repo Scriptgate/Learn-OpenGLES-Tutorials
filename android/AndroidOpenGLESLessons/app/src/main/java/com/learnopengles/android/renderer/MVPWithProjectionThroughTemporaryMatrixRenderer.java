@@ -1,17 +1,16 @@
-package com.learnopengles.android.cube.renderer.mvp;
+package com.learnopengles.android.renderer;
+
 
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.renderer.CubeRenderer;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.RendererLink;
 
 import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
-import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
 
-public class ProjectionThroughTemporaryMatrixCubeRenderer implements CubeRenderer {
+public class MVPWithProjectionThroughTemporaryMatrixRenderer<T> implements RendererLink<T> {
 
     private ModelViewProjectionMatrix mvpMatrix;
     private ModelMatrix modelMatrix;
@@ -20,7 +19,7 @@ public class ProjectionThroughTemporaryMatrixCubeRenderer implements CubeRendere
     private Program program;
     private float[] temporaryMatrix;
 
-    public ProjectionThroughTemporaryMatrixCubeRenderer(ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Program program, float[] temporaryMatrix) {
+    public MVPWithProjectionThroughTemporaryMatrixRenderer(ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, Program program, float[] temporaryMatrix) {
         this.mvpMatrix = mvpMatrix;
         this.modelMatrix = modelMatrix;
         this.viewMatrix = viewMatrix;
@@ -30,17 +29,10 @@ public class ProjectionThroughTemporaryMatrixCubeRenderer implements CubeRendere
     }
 
     @Override
-    public void apply(Cube cube) {
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
+    public void apply(T t) {
         mvpMatrix.multiply(modelMatrix, viewMatrix);
-        // Pass in the modelview matrix.
-        mvpMatrix.passTo(program.getHandle(MV_MATRIX));
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
         mvpMatrix.multiply(projectionMatrix, temporaryMatrix);
-        // Pass in the combined matrix.
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
     }
+
 }
