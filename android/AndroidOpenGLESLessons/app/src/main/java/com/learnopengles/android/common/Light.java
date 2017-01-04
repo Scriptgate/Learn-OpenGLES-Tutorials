@@ -9,8 +9,8 @@ import com.learnopengles.android.program.Program;
 import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glUniform3f;
-import static android.opengl.GLES20.glVertexAttrib3f;
+import static android.opengl.GLES20.glUniform3fv;
+import static android.opengl.GLES20.glVertexAttrib3fv;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
@@ -52,7 +52,10 @@ public class Light {
      * Draws a point representing the position of the light.
      */
     public void drawLight(Program pointProgram, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] temporaryMatrix) {
+        //TODO: RendererLinks!
         passPositionTo(pointProgram);
+
+
 
         // Pass in the transformation matrix.
         mvpMatrix.multiply(modelMatrix, viewMatrix);
@@ -66,7 +69,7 @@ public class Light {
     private void passPositionTo(Program program) {
         final int pointPositionHandle = program.getHandle(POSITION);
         // Pass in the position.
-        glVertexAttrib3f(pointPositionHandle, lightPosInModelSpace[0], lightPosInModelSpace[1], lightPosInModelSpace[2]);
+        glVertexAttrib3fv(pointPositionHandle, lightPosInModelSpace, 0);
         // Since we are not using a buffer object, disable vertex arrays for this attribute.
         glDisableVertexAttribArray(pointPositionHandle);
     }
@@ -97,6 +100,6 @@ public class Light {
     }
 
     public void passTo(int handle) {
-        glUniform3f(handle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+        glUniform3fv(handle, 1, lightPosInEyeSpace, 0);
     }
 }

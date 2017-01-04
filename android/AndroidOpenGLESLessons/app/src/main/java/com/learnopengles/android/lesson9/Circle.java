@@ -8,17 +8,15 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.DisabledVertexAttributeArrayRenderer;
+import com.learnopengles.android.renderer.VertexAttrib4fvRenderer;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.EnabledVertexAttributeArrayRenderer;
+import com.learnopengles.android.renderer.VertexAttribPointerRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
 
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_LINES;
 import static android.opengl.GLES20.GL_LINE_LOOP;
 import static android.opengl.GLES20.GL_TRIANGLE_FAN;
-import static android.opengl.GLES20.glDrawArrays;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
@@ -92,8 +90,8 @@ public class Circle {
     private void passData(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
-        new EnabledVertexAttributeArrayRenderer<>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
-        new DisabledVertexAttributeArrayRenderer<>(program, COLOR, color.toArray()).apply(this);
+        new VertexAttribPointerRenderer<>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
+        new VertexAttrib4fvRenderer<>(program, COLOR, color.toArray()).apply(this);
         new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
     }
 
