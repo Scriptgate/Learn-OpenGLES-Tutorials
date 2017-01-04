@@ -18,7 +18,7 @@ public abstract class CubeDataRenderer implements CubeRenderer {
         FloatBuffer data = cubeData.getData();
         int dataSize = cubeData.getDataSize();
 
-        new EnabledVertexAttributeRenderer().apply(program, attributeVariable, data, dataSize);
+        new EnabledVertexAttributeRenderer<Cube>(program, attributeVariable, data, dataSize).apply(cube);
     }
 
 }

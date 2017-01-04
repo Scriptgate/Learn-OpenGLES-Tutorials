@@ -7,6 +7,7 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.EnabledVertexAttributeRenderer;
 
 import java.nio.FloatBuffer;
 
@@ -50,9 +51,7 @@ public class Line {
     public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
-        int positionHandle = program.getHandle(POSITION);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, VERTEX_DATA_SIZE, GL_FLOAT, false, 0, vertexBuffer);
+        new EnabledVertexAttributeRenderer<Line>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
 
         int colorHandle = program.getHandle(COLOR);
         glDisableVertexAttribArray(colorHandle);
