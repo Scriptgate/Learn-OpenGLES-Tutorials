@@ -7,7 +7,8 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.VertexAttrib4fvRenderer;
+import com.learnopengles.android.renderer.drawable.BasicDrawable;
+import com.learnopengles.android.renderer.drawable.BasicDrawableColorRenderer;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.VertexAttribPointerRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
@@ -17,10 +18,9 @@ import java.nio.FloatBuffer;
 import static android.opengl.GLES20.GL_LINES;
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
-import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 
-public class Line {
+public class Line implements BasicDrawable {
 
     private FloatBuffer vertexBuffer;
 
@@ -44,8 +44,13 @@ public class Line {
     public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
         new VertexAttribPointerRenderer<>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
-        new VertexAttrib4fvRenderer<>(program, COLOR, color.toArray()).apply(this);
+        new BasicDrawableColorRenderer(program).apply(this);
         new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
         new DrawArraysRenderer<>(GL_LINES, 2).apply(this);
+    }
+
+    @Override
+    public float[] getColor() {
+        return color.toArray();
     }
 }

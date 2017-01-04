@@ -8,7 +8,8 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.VertexAttrib4fvRenderer;
+import com.learnopengles.android.renderer.drawable.BasicDrawable;
+import com.learnopengles.android.renderer.drawable.BasicDrawableColorRenderer;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.VertexAttribPointerRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
@@ -18,12 +19,11 @@ import java.nio.FloatBuffer;
 import static android.opengl.GLES20.GL_LINE_LOOP;
 import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
-import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class Circle {
+public class Circle implements BasicDrawable {
 
 
     private static final int NUMBER_OF_POINTS = 360;
@@ -90,7 +90,7 @@ public class Circle {
     public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
         new VertexAttribPointerRenderer<>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
-        new VertexAttrib4fvRenderer<>(program, COLOR, color.toArray()).apply(this);
+        new BasicDrawableColorRenderer(program).apply(this);
         new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
         new DrawArraysRenderer<>(GL_LINE_LOOP, NUMBER_OF_POINTS).apply(this);
     }
@@ -98,8 +98,13 @@ public class Circle {
     public void fill(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
         new VertexAttribPointerRenderer<>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
-        new VertexAttrib4fvRenderer<>(program, COLOR, color.toArray()).apply(this);
+        new BasicDrawableColorRenderer(program).apply(this);
         new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
         new DrawArraysRenderer<>(GL_TRIANGLE_FAN, NUMBER_OF_POINTS).apply(this);
+    }
+
+    @Override
+    public float[] getColor() {
+        return color.toArray();
     }
 }
