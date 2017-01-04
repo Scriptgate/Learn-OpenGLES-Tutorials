@@ -8,11 +8,10 @@ import com.learnopengles.android.renderer.MVPWithProjectionThroughTemporaryMatri
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.LightPositionRenderer;
+import com.learnopengles.android.renderer.light.LightPositionRenderer;
 
 import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.glUniform3fv;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
 
 public class Light {
 
@@ -22,17 +21,17 @@ public class Light {
      * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
      * we multiply this by our transformation matrices.
      */
-    private final float[] lightPosInModelSpace = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
+    private final float[] positionInModelSpace = new float[]{0.0f, 0.0f, 0.0f, 1.0f};
 
     /**
      * Used to hold the current position of the light in world space (after transformation via model matrix).
      */
-    private final float[] lightPosInWorldSpace = new float[4];
+    private final float[] positionInWorldSpace = new float[4];
 
     /**
      * Used to hold the transformed position of the light in eye space (after transformation via modelview matrix)
      */
-    private final float[] lightPosInEyeSpace = new float[4];
+    private final float[] positionInEyeSpace = new float[4];
 
     /**
      * Draws a point representing the position of the light.
@@ -65,18 +64,18 @@ public class Light {
     }
 
     public void setView(ViewMatrix viewMatrix) {
-        //TODO: lightPosInWorldSpace = lightPosInModelSpace * modelMatrix
-        modelMatrix.multiplyWithVectorAndStore(lightPosInModelSpace, lightPosInWorldSpace);
+        //TODO: positionInWorldSpace = positionInModelSpace * modelMatrix
+        modelMatrix.multiplyWithVectorAndStore(positionInModelSpace, positionInWorldSpace);
 
-        //TODO: lightPosInEyeSpace = lightPosInWorldSpace * viewMatrix
-        viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
+        //TODO: positionInEyeSpace = positionInWorldSpace * viewMatrix
+        viewMatrix.multiplyWithVectorAndStore(positionInWorldSpace, positionInEyeSpace);
     }
 
     public void passTo(int handle) {
-        glUniform3fv(handle, 1, lightPosInEyeSpace, 0);
+        glUniform3fv(handle, 1, positionInEyeSpace, 0);
     }
 
     public float[] getPositionInModelSpace() {
-        return lightPosInModelSpace;
+        return positionInModelSpace;
     }
 }

@@ -1,8 +1,9 @@
-package com.learnopengles.android.renderer;
+package com.learnopengles.android.renderer.light;
 
 
 import com.learnopengles.android.common.Light;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.RendererLink;
 
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glVertexAttrib3fv;
