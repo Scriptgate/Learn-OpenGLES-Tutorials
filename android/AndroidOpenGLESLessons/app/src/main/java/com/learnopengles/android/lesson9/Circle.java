@@ -9,11 +9,13 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.DisabledVertexAttributeArrayRenderer;
+import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.EnabledVertexAttributeArrayRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
 
 import java.nio.FloatBuffer;
 
+import static android.opengl.GLES20.GL_LINES;
 import static android.opengl.GLES20.GL_LINE_LOOP;
 import static android.opengl.GLES20.GL_TRIANGLE_FAN;
 import static android.opengl.GLES20.glDrawArrays;
@@ -90,18 +92,18 @@ public class Circle {
     private void passData(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
-        new EnabledVertexAttributeArrayRenderer<Circle>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
-        new DisabledVertexAttributeArrayRenderer<Circle>(program, COLOR, color.toArray()).apply(this);
-        new MVPRenderer<Circle>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
+        new EnabledVertexAttributeArrayRenderer<>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
+        new DisabledVertexAttributeArrayRenderer<>(program, COLOR, color.toArray()).apply(this);
+        new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
     }
 
     public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         passData(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
-        glDrawArrays(GL_LINE_LOOP, 0, NUMBER_OF_POINTS);
+        new DrawArraysRenderer<>(GL_LINE_LOOP, NUMBER_OF_POINTS).apply(this);
     }
 
     public void fill(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         passData(program, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, NUMBER_OF_POINTS);
+        new DrawArraysRenderer<>(GL_TRIANGLE_FAN, NUMBER_OF_POINTS).apply(this);
     }
 }

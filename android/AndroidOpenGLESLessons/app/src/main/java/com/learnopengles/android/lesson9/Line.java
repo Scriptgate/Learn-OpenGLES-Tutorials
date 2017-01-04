@@ -8,6 +8,7 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.DisabledVertexAttributeArrayRenderer;
+import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.EnabledVertexAttributeArrayRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
 
@@ -44,10 +45,9 @@ public class Line {
     public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
-        new EnabledVertexAttributeArrayRenderer<Line>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
-        new DisabledVertexAttributeArrayRenderer<Line>(program, COLOR, color.toArray()).apply(this);
-        new MVPRenderer<Line>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
-
-        glDrawArrays(GL_LINES, 0, 2);
+        new EnabledVertexAttributeArrayRenderer<>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
+        new DisabledVertexAttributeArrayRenderer<>(program, COLOR, color.toArray()).apply(this);
+        new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
+        new DrawArraysRenderer<>(GL_LINES, 2).apply(this);
     }
 }
