@@ -7,25 +7,18 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.EnabledVertexAttributeRenderer;
+import com.learnopengles.android.renderer.DisabledVertexAttributeArrayRenderer;
+import com.learnopengles.android.renderer.EnabledVertexAttributeArrayRenderer;
+import com.learnopengles.android.renderer.MVPRenderer;
 
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_LINES;
-import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glVertexAttrib4fv;
-import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
-import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
-import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 public class Line {
 
@@ -51,15 +44,9 @@ public class Line {
     public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
-        new EnabledVertexAttributeRenderer<Line>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
-
-        int colorHandle = program.getHandle(COLOR);
-        glDisableVertexAttribArray(colorHandle);
-        glVertexAttrib4fv(colorHandle, color.toArray(), 0);
-
-        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
-        mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
-        mvpMatrix.passTo(mvpMatrixHandle);
+        new EnabledVertexAttributeArrayRenderer<Line>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
+        new DisabledVertexAttributeArrayRenderer<Line>(program, COLOR, color.toArray()).apply(this);
+        new MVPRenderer<Line>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
 
         glDrawArrays(GL_LINES, 0, 2);
     }

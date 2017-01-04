@@ -8,21 +8,18 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.DisabledVertexAttributeArrayRenderer;
+import com.learnopengles.android.renderer.EnabledVertexAttributeArrayRenderer;
+import com.learnopengles.android.renderer.MVPRenderer;
 
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_FLOAT;
 import static android.opengl.GLES20.GL_LINE_LOOP;
 import static android.opengl.GLES20.GL_TRIANGLE_FAN;
-import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glVertexAttrib4fv;
-import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
@@ -93,17 +90,9 @@ public class Circle {
     private void passData(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
-        int positionHandle = program.getHandle(POSITION);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, VERTEX_DATA_SIZE, GL_FLOAT, false, 0, vertexBuffer);
-
-        int colorHandle = program.getHandle(COLOR);
-        glDisableVertexAttribArray(colorHandle);
-        glVertexAttrib4fv(colorHandle, color.toArray(), 0);
-
-        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
-        mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
-        mvpMatrix.passTo(mvpMatrixHandle);
+        new EnabledVertexAttributeArrayRenderer<Circle>(program, POSITION, vertexBuffer, VERTEX_DATA_SIZE).apply(this);
+        new DisabledVertexAttributeArrayRenderer<Circle>(program, COLOR, color.toArray()).apply(this);
+        new MVPRenderer<Circle>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
     }
 
     public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {

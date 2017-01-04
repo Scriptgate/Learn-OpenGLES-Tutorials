@@ -7,7 +7,7 @@ import com.learnopengles.android.cube.data.CubeDataType;
 import com.learnopengles.android.cube.renderer.CubeRenderer;
 import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.EnabledVertexAttributeRenderer;
+import com.learnopengles.android.renderer.EnabledVertexAttributeArrayRenderer;
 
 import java.nio.FloatBuffer;
 
@@ -18,7 +18,7 @@ public abstract class CubeDataRenderer implements CubeRenderer {
         FloatBuffer data = cubeData.getData();
         int dataSize = cubeData.getDataSize();
 
-        new EnabledVertexAttributeRenderer<Cube>(program, attributeVariable, data, dataSize).apply(cube);
+        new EnabledVertexAttributeArrayRenderer<Cube>(program, attributeVariable, data, dataSize).apply(cube);
     }
 
 }
