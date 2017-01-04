@@ -2,11 +2,10 @@ package com.learnopengles.android.cube.renderer.data;
 
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataType;
-import com.learnopengles.android.cube.renderer.CubeRenderer;
 import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
-public class ColorCubeRenderer implements CubeRenderer {
+public class ColorCubeRenderer extends CubeDataRenderer {
 
     private Program program;
 
@@ -16,6 +15,9 @@ public class ColorCubeRenderer implements CubeRenderer {
 
     @Override
     public void apply(Cube cube) {
-        cube.passTo(CubeDataType.COLOR, program.getHandle(AttributeVariable.COLOR));
+        CubeDataType cubeDataType = CubeDataType.COLOR;
+        int handle = program.getHandle(AttributeVariable.COLOR);
+
+        apply(cube, cubeDataType, handle);
     }
 }

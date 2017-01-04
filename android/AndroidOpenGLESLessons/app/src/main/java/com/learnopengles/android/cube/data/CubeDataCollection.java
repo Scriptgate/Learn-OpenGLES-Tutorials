@@ -1,10 +1,8 @@
 package com.learnopengles.android.cube.data;
 
-
 import java.util.Map;
 
 public class CubeDataCollection {
-
 
     private final Map<CubeDataType, CubeData> cubeData;
 
@@ -12,7 +10,7 @@ public class CubeDataCollection {
         this.cubeData = cubeData;
     }
 
-    public void passTo(CubeDataType type, int handle) {
-        cubeData.get(type).passTo(handle);
+    public CubeData getCubeData(CubeDataType type) {
+        return cubeData.get(type);
     }
 }

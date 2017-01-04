@@ -2,11 +2,10 @@ package com.learnopengles.android.cube.renderer.data;
 
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataType;
-import com.learnopengles.android.cube.renderer.CubeRenderer;
 import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
-public class NormalCubeRenderer implements CubeRenderer {
+public class NormalCubeRenderer extends CubeDataRenderer {
 
     private Program program;
 
@@ -16,6 +15,9 @@ public class NormalCubeRenderer implements CubeRenderer {
 
     @Override
     public void apply(Cube cube) {
-        cube.passTo(CubeDataType.NORMAL, program.getHandle(AttributeVariable.NORMAL));
+        CubeDataType cubeDataType = CubeDataType.NORMAL;
+        int handle = program.getHandle(AttributeVariable.NORMAL);
+
+        apply(cube, cubeDataType, handle);
     }
 }
