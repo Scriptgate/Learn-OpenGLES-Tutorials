@@ -10,11 +10,10 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.renderer.data.ColorCubeRenderer;
 import com.learnopengles.android.cube.renderer.CubeRendererChain;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
+import com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory;
 import com.learnopengles.android.cube.renderer.mvp.MVPCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.PositionCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
@@ -30,6 +29,8 @@ import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOr
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.Program.createProgram;
@@ -138,8 +139,8 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         cubeRendererChain = new CubeRendererChain(
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
-                        new PositionCubeRenderer(program),
-                        new ColorCubeRenderer(program),
+                        positionCubeRenderer(program),
+                        colorCubeRenderer(program),
                         new MVPCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program)
                 )
         );

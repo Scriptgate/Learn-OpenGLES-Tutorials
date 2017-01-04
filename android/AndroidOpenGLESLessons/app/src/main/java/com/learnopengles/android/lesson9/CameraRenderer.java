@@ -18,10 +18,7 @@ import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.cube.renderer.CubeRendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.ColorCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.NormalCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.PositionCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.TextureDataCubeRenderer;
+import com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
 
@@ -39,6 +36,10 @@ import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.textureCoordinateCubeRenderer;
 import static com.learnopengles.android.lesson9.Circle.createCircleInXPlane;
 import static com.learnopengles.android.lesson9.Circle.createCircleInYPlane;
 import static com.learnopengles.android.lesson9.Circle.createCircleInZPlane;
@@ -155,10 +156,10 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
-                        new PositionCubeRenderer(program),
-                        new ColorCubeRenderer(program),
-                        new NormalCubeRenderer(program),
-                        new TextureDataCubeRenderer(program),
+                        positionCubeRenderer(program),
+                        colorCubeRenderer(program),
+                        normalCubeRenderer(program),
+                        textureCoordinateCubeRenderer(program),
 
                         new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
 

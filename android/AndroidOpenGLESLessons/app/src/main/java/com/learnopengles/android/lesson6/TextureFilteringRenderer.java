@@ -17,8 +17,7 @@ import com.learnopengles.android.cube.renderer.AccumulatedRotationCubeRenderer;
 import com.learnopengles.android.cube.renderer.CubeRendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.NormalCubeRenderer;
-import com.learnopengles.android.cube.renderer.data.PositionCubeRenderer;
+import com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
 import com.learnopengles.android.program.Program;
@@ -34,6 +33,8 @@ import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
+import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
 import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
@@ -178,8 +179,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
                         new AccumulatedRotationCubeRenderer(accumulatedRotation, currentRotation, temporaryMatrix, modelMatrix),
 
-                        new PositionCubeRenderer(program),
-                        new NormalCubeRenderer(program),
+                        positionCubeRenderer(program),
+                        normalCubeRenderer(program),
                         new TextureCubeRenderer(program),
 
                         new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
@@ -192,8 +193,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
-                        new PositionCubeRenderer(program),
-                        new NormalCubeRenderer(program),
+                        positionCubeRenderer(program),
+                        normalCubeRenderer(program),
                         new TextureCubeRenderer(program),
 
                         new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix),
