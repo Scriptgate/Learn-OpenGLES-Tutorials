@@ -88,16 +88,16 @@ public class Circle implements Drawable {
 
     public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
-        new DrawablePositionRenderer(program).apply(this);
-        new DrawableColorRenderer(program).apply(this);
+        new DrawablePositionRenderer<>(program).apply(this);
+        new DrawableColorRenderer<>(program).apply(this);
         new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
         new DrawArraysRenderer<>(GL_LINE_LOOP, NUMBER_OF_POINTS).apply(this);
     }
 
     public void fill(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
-        new DrawablePositionRenderer(program).apply(this);
-        new DrawableColorRenderer(program).apply(this);
+        new DrawablePositionRenderer<>(program).apply(this);
+        new DrawableColorRenderer<>(program).apply(this);
         new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
         new DrawArraysRenderer<>(GL_TRIANGLE_FAN, NUMBER_OF_POINTS).apply(this);
     }

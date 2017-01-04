@@ -8,7 +8,7 @@ import com.learnopengles.android.renderer.RendererLink;
 import static android.opengl.GLES20.glDisableVertexAttribArray;
 import static android.opengl.GLES20.glVertexAttrib4fv;
 
-public class DrawableColorRenderer implements RendererLink<Drawable> {
+public class DrawableColorRenderer<T extends Drawable> implements RendererLink<T> {
 
     private final Program program;
 
@@ -17,7 +17,7 @@ public class DrawableColorRenderer implements RendererLink<Drawable> {
     }
 
     @Override
-    public void apply(Drawable drawable) {
+    public void apply(T drawable) {
         int handle = program.getHandle(AttributeVariable.COLOR);
         glDisableVertexAttribArray(handle);
         glVertexAttrib4fv(handle, drawable.getColor(), 0);

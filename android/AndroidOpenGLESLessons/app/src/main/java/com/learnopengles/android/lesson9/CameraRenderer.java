@@ -16,11 +16,14 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
+import com.learnopengles.android.renderer.MVPRenderer;
 import com.learnopengles.android.renderer.RendererChain;
 import com.learnopengles.android.cube.renderer.LightCubeRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
+import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +67,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private Program pointProgram;
     private Program lineProgram;
 
-    private RendererChain<Cube> rendererChain;
+    private RendererChain<Cube> cubeRenderer;
+    private RendererChain<Line> lineRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -152,7 +156,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
 
 
-        rendererChain = new RendererChain<>(
+        cubeRenderer = new RendererChain<>(
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
 
@@ -168,6 +172,14 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
                 )
         );
 
+        lineRenderer = new RendererChain<>(
+                asList(
+                        new DrawablePositionRenderer<Line>(program),
+                        new DrawableColorRenderer<Line>(program),
+                        new MVPRenderer<Line>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
+                        new DrawArraysRenderer<Line>(GL_LINES, 2)
+                )
+        );
 
         // Load the texture
         textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
@@ -207,11 +219,12 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         light.setView(viewMatrix);
 
         for (Cube cube : cubes) {
-            rendererChain.draw(cube);
+            cubeRenderer.draw(cube);
         }
         lineProgram.useForRendering();
         for (Line line : lines) {
-            line.draw(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);
+            modelMatrix.setIdentity();
+            lineRenderer.draw(line);
         }
         for (Circle circle : circles) {
             circle.fill(lineProgram, mvpMatrix, modelMatrix, viewMatrix, projectionMatrix);

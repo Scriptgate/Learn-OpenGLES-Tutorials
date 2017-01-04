@@ -23,8 +23,6 @@ public class Line implements Drawable {
 
     private FloatBuffer vertexBuffer;
 
-    private static final int VERTEX_DATA_SIZE = 3;
-
     private Color color = RED;
 
     public Line(Color color, Point3D from, Point3D to) {
@@ -38,14 +36,6 @@ public class Line implements Drawable {
 
     public void setColor(Color color) {
         this.color = color;
-    }
-
-    public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
-        modelMatrix.setIdentity();
-        new DrawablePositionRenderer(program).apply(this);
-        new DrawableColorRenderer(program).apply(this);
-        new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
-        new DrawArraysRenderer<>(GL_LINES, 2).apply(this);
     }
 
     @Override
