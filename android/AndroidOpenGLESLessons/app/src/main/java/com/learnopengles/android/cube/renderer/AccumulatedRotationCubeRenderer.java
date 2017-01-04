@@ -22,6 +22,7 @@ public class AccumulatedRotationCubeRenderer implements RendererLink<Cube> {
     @Override
     public void apply(Cube cube) {
         // Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
+        //TODO: accumulatedRotation = currentRotation * accumulatedRotation
         currentRotation.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix, accumulatedRotation);
         // Rotate the cube taking the overall rotation into account.
         modelMatrix.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix);

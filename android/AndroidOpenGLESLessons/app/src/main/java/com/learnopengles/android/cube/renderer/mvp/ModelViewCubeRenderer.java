@@ -29,16 +29,10 @@ public class ModelViewCubeRenderer implements RendererLink<Cube> {
 
     @Override
     public void apply(Cube cube) {
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
         mvpMatrix.multiply(modelMatrix, viewMatrix);
-        // Pass in the modelview matrix.
         mvpMatrix.passTo(program.getHandle(MV_MATRIX));
 
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
         mvpMatrix.multiply(projectionMatrix);
-        // Pass in the combined matrix.
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
     }
 }

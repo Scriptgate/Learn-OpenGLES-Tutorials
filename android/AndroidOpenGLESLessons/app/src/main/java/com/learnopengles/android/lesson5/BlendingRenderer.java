@@ -11,9 +11,9 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
+import com.learnopengles.android.renderer.MVPRenderer;
 import com.learnopengles.android.renderer.RendererChain;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.mvp.MVPCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
@@ -141,7 +141,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
                         new ModelMatrixCubeRenderer(modelMatrix),
                         positionCubeRenderer(program),
                         colorCubeRenderer(program),
-                        new MVPCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
+                        new MVPRenderer<Cube>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
                 )
         );

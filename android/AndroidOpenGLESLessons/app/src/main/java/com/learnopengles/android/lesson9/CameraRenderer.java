@@ -210,13 +210,12 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         light.translate(new Point3D(0.5f, 0.2f, 0.5f));
         light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
         light.translate(new Point3D(0.2f, 0.0f, 0.0f));
-
-
         light.setView(viewMatrix);
 
         for (Cube cube : cubes) {
             cubeRenderer.draw(cube);
         }
+
         lineProgram.useForRendering();
         for (Line line : lines) {
             lineRenderer.draw(line);
