@@ -26,6 +26,7 @@ import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.drawable.Drawable;
 import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
 import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
+import com.learnopengles.android.renderer.light.LightPositionInModelSpaceRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +57,12 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private ModelViewProjectionMatrix mvpMatrix;
 
     private Program program;
-    private Program pointProgram;
     private Program lineProgram;
 
     private Renderer<Cube> cubeRenderer;
     private Renderer<Line> lineRenderer;
     private Renderer<Circle> circleRenderer;
+    private Renderer<Light> lightRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -145,7 +146,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         viewMatrix.onSurfaceCreated();
 
         program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
-        pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
         lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
 
 
@@ -176,6 +176,15 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         lineRenderer = drawableRenderer.andThen(new DrawArraysRenderer<Line>(GL_LINES, 2));
         circleRenderer = drawableRenderer.andThen(fillCircleRenderer());
+
+        Program pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
+        lightRenderer = new Renderer<>(pointProgram,
+                asList(
+                        new LightPositionInModelSpaceRenderer(),
+                        new MVPRenderer<Light>(mvpMatrix, light.getModelMatrix(), viewMatrix, projectionMatrix),
+                        new DrawArraysRenderer<Light>(GL_POINTS, 1)
+                )
+        );
 
         // Load the texture
         textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
@@ -225,7 +234,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         }
 
         // Draw a point to indicate the light.
-        pointProgram.useForRendering();
-        light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix);
+        lightRenderer.useForRendering();
+        lightRenderer.draw(light);
     }
 }

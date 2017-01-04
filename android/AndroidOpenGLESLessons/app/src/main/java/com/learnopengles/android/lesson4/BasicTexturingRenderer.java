@@ -14,11 +14,13 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
+import com.learnopengles.android.renderer.MVPRenderer;
 import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.light.LightPositionInModelSpaceRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,11 +72,6 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     private Program program;
 
     /**
-     * This is a handle to our light point program.
-     */
-    private Program pointProgram;
-
-    /**
      * This is a handle to our texture data.
      */
     private int textureDataHandle;
@@ -84,6 +81,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     private Light light;
 
     private Renderer<Cube> renderer;
+    private Renderer<Light> lightRenderer;
 
     /**
      * Initialize the model data.
@@ -134,7 +132,6 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         viewMatrix.onSurfaceCreated();
 
         program = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
-        pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
 
         // Load the texture
         textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
@@ -152,6 +149,15 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
                         new LightPositionInEyeSpaceRenderer<Cube>(light),
                         new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
+                )
+        );
+
+        Program pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
+        lightRenderer = new Renderer<>(pointProgram,
+                asList(
+                        new LightPositionInModelSpaceRenderer(),
+                        new MVPRenderer<Light>(mvpMatrix, light.getModelMatrix(), viewMatrix, projectionMatrix),
+                        new DrawArraysRenderer<Light>(GL_POINTS, 1)
                 )
         );
     }
@@ -203,7 +209,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         }
 
         // Draw a point to indicate the light.
-        pointProgram.useForRendering();
-        light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix);
+        lightRenderer.useForRendering();
+        lightRenderer.draw(light);
     }
 }
