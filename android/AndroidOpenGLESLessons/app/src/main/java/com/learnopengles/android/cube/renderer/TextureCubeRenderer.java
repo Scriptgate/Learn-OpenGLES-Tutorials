@@ -5,6 +5,7 @@ import com.learnopengles.android.cube.data.CubeData;
 import com.learnopengles.android.cube.data.CubeDataType;
 import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.RendererLink;
 
 import java.nio.FloatBuffer;
 
@@ -18,7 +19,7 @@ import static android.opengl.GLES20.glUniform1i;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 
-public class TextureCubeRenderer implements CubeRenderer {
+public class TextureCubeRenderer implements RendererLink<Cube> {
 
     private final Program program;
 

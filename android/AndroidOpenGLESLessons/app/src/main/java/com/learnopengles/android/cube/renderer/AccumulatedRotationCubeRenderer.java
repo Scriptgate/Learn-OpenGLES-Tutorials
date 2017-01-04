@@ -3,8 +3,9 @@ package com.learnopengles.android.cube.renderer;
 
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.renderer.RendererLink;
 
-public class AccumulatedRotationCubeRenderer implements CubeRenderer {
+public class AccumulatedRotationCubeRenderer implements RendererLink<Cube> {
 
     private final float[] accumulatedRotation;
     private final ModelMatrix currentRotation;

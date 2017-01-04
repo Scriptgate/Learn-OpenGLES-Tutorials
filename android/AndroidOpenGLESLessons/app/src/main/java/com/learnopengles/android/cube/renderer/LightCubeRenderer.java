@@ -3,10 +3,11 @@ package com.learnopengles.android.cube.renderer;
 import com.learnopengles.android.common.Light;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.RendererLink;
 
 import static com.learnopengles.android.program.UniformVariable.LIGHT_POSITION;
 
-public class LightCubeRenderer implements CubeRenderer {
+public class LightCubeRenderer implements RendererLink<Cube> {
 
 
     private Light light;

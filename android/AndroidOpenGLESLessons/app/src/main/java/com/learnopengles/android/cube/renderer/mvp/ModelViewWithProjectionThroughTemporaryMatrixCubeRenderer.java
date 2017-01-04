@@ -5,13 +5,13 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.renderer.CubeRenderer;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.RendererLink;
 
 import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 import static com.learnopengles.android.program.UniformVariable.MV_MATRIX;
 
-public class ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer implements CubeRenderer {
+public class ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer implements RendererLink<Cube> {
 
     private ModelViewProjectionMatrix mvpMatrix;
     private ModelMatrix modelMatrix;

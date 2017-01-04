@@ -2,8 +2,9 @@ package com.learnopengles.android.cube.renderer;
 
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.renderer.RendererLink;
 
-public class ModelMatrixCubeRenderer implements CubeRenderer {
+public class ModelMatrixCubeRenderer implements RendererLink<Cube> {
 
     private ModelMatrix modelMatrix;
 
