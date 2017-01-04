@@ -8,7 +8,7 @@ import com.learnopengles.android.renderer.MVPWithProjectionThroughTemporaryMatri
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.VertexAttrib3fvRenderer;
+import com.learnopengles.android.renderer.LightPositionRenderer;
 
 import static android.opengl.GLES20.GL_POINTS;
 import static android.opengl.GLES20.glUniform3fv;
@@ -38,7 +38,7 @@ public class Light {
      * Draws a point representing the position of the light.
      */
     public void drawLight(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
-        new VertexAttrib3fvRenderer<>(program, POSITION, lightPosInModelSpace).apply(this);
+        new LightPositionRenderer(program).apply(this);
         new MVPRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program).apply(this);
         new DrawArraysRenderer<>(GL_POINTS, 1).apply(this);
     }
@@ -47,7 +47,7 @@ public class Light {
      * Draws a point representing the position of the light.
      */
     public void drawLight(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] temporaryMatrix) {
-        new VertexAttrib3fvRenderer<>(program, POSITION, lightPosInModelSpace).apply(this);
+        new LightPositionRenderer(program).apply(this);
         new MVPWithProjectionThroughTemporaryMatrixRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, program, temporaryMatrix).apply(this);
         new DrawArraysRenderer<>(GL_POINTS, 1);
     }
@@ -74,5 +74,9 @@ public class Light {
 
     public void passTo(int handle) {
         glUniform3fv(handle, 1, lightPosInEyeSpace, 0);
+    }
+
+    public float[] getPositionInModelSpace() {
+        return lightPosInModelSpace;
     }
 }
