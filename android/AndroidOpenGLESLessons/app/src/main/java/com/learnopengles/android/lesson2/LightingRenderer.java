@@ -39,8 +39,8 @@ import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFacto
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
+import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -57,11 +57,6 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
     private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
-
-    /**
-     * This is a handle to our per-vertex cube shading program.
-     */
-    private Program perVertexProgram;
 
     private List<Cube> cubes;
 
@@ -114,8 +109,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        perVertexProgram = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL));
-
+        Program perVertexProgram = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL));
         renderer = new Renderer<>(perVertexProgram,
                 asList(
                         new ModelMatrixCubeRenderer(modelMatrix),
@@ -131,14 +125,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
                 )
         );
 
-        Program pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
-        lightRenderer = new Renderer<>(pointProgram,
-                asList(
-                        new LightPositionInModelSpaceRenderer(),
-                        new MVPRenderer<Light>(mvpMatrix, light.getModelMatrix(), viewMatrix, projectionMatrix),
-                        new DrawArraysRenderer<Light>(GL_POINTS, 1)
-                )
-        );
+        lightRenderer = createLightRenderer(light, mvpMatrix, viewMatrix, projectionMatrix);
     }
 
     @Override
@@ -162,10 +149,8 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
         light.setView(viewMatrix);
 
-        // Set our per-vertex lighting program.
-        perVertexProgram.useForRendering();
+        renderer.useForRendering();
 
-        // Draw some cubes.
         cubes.get(0).setRotationX(angleInDegrees);
         cubes.get(1).setRotationY(angleInDegrees);
         cubes.get(2).setRotationZ(angleInDegrees);
@@ -176,7 +161,6 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
             renderer.draw(cube);
         }
 
-        // Draw a point to indicate the light.
         lightRenderer.useForRendering();
         lightRenderer.draw(light);
     }

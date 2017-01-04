@@ -45,6 +45,7 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 import static com.learnopengles.android.renderer.circle.DrawCircleRendererFactory.fillCircleRenderer;
+import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -176,15 +177,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         lineRenderer = drawableRenderer.andThen(new DrawArraysRenderer<Line>(GL_LINES, 2));
         circleRenderer = drawableRenderer.andThen(fillCircleRenderer());
-
-        Program pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
-        lightRenderer = new Renderer<>(pointProgram,
-                asList(
-                        new LightPositionInModelSpaceRenderer(),
-                        new MVPRenderer<Light>(mvpMatrix, light.getModelMatrix(), viewMatrix, projectionMatrix),
-                        new DrawArraysRenderer<Light>(GL_POINTS, 1)
-                )
-        );
+        lightRenderer = createLightRenderer(light, mvpMatrix, viewMatrix, projectionMatrix);
 
         // Load the texture
         textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
@@ -204,7 +197,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Set our program
-        program.useForRendering();
+        cubeRenderer.useForRendering();
 
         // Set the active texture unit to texture unit 0.
         glActiveTexture(GL_TEXTURE0);

@@ -14,13 +14,11 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
 import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.light.LightPositionInModelSpaceRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +43,8 @@ import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFacto
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
+import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
@@ -152,14 +150,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
                 )
         );
 
-        Program pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
-        lightRenderer = new Renderer<>(pointProgram,
-                asList(
-                        new LightPositionInModelSpaceRenderer(),
-                        new MVPRenderer<Light>(mvpMatrix, light.getModelMatrix(), viewMatrix, projectionMatrix),
-                        new DrawArraysRenderer<Light>(GL_POINTS, 1)
-                )
-        );
+        lightRenderer = createLightRenderer(light, mvpMatrix, viewMatrix, projectionMatrix);
     }
 
     @Override
@@ -176,7 +167,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         // Set our per-vertex lighting program.
-        program.useForRendering();
+        renderer.useForRendering();
 
         // Set program handles for cube drawing.
 
