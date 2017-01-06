@@ -51,6 +51,9 @@
         <activity
             android:name=".activity.LessonNineActivity"
             android:label="@string/lesson_nine" />
+        <activity
+            android:name=".activity.LessonTenActivity"
+            android:label="@string/lesson_ten" />
 
         <service
             android:name=".livewallpaper.LessonThreeWallpaperService"

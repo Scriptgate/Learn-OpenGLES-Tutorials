@@ -9,6 +9,8 @@ import java.util.List;
 
 public class CubeDataFactory {
 
+    private static final int FACES_PER_CUBE = 6;
+
     public static float[] generateColorData(Color front,
                                             Color right,
                                             Color back,
@@ -109,6 +111,38 @@ public class CubeDataFactory {
         return generateData(faces);
     }
 
+    public static float[] generateCubeTextureData() {
+        //@formatter:off
+        //
+        // The cube texture is ordered as follows:
+        //     _________________
+        //    |     |     |     |
+        //    |  1  |  2  |  3  |
+        //    |_____|_____|_____|
+        //    |     |     |     |
+        //    |  4  |  5  |  6  |
+        //    |_____|_____|_____|
+        //
+        //@formatter:on
+        final float ONE_THIRD = 1.0f / 3.0f;
+
+        List<Face> faces = new ArrayList<>();
+        for (int i = 0; i < FACES_PER_CUBE; i++) {
+
+            float yOffset = i < 3 ? 0.0f : 0.5f;
+            float xOffset = (i % 3) * ONE_THIRD;
+            faces.add(new Point2DFace(
+                            new Point2D(xOffset, yOffset),
+                            new Point2D(xOffset + ONE_THIRD, yOffset),
+                            new Point2D(xOffset, yOffset + 0.5f),
+                            new Point2D(xOffset + ONE_THIRD, yOffset + 0.5f)
+                    )
+            );
+        }
+
+        return generateData(faces);
+    }
+
     public static float[] generateTextureData() {
         return generateTextureData(1.0f, 1.0f);
     }
@@ -127,7 +161,7 @@ public class CubeDataFactory {
         Point2DFace face = new Point2DFace(p1, p2, p3, p4);
 
         List<Face> faces = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < FACES_PER_CUBE; i++) {
             faces.add(face);
         }
 

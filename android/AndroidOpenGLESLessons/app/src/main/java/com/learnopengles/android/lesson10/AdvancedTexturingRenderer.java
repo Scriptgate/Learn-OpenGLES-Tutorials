@@ -1,4 +1,4 @@
-package com.learnopengles.android.lesson4;
+package com.learnopengles.android.lesson10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -33,9 +33,9 @@ import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
+import static com.learnopengles.android.cube.CubeDataFactory.generateCubeTextureData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
@@ -50,7 +50,7 @@ import static java.util.Arrays.asList;
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
+public class AdvancedTexturingRenderer implements GLSurfaceView.Renderer {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -74,14 +74,14 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public BasicTexturingRenderer(final Context activityContext) {
+    public AdvancedTexturingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
         CubeDataCollection cubeData = cubeData()
                 .positions(generatePositionData(1.0f, 1.0f, 1.0f))
                 .colors(generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA))
                 .normals(generateNormalData())
-                .textures(generateTextureData())
+                .textures(generateCubeTextureData())
                 .build();
 
         cubes = new ArrayList<>();
@@ -121,7 +121,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
 
 
         // Load the texture
-        int textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
+        int textureDataHandle = loadTexture(activityContext, R.drawable.cube);
         for (Cube cube : cubes) {
             cube.setTexture(textureDataHandle);
         }

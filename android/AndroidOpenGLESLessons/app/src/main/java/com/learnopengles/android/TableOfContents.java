@@ -17,6 +17,7 @@ import android.widget.SimpleAdapter;
 
 import com.learnopengles.android.activity.LessonNineActivity;
 import com.learnopengles.android.activity.LessonOneActivity;
+import com.learnopengles.android.activity.LessonTenActivity;
 import com.learnopengles.android.activity.LessonTwoActivity;
 import com.learnopengles.android.activity.LessonThreeActivity;
 import com.learnopengles.android.activity.LessonFourActivity;
@@ -122,6 +123,14 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_nine_subtitle));
 			data.add(item);
 			activityMapping.put(i++, LessonNineActivity.class);
+		}
+		{
+			final Map<String, Object> item = new HashMap<>();
+			item.put(ITEM_IMAGE, R.drawable.ic_lesson_four);
+			item.put(ITEM_TITLE, getText(R.string.lesson_ten));
+			item.put(ITEM_SUBTITLE, getText(R.string.lesson_ten_subtitle));
+			data.add(item);
+			activityMapping.put(i++, LessonTenActivity.class);
 		}
 
 		
