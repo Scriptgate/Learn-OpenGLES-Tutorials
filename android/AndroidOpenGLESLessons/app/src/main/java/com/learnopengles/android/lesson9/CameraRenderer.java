@@ -21,12 +21,7 @@ import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.IdentityModelMatrixRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
 import com.learnopengles.android.renderer.Renderer;
-import com.learnopengles.android.renderer.drawable.Drawable;
-import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
-import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +35,8 @@ import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.cube.CubeDataFactory.*;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.*;
-import static com.learnopengles.android.lesson9.Circle.*;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
-import static com.learnopengles.android.renderer.circle.DrawCircleRendererFactory.fillCircleRenderer;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
 
@@ -55,11 +48,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
     private ModelViewProjectionMatrix mvpMatrix;
 
-    private Program lineProgram;
-
     private Renderer<Cube> cubeRenderer;
-    private Renderer<Line> lineRenderer;
-    private Renderer<Circle> circleRenderer;
     private Renderer<Light> lightRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
@@ -67,8 +56,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private final Context activityContext;
 
     private List<Cube> cubes;
-    private List<Line> lines = new ArrayList<>();
-    private List<Circle> circles = new ArrayList<>();
     private Light light;
 
     public CameraRenderer(final Context activityContext) {
@@ -88,42 +75,20 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         CubeDataCollection cubeData = cubeData()
                 .positions(generatePositionData(0.1f, 0.02f, 0.1f))
-                .colors(generateColorData(WHITE, WHITE, GREY, GREY, GREY, WHITE, GREY, GREY))
+                .colors(generateColorData(WHITE))
                 .normals(generateNormalData())
                 .textures(generateTextureData())
                 .build();
-
         cubes = new ArrayList<>();
 
-        int squareSize = 5;
+        int squareSize = 4;
         for (int j = 0; j < squareSize; j++) {
             for (int i = 0; i < squareSize; i++) {
-                cubes.add(new Cube(cubeData, new Point3D(i * 0.2f, 0.0f, j * 0.2f)));
+                cubes.add(new Cube(cubeData, new Point3D(i * 0.3f, 0.0f, j * 0.3f)));
             }
         }
 
-        float height = 0.12f;
-        float boundSize = 0.8f;
-        lines.add(new Line(WHITE, new Point3D(0.0f, height, 0.0f), new Point3D(boundSize, height, 0.0f)));
-        lines.add(new Line(WHITE, new Point3D(boundSize, height, 0.0f), new Point3D(boundSize, height, boundSize)));
-        lines.add(new Line(WHITE, new Point3D(boundSize, height, boundSize), new Point3D(0.0f, height, boundSize)));
-        lines.add(new Line(WHITE, new Point3D(0.0f, height, boundSize), new Point3D(0.0f, height, 0.0f)));
-
-        lines.add(new Line(WHITE, new Point3D(0.0f, height, 0.0f), new Point3D(0.0f, height + boundSize, 0.0f)));
-        lines.add(new Line(WHITE, new Point3D(boundSize, height, 0.0f), new Point3D(boundSize, height + boundSize, 0.0f)));
-        lines.add(new Line(WHITE, new Point3D(boundSize, height, boundSize), new Point3D(boundSize, height + boundSize, boundSize)));
-        lines.add(new Line(WHITE, new Point3D(0.0f, height, boundSize), new Point3D(0.0f, height + boundSize, boundSize)));
-
-        height += boundSize;
-        lines.add(new Line(WHITE, new Point3D(0.0f, height, 0.0f), new Point3D(boundSize, height, 0.0f)));
-        lines.add(new Line(WHITE, new Point3D(boundSize, height, 0.0f), new Point3D(boundSize, height, boundSize)));
-        lines.add(new Line(WHITE, new Point3D(boundSize, height, boundSize), new Point3D(0.0f, height, boundSize)));
-        lines.add(new Line(WHITE, new Point3D(0.0f, height, boundSize), new Point3D(0.0f, height, 0.0f)));
-
         light = new Light();
-        circles.add(createCircleInXPlane(RED, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
-        circles.add(createCircleInYPlane(GREEN, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
-        circles.add(createCircleInZPlane(BLUE, new Point3D(0.0f, 0.5f, 0.0f), 0.3f));
     }
 
     @Override
@@ -140,9 +105,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         glDisable(GL_BLEND);
 
         viewMatrix.onSurfaceCreated();
-
-        lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
-
+        //Instead of moving the cubes up (centering the origin), we're simply manipulating the viewMatrix
+        viewMatrix.translate(new Point3D(-0.3f, 0.0f, -0.3f));
 
         Program program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
         cubeRenderer = new Renderer<>(program,
@@ -162,17 +126,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
                 )
         );
 
-        Renderer<Drawable> drawableRenderer = new Renderer<>(lineProgram,
-                asList(
-                        new IdentityModelMatrixRenderer<Drawable>(modelMatrix),
-                        new DrawablePositionRenderer<>(),
-                        new DrawableColorRenderer<>(),
-                        new MVPRenderer<Drawable>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix)
-                )
-        );
-
-        lineRenderer = drawableRenderer.andThen(new DrawArraysRenderer<Line>(GL_LINES, 2));
-        circleRenderer = drawableRenderer.andThen(fillCircleRenderer());
         lightRenderer = createLightRenderer(light, mvpMatrix, viewMatrix, projectionMatrix);
 
         // Load the texture
@@ -204,15 +157,6 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         cubeRenderer.useForRendering();
         for (Cube cube : cubes) {
             cubeRenderer.draw(cube);
-        }
-
-        //TODO: same program in lineRenderer as circleRenderer
-        lineProgram.useForRendering();
-        for (Line line : lines) {
-            lineRenderer.draw(line);
-        }
-        for (Circle circle : circles) {
-            circleRenderer.draw(circle);
         }
 
         // Draw a point to indicate the light.

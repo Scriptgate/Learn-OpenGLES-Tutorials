@@ -1,12 +1,12 @@
 package com.learnopengles.android.renderer.circle;
 
 
-import com.learnopengles.android.lesson9.Circle;
+import com.learnopengles.android.lesson11.Circle;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 
 import static android.opengl.GLES20.GL_LINE_LOOP;
 import static android.opengl.GLES20.GL_TRIANGLE_FAN;
-import static com.learnopengles.android.lesson9.Circle.NUMBER_OF_POINTS;
+import static com.learnopengles.android.lesson11.Circle.NUMBER_OF_POINTS;
 
 public class DrawCircleRendererFactory {
 

@@ -11,6 +11,15 @@ public class CubeDataFactory {
 
     private static final int FACES_PER_CUBE = 6;
 
+    public static float[] generateColorData(Color color) {
+        List<Face> faces = new ArrayList<>();
+        for (int i = 0; i < FACES_PER_CUBE; i++) {
+            faces.add(new ColorFace(color));
+        }
+
+        return generateData(faces);
+    }
+
     public static float[] generateColorData(Color front,
                                             Color right,
                                             Color back,
