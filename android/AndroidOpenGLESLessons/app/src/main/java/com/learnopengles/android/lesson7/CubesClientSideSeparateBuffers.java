@@ -9,12 +9,12 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
 
-public class CubesClientSide extends Cubes {
+public class CubesClientSideSeparateBuffers extends Cubes {
     private FloatBuffer cubePositions;
     private FloatBuffer cubeNormals;
     private FloatBuffer cubeTextureCoordinates;
 
-    CubesClientSide(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
+    CubesClientSideSeparateBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         FloatBuffer[] buffers = getBuffers(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
 
         this.cubePositions = buffers[0];

@@ -10,10 +10,10 @@ import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 
-public class CubesClientSideWithStride extends Cubes {
+public class CubesClientSidePackedBuffer extends Cubes {
     private FloatBuffer cubeBuffer;
 
-    CubesClientSideWithStride(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
+    CubesClientSidePackedBuffer(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
     }
 

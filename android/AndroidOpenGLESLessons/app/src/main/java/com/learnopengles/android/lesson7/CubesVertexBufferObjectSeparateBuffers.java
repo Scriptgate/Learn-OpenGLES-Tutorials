@@ -16,12 +16,12 @@ import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 
-public class CubesWithVbo extends Cubes {
+public class CubesVertexBufferObjectSeparateBuffers extends Cubes {
     final int cubePositionsBufferIdx;
     final int cubeNormalsBufferIdx;
     final int cubeTexCoordsBufferIdx;
 
-    CubesWithVbo(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
+    CubesVertexBufferObjectSeparateBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         FloatBuffer[] floatBuffers = getBuffers(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
 
         FloatBuffer cubePositionsBuffer = floatBuffers[0];

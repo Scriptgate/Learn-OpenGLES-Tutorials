@@ -16,10 +16,10 @@ import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
 
-public class CubesWithVboWithStride extends Cubes {
+public class CubesVertexBufferObjectPackedBuffers extends Cubes {
     final int cubeBufferIdx;
 
-    CubesWithVboWithStride(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
+    CubesVertexBufferObjectPackedBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         FloatBuffer cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
 
         // Second, copy these buffers into OpenGL's memory. After, we don't need to keep the client-side buffers around.

@@ -49,49 +49,16 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     private ViewMatrix viewMatrix = createViewInFrontOrigin();
     private ProjectionMatrix projectionMatrix = createProjectMatrix(1000.0f);
 
-    /**
-     * Allocate storage for the final combined matrix. This will be passed into the shader program.
-     */
     private float[] mvpMatrix = new float[16];
-
-    /**
-     * Store the accumulated rotation.
-     */
     private final float[] accumulatedRotation = new float[16];
-
-    /**
-     * Store the current rotation.
-     */
     private final float[] currentRotation = new float[16];
-
-    /**
-     * A temporary matrix.
-     */
     private float[] temporaryMatrix = new float[16];
 
-    /**
-     * Stores a copy of the model matrix specifically for the light position.
-     */
     private float[] lightModelMatrix = new float[16];
 
-    /**
-     * This will be used to pass in the transformation matrix.
-     */
     private int mvpMatrixHandle;
-
-    /**
-     * This will be used to pass in the modelview matrix.
-     */
     private int mvMatrixHandle;
-
-    /**
-     * This will be used to pass in the light position.
-     */
     private int lightPosHandle;
-
-    /**
-     * This will be used to pass in the texture.
-     */
     private int textureUniformHandle;
 
     /**
@@ -250,15 +217,15 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
                             if (useStride) {
                                 if (useVbos) {
-                                    cubes = new CubesWithVboWithStride(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
+                                    cubes = new CubesVertexBufferObjectPackedBuffers(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
                                 } else {
-                                    cubes = new CubesClientSideWithStride(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
+                                    cubes = new CubesClientSidePackedBuffer(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
                                 }
                             } else {
                                 if (useVbos) {
-                                    cubes = new CubesWithVbo(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
+                                    cubes = new CubesVertexBufferObjectSeparateBuffers(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
                                 } else {
-                                    cubes = new CubesClientSide(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
+                                    cubes = new CubesClientSideSeparateBuffers(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
                                 }
                             }
 

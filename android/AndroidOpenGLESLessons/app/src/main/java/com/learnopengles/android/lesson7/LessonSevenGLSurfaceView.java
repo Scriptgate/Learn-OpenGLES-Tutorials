@@ -5,7 +5,8 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-public class LessonSevenGLSurfaceView extends GLSurfaceView 
+public class
+LessonSevenGLSurfaceView extends GLSurfaceView
 {	
 	private VertexBufferObjectRenderer mRenderer;
 	
