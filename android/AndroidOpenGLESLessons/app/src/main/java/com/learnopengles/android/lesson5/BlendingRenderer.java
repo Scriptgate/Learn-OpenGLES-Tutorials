@@ -9,6 +9,7 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.MVPRenderer;
@@ -27,7 +28,6 @@ import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
@@ -72,7 +72,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
     public BlendingRenderer() {
 
         CubeDataCollection cubeData = cubeData()
-                .positions(generatePositionData(1.0f, 1.0f, 1.0f))
+                .positions(CubeDataFactory.generatePositionDataCentered(1.0f, 1.0f, 1.0f))
                 .colors(generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN))
                 .build();
 

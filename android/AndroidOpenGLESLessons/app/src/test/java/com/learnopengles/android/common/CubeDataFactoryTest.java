@@ -267,7 +267,7 @@ public class CubeDataFactoryTest {
         float height = 1;
         float depth = 1;
 
-        float[] positionData = generatePositionData(width, height, depth);
+        float[] positionData = CubeDataFactory.generatePositionDataCentered(width, height, depth);
 
         assertArrayEquals(positionData, POSITION, DELTA);
     }

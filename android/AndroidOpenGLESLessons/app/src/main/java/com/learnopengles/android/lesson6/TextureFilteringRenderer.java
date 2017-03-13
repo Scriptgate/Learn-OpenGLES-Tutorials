@@ -13,6 +13,7 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.renderer.AccumulatedRotationCubeRenderer;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
 import com.learnopengles.android.renderer.Renderer;
@@ -27,10 +28,9 @@ import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
@@ -57,7 +57,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewInFrontOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectMatrix(1000.0f);
+    private ProjectionMatrix projectionMatrix = createProjectionMatrix(1000.0f);
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
@@ -112,7 +112,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         this.activityContext = activityContext;
 
         // Initialize the buffers.
-        float[] positionData = generatePositionData(1.0f, 1.0f, 1.0f);
+        float[] positionData = CubeDataFactory.generatePositionDataCentered(1.0f, 1.0f, 1.0f);
         float[] normalData = generateNormalData();
 
         cube = new Cube(cubeData()

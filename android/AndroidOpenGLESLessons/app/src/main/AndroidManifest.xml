@@ -46,6 +46,9 @@
             android:name=".activity.LessonSevenActivity"
             android:label="@string/lesson_seven" />
         <activity
+            android:name=".activity.LessonSevenBActivity"
+            android:label="@string/lesson_seven_b" />
+        <activity
             android:name=".activity.LessonEightActivity"
             android:label="@string/lesson_eight" />
         <activity

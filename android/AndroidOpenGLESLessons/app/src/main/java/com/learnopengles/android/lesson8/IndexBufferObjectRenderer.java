@@ -13,7 +13,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectMatrix;
+import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 
@@ -36,7 +36,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	private final float[] modelMatrix = new float[16];
 
 	private final ViewMatrix viewMatrix = createViewInFrontOrigin();
-	private final ProjectionMatrix projectionMatrix = createProjectMatrix(1000.0f);
+	private final ProjectionMatrix projectionMatrix = createProjectionMatrix(1000.0f);
 
 	/**
 	 * Allocate storage for the final combined matrix. This will be passed into

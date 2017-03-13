@@ -16,7 +16,7 @@ public class ProjectionMatrix {
         return new ProjectionMatrix(10.0f);
     }
 
-    public static ProjectionMatrix createProjectMatrix(float far) {
+    public static ProjectionMatrix createProjectionMatrix(float far) {
         return new ProjectionMatrix(far);
     }
 

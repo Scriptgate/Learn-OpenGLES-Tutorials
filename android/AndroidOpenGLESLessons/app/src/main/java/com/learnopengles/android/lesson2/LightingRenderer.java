@@ -10,15 +10,14 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
 import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
 import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.light.LightPositionInModelSpaceRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,6 @@ import static com.learnopengles.android.component.ProjectionMatrix.createProject
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
@@ -72,7 +70,7 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         // Define points for a cube.
 
         CubeDataCollection cubeData = cubeData()
-                .positions(generatePositionData(1.0f, 1.0f, 1.0f))
+                .positions(CubeDataFactory.generatePositionDataCentered(1.0f, 1.0f, 1.0f))
                 .colors(generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA))
                 .normals(generateNormalData())
                 .build();

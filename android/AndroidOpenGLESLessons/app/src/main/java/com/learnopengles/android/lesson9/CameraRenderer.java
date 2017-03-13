@@ -74,7 +74,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         mvpMatrix = new ModelViewProjectionMatrix();
 
         CubeDataCollection cubeData = cubeData()
-                .positions(generatePositionData(0.1f, 0.02f, 0.1f))
+                .positions(generatePositionDataCentered(0.1f, 0.02f, 0.1f))
                 .colors(generateColorData(WHITE))
                 .normals(generateNormalData())
                 .textures(generateTextureData())

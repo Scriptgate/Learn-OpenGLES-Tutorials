@@ -12,6 +12,7 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
+import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
 import com.learnopengles.android.renderer.DrawArraysRenderer;
@@ -34,7 +35,6 @@ import static com.learnopengles.android.component.ProjectionMatrix.createProject
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
 import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
@@ -78,7 +78,7 @@ public class BasicTexturingRenderer implements GLSurfaceView.Renderer {
         this.activityContext = activityContext;
 
         CubeDataCollection cubeData = cubeData()
-                .positions(generatePositionData(1.0f, 1.0f, 1.0f))
+                .positions(CubeDataFactory.generatePositionDataCentered(1.0f, 1.0f, 1.0f))
                 .colors(generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA))
                 .normals(generateNormalData())
                 .textures(generateTextureData())

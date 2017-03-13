@@ -25,7 +25,9 @@ public class IsometricProjectionMatrix extends ProjectionMatrix {
         final float top = 1.0f;
         final float near = 1.0f;
 
-        Matrix.orthoM(projectionMatrix, 0, left, right, bottom, top, near, far);
+        final float zoom = 3.0f;
+
+        Matrix.orthoM(projectionMatrix, 0, left*zoom, right*zoom, bottom*zoom, top*zoom, near, far);
     }
 
 

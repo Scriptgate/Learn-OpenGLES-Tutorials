@@ -1,15 +1,17 @@
-package com.learnopengles.android.lesson7;
+package com.learnopengles.android.lesson7b;
 
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.activity.LessonSevenActivity;
-import com.learnopengles.android.cube.CubeDataFactory;
+import com.learnopengles.android.activity.LessonSevenBActivity;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.cube.CubeDataFactory;
+import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,14 +19,13 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
+import static java.util.Arrays.asList;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter
@@ -37,7 +38,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
      */
     private static final String TAG = "VertexBufferObjectR";
 
-    private final LessonSevenActivity lessonSevenActivity;
+    private final LessonSevenBActivity lessonSevenActivity;
     private final GLSurfaceView glSurfaceView;
 
     /**
@@ -46,8 +47,8 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
      */
     private float[] modelMatrix = new float[16];
 
-    private ViewMatrix viewMatrix = createViewInFrontOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectionMatrix(1000.0f);
+    private ViewMatrix viewMatrix;
+    private ProjectionMatrix projectionMatrix = new IsometricProjectionMatrix(100.0f);
 
     private float[] mvpMatrix = new float[16];
     private final float[] accumulatedRotation = new float[16];
@@ -55,27 +56,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     private float[] temporaryMatrix = new float[16];
 
     private float[] lightModelMatrix = new float[16];
-
-    private int mvpMatrixHandle;
-    private int mvMatrixHandle;
-    private int lightPosHandle;
-    private int textureUniformHandle;
-
-    /**
-     * Additional info for cube generation.
-     */
-    private int lastRequestedCubeFactor;
-    private int actualCubeFactor;
-
-    /**
-     * Control whether vertex buffer objects or client-side memory will be used for rendering.
-     */
-    private boolean useVBOs = true;
-
-    /**
-     * Control whether strides will be used.
-     */
-    private boolean useStride = true;
 
     /**
      * Used to hold a light centered on the origin in model space. We need a 4th coordinate so we can get translations to work when
@@ -107,6 +87,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     public volatile float deltaX;
     public volatile float deltaY;
 
+
     /**
      * Thread executor for generating cube data in the background.
      */
@@ -115,81 +96,55 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     /**
      * The current cubes object.
      */
-    private Cubes cubes;
+    private CubesVertexBufferObjectPackedBuffers cubes;
+
+    private List<Point3D> cubePositions;
 
     /**
      * Initialize the model data.
      */
-    public VertexBufferObjectRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
+    public VertexBufferObjectRenderer(final LessonSevenBActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
         this.lessonSevenActivity = lessonSevenActivity;
         this.glSurfaceView = glSurfaceView;
+
+        cubePositions = asList(
+                new Point3D(0, 0, 0),
+                new Point3D(1, 0, 0),
+                new Point3D(0, 0, 1),
+                new Point3D(1, 0, 1)
+        );
+
+        float dist = 5;
+
+        Point3D eye = new Point3D(dist, dist, dist);
+        Point3D look = new Point3D(0.0f, 0.0f, 0.0f);
+        Point3D up = new Point3D(0.0f, 1.0f, 0.0f);
+
+        viewMatrix = new ViewMatrix(eye, look, up);
     }
 
-    private void generateCubes(int cubeFactor, boolean toggleVbos, boolean toggleStride) {
-        singleThreadedExecutor.submit(new GenDataRunnable(cubeFactor, toggleVbos, toggleStride));
+    private void generateCubes() {
+        singleThreadedExecutor.submit(new GenDataRunnable());
     }
 
     class GenDataRunnable implements Runnable {
-        final int requestedCubeFactor;
-        final boolean toggleVBOs;
-        final boolean toggleStride;
-
-        GenDataRunnable(int requestedCubeFactor, boolean toggleVBOs, boolean toggleStride) {
-            this.requestedCubeFactor = requestedCubeFactor;
-            this.toggleVBOs = toggleVBOs;
-            this.toggleStride = toggleStride;
-        }
 
         @Override
         public void run() {
             try {
                 final float[] cubeNormalData = generateNormalData();
-
-                // S, T (or X, Y)
-                // Texture coordinate data.
-                // Because images have a Y axis pointing downward (values increase as you move down the image) while
-                // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
-                // What's more is that the texture coordinates are the same for every face.
                 final float[] cubeTextureCoordinateData = generateTextureData();
 
-                final float[] cubePositionData = new float[108 * requestedCubeFactor * requestedCubeFactor * requestedCubeFactor];
+                final float[] cubePositionData = new float[108 * cubePositions.size()];
                 int cubePositionDataOffset = 0;
 
-                final int segments = requestedCubeFactor + (requestedCubeFactor - 1);
-                final float minPosition = -1.0f;
-                final float maxPosition = 1.0f;
-                final float positionRange = maxPosition - minPosition;
+                for (Point3D cubePosition : cubePositions) {
+                    float[] thisCubePositionData = CubeDataFactory.generatePositionData(cubePosition, 1, 0.2f, 1);
+                    System.arraycopy(thisCubePositionData, 0, cubePositionData, cubePositionDataOffset, thisCubePositionData.length);
 
-                for (int x = 0; x < requestedCubeFactor; x++) {
-                    for (int y = 0; y < requestedCubeFactor; y++) {
-                        for (int z = 0; z < requestedCubeFactor; z++) {
-                            final float x1 = minPosition + ((positionRange / segments) * (x * 2));
-                            final float x2 = minPosition + ((positionRange / segments) * ((x * 2) + 1));
-
-                            final float y1 = minPosition + ((positionRange / segments) * (y * 2));
-                            final float y2 = minPosition + ((positionRange / segments) * ((y * 2) + 1));
-
-                            final float z1 = minPosition + ((positionRange / segments) * (z * 2));
-                            final float z2 = minPosition + ((positionRange / segments) * ((z * 2) + 1));
-
-                            // Define points for a cube.
-                            // X, Y, Z
-                            final Point3D p1p = new Point3D(x1, y2, z2);
-                            final Point3D p2p = new Point3D(x2, y2, z2);
-                            final Point3D p3p = new Point3D(x1, y1, z2);
-                            final Point3D p4p = new Point3D(x2, y1, z2);
-                            final Point3D p5p = new Point3D(x1, y2, z1);
-                            final Point3D p6p = new Point3D(x2, y2, z1);
-                            final Point3D p7p = new Point3D(x1, y1, z1);
-                            final Point3D p8p = new Point3D(x2, y1, z1);
-
-                            final float[] thisCubePositionData = CubeDataFactory.generatePositionData(p1p, p2p, p3p, p4p, p5p, p6p, p7p, p8p);
-
-                            System.arraycopy(thisCubePositionData, 0, cubePositionData, cubePositionDataOffset, thisCubePositionData.length);
-                            cubePositionDataOffset += thisCubePositionData.length;
-                        }
-                    }
+                    cubePositionDataOffset += thisCubePositionData.length;
                 }
+
 
                 // Run on the GL thread -- the same thread the other members of the renderer run in.
                 glSurfaceView.queueEvent(new Runnable() {
@@ -204,38 +159,8 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
                         System.gc();
 
                         try {
-                            boolean useVbos = useVBOs;
-                            boolean useStride = VertexBufferObjectRenderer.this.useStride;
 
-                            if (toggleVBOs) {
-                                useVbos = !useVbos;
-                            }
-
-                            if (toggleStride) {
-                                useStride = !useStride;
-                            }
-
-                            if (useStride) {
-                                if (useVbos) {
-                                    cubes = new CubesVertexBufferObjectPackedBuffers(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
-                                } else {
-                                    cubes = new CubesClientSidePackedBuffer(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
-                                }
-                            } else {
-                                if (useVbos) {
-                                    cubes = new CubesVertexBufferObjectSeparateBuffers(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
-                                } else {
-                                    cubes = new CubesClientSideSeparateBuffers(cubePositionData, cubeNormalData, cubeTextureCoordinateData, requestedCubeFactor);
-                                }
-                            }
-
-                            useVBOs = useVbos;
-                            lessonSevenActivity.updateVboStatus(useVBOs);
-
-                            VertexBufferObjectRenderer.this.useStride = useStride;
-                            lessonSevenActivity.updateStrideStatus(VertexBufferObjectRenderer.this.useStride);
-
-                            actualCubeFactor = requestedCubeFactor;
+                            cubes = new CubesVertexBufferObjectPackedBuffers(cubePositionData, cubeNormalData, cubeTextureCoordinateData, cubePositions.size());
                         } catch (OutOfMemoryError err) {
                             if (cubes != null) {
                                 cubes.release();
@@ -268,30 +193,9 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void decreaseCubeCount() {
-        if (lastRequestedCubeFactor > 1) {
-            generateCubes(--lastRequestedCubeFactor, false, false);
-        }
-    }
-
-    public void increaseCubeCount() {
-        if (lastRequestedCubeFactor < 16) {
-            generateCubes(++lastRequestedCubeFactor, false, false);
-        }
-    }
-
-    public void toggleVBOs() {
-        generateCubes(lastRequestedCubeFactor, true, false);
-    }
-
-    public void toggleStride() {
-        generateCubes(lastRequestedCubeFactor, false, true);
-    }
-
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        lastRequestedCubeFactor = actualCubeFactor = 3;
-        generateCubes(actualCubeFactor, false, false);
+        generateCubes();
 
         // Set the background clear color to black.
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -303,6 +207,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         glEnable(GL_DEPTH_TEST);
 
         viewMatrix.onSurfaceCreated();
+        viewMatrix.translate(new Point3D(-1.75f, 0.0f, 1.75f));
 
         final String vertexShader = readTextFileFromRawResource(lessonSevenActivity, R.raw.lesson_seven_vertex_shader);
         final String fragmentShader = readTextFileFromRawResource(lessonSevenActivity, R.raw.lesson_seven_fragment_shader);
@@ -338,12 +243,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         // Set our per-vertex lighting program.
         glUseProgram(programHandle);
 
-        // Set program handles for cube drawing.
-        mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
-        lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
-        textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
-
         // Calculate position of the light. Push into the distance.
         Matrix.setIdentityM(lightModelMatrix, 0);
         Matrix.translateM(lightModelMatrix, 0, 0.0f, 0.0f, -1.0f);
@@ -351,8 +250,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
         viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
 
-        // Draw a cube.
-        // Translate the cube into the screen.
+        // Draw a cube. Translate the cube into the screen.
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -3.5f);
 
@@ -371,25 +269,21 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(temporaryMatrix, 0, modelMatrix, 0, accumulatedRotation, 0);
         System.arraycopy(temporaryMatrix, 0, modelMatrix, 0, 16);
 
-        // This multiplies the view matrix by the model matrix, and stores
-        // the result in the MVP matrix
-        // (which currently contains model * view).
+        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix (which currently contains model * view).
         viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
 
         // Pass in the modelview matrix.
-        glUniformMatrix4fv(mvMatrixHandle, 1, false, mvpMatrix, 0);
+        glUniformMatrix4fv(glGetUniformLocation(programHandle, "u_MVMatrix"), 1, false, mvpMatrix, 0);
 
-        // This multiplies the modelview matrix by the projection matrix,
-        // and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
+        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix (which now contains model * view * projection).
         projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix, temporaryMatrix);
         System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
 
         // Pass in the combined matrix.
-        glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+        glUniformMatrix4fv(glGetUniformLocation(programHandle, "u_MVPMatrix"), 1, false, mvpMatrix, 0);
 
         // Pass in the light position in eye space.
-        glUniform3f(lightPosHandle, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+        glUniform3f(glGetUniformLocation(programHandle, "u_LightPos"), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 
         // Pass in the texture information
         // Set the active texture unit to texture unit 0.
@@ -398,12 +292,11 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         // Bind the texture to this unit.
         glBindTexture(GL_TEXTURE_2D, androidDataHandle);
 
-        // Tell the texture uniform sampler to use this texture in the
-        // shader by binding to texture unit 0.
-        glUniform1i(textureUniformHandle, 0);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        glUniform1i(glGetUniformLocation(programHandle, "u_Texture"), 0);
 
         if (cubes != null) {
-            cubes.render(programHandle, actualCubeFactor);
+            cubes.render(programHandle, cubePositions.size());
         }
     }
 }

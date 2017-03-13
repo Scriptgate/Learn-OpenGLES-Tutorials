@@ -191,7 +191,7 @@ public class CubeDataFactory {
         return cubeData;
     }
 
-    public static float[] generatePositionData(float width, float height, float depth) {
+    public static float[] generatePositionDataCentered(float width, float height, float depth) {
         //@formatter:off
         final Point3D frontA = new Point3D(-width,  height,  depth);
         final Point3D frontB = new Point3D( width,  height,  depth);
@@ -201,6 +201,34 @@ public class CubeDataFactory {
         final Point3D backB  = new Point3D( width,  height, -depth);
         final Point3D backC  = new Point3D(-width, -height, -depth);
         final Point3D backD  = new Point3D( width, -height, -depth);
+        //@formatter:on
+        return generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
+    }
+
+    public static float[] generatePositionData(float width, float height, float depth) {
+        //@formatter:off
+        final Point3D frontA = new Point3D( 0.0f, height, depth);
+        final Point3D frontB = new Point3D(width, height, depth);
+        final Point3D frontC = new Point3D( 0.0f,   0.0f, depth);
+        final Point3D frontD = new Point3D(width,   0.0f, depth);
+        final Point3D backA  = new Point3D( 0.0f, height,  0.0f);
+        final Point3D backB  = new Point3D(width, height,  0.0f);
+        final Point3D backC  = new Point3D( 0.0f,   0.0f,  0.0f);
+        final Point3D backD  = new Point3D(width,   0.0f,  0.0f);
+        //@formatter:on
+        return generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
+    }
+
+    public static float[] generatePositionData(Point3D position, float width, float height, float depth) {
+        //@formatter:off
+        final Point3D frontA = new Point3D(position.x,         position.y + height, position.z + depth);
+        final Point3D frontB = new Point3D(position.x + width, position.y + height, position.z + depth);
+        final Point3D frontC = new Point3D(position.x,         position.y,          position.z + depth);
+        final Point3D frontD = new Point3D(position.x + width, position.y,          position.z + depth);
+        final Point3D backA  = new Point3D(position.x,         position.y + height, position.z);
+        final Point3D backB  = new Point3D(position.x + width, position.y + height, position.z);
+        final Point3D backC  = new Point3D(position.x,         position.y,          position.z);
+        final Point3D backD  = new Point3D(position.x + width, position.y,          position.z);
         //@formatter:on
         return generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
     }
