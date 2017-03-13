@@ -51,9 +51,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     private ProjectionMatrix projectionMatrix = new IsometricProjectionMatrix(100.0f);
 
     private float[] mvpMatrix = new float[16];
-    private final float[] accumulatedRotation = new float[16];
-    private final float[] currentRotation = new float[16];
-    private float[] temporaryMatrix = new float[16];
 
     private float[] lightModelMatrix = new float[16];
 
@@ -82,11 +79,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
      * These are handles to our texture data.
      */
     private int androidDataHandle;
-
-    // These still work without volatile, but refreshes are not guaranteed to happen.
-    public volatile float deltaX;
-    public volatile float deltaY;
-
 
     /**
      * Thread executor for generating cube data in the background.
@@ -212,9 +204,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
         glBindTexture(GL_TEXTURE_2D, androidDataHandle);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
-        // Initialize the accumulated rotation matrix
-        Matrix.setIdentityM(accumulatedRotation, 0);
     }
 
     @Override
@@ -240,21 +229,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(modelMatrix, 0);
         Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -3.5f);
 
-        // Set a matrix that contains the current rotation.
-        Matrix.setIdentityM(currentRotation, 0);
-        Matrix.rotateM(currentRotation, 0, deltaX, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(currentRotation, 0, deltaY, 1.0f, 0.0f, 0.0f);
-        deltaX = 0.0f;
-        deltaY = 0.0f;
-
-        // Multiply the current rotation by the accumulated rotation, and then set the accumulated rotation to the result.
-        Matrix.multiplyMM(temporaryMatrix, 0, currentRotation, 0, accumulatedRotation, 0);
-        System.arraycopy(temporaryMatrix, 0, accumulatedRotation, 0, 16);
-
-        // Rotate the cube taking the overall rotation into account.     	
-        Matrix.multiplyMM(temporaryMatrix, 0, modelMatrix, 0, accumulatedRotation, 0);
-        System.arraycopy(temporaryMatrix, 0, modelMatrix, 0, 16);
-
         // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix (which currently contains model * view).
         viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
 
@@ -262,8 +236,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         glUniformMatrix4fv(glGetUniformLocation(programHandle, "u_MVMatrix"), 1, false, mvpMatrix, 0);
 
         // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix (which now contains model * view * projection).
-        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix, temporaryMatrix);
-        System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
+        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
 
         // Pass in the combined matrix.
         glUniformMatrix4fv(glGetUniformLocation(programHandle, "u_MVPMatrix"), 1, false, mvpMatrix, 0);
