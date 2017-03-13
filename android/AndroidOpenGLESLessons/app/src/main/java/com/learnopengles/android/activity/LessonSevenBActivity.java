@@ -5,7 +5,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 
 import com.learnopengles.android.lesson7b.LessonSevenBGLSurfaceView;
 import com.learnopengles.android.lesson7b.VertexBufferObjectRenderer;
@@ -13,9 +12,8 @@ import com.learnopengles.android.lesson7b.VertexBufferObjectRenderer;
 public class LessonSevenBActivity extends Activity {
 	/** Hold a reference to our GLSurfaceView */
 	private LessonSevenBGLSurfaceView mGLSurfaceView;
-	private VertexBufferObjectRenderer mRenderer;
 
-	@Override
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -30,12 +28,9 @@ public class LessonSevenBActivity extends Activity {
 			// Request an OpenGL ES 2.0 compatible context.
 			mGLSurfaceView.setEGLContextClientVersion(2);
 
-			final DisplayMetrics displayMetrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
 			// Set the renderer to our demo renderer, defined below.
-			mRenderer = new VertexBufferObjectRenderer(this, mGLSurfaceView);
-			mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
+            VertexBufferObjectRenderer mRenderer = new VertexBufferObjectRenderer(this, mGLSurfaceView);
+			mGLSurfaceView.setRenderer(mRenderer);
 		} else {
 			// This is where you could create an OpenGL ES 1.x compatible
 			// renderer if you wanted to support both ES 1 and ES 2.

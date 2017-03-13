@@ -1,10 +1,10 @@
 package com.learnopengles.android.lesson7b;
 
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.activity.LessonSevenBActivity;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
@@ -38,7 +38,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
      */
     private static final String TAG = "VertexBufferObjectR";
 
-    private final LessonSevenBActivity lessonSevenActivity;
+    private final Context activityContext;
     private final GLSurfaceView glSurfaceView;
 
     /**
@@ -103,8 +103,8 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public VertexBufferObjectRenderer(final LessonSevenBActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
-        this.lessonSevenActivity = lessonSevenActivity;
+    public VertexBufferObjectRenderer(final Context activityContext, final GLSurfaceView glSurfaceView) {
+        this.activityContext = activityContext;
         this.glSurfaceView = glSurfaceView;
 
         cubePositions = asList(
@@ -169,26 +169,12 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
                             // Not supposed to manually call this, but Dalvik sometimes needs some additional prodding to clean up the heap.
                             System.gc();
-
-                            lessonSevenActivity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-//									Toast.makeText(lessonSevenActivity, "Out of memory; Dalvik takes a while to clean up the memory. Please try again.\nExternal bytes allocated=" + dalvik.system.VMRuntime.getRuntime().getExternalBytesAllocated(), Toast.LENGTH_LONG).show();
-                                }
-                            });
                         }
                     }
                 });
             } catch (OutOfMemoryError e) {
                 // Not supposed to manually call this, but Dalvik sometimes needs some additional prodding to clean up the heap.
                 System.gc();
-
-                lessonSevenActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//						Toast.makeText(lessonSevenActivity, "Out of memory; Dalvik takes a while to clean up the memory. Please try again.\nExternal bytes allocated=" + dalvik.system.VMRuntime.getRuntime().getExternalBytesAllocated(), Toast.LENGTH_LONG).show();
-                    }
-                });
             }
         }
     }
@@ -209,8 +195,8 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         viewMatrix.onSurfaceCreated();
         viewMatrix.translate(new Point3D(-1.75f, 0.0f, 1.75f));
 
-        final String vertexShader = readTextFileFromRawResource(lessonSevenActivity, R.raw.lesson_seven_vertex_shader);
-        final String fragmentShader = readTextFileFromRawResource(lessonSevenActivity, R.raw.lesson_seven_fragment_shader);
+        final String vertexShader = readTextFileFromRawResource(activityContext, R.raw.lesson_seven_vertex_shader);
+        final String fragmentShader = readTextFileFromRawResource(activityContext, R.raw.lesson_seven_fragment_shader);
 
         final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
         final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
@@ -218,7 +204,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
 
         // Load the texture
-        androidDataHandle = loadTexture(lessonSevenActivity, R.drawable.usb_android);
+        androidDataHandle = loadTexture(activityContext, R.drawable.usb_android);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         glBindTexture(GL_TEXTURE_2D, androidDataHandle);
