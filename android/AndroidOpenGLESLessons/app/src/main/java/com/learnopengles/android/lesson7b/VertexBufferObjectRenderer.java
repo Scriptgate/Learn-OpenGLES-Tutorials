@@ -6,11 +6,14 @@ import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point3D;
+import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,12 +48,12 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
      * Store the model matrix. This matrix is used to move models from object space (where each model can be thought
      * of being located at the center of the universe) to world space.
      */
-    private float[] modelMatrix = new float[16];
+    private ModelMatrix modelMatrix = new ModelMatrix();
 
     private ViewMatrix viewMatrix;
     private ProjectionMatrix projectionMatrix = new IsometricProjectionMatrix(100.0f);
 
-    private float[] mvpMatrix = new float[16];
+    private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     private float[] lightModelMatrix = new float[16];
 
@@ -116,10 +119,16 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     }
 
     private void generateCubes() {
-        singleThreadedExecutor.submit(new GenDataRunnable());
+        singleThreadedExecutor.submit(new GenDataRunnable(new ArrayList<>(cubePositions)));
     }
 
-    class GenDataRunnable implements Runnable {
+    private class GenDataRunnable implements Runnable {
+
+        private List<Point3D> cubePositions;
+
+        public GenDataRunnable(List<Point3D> cubePositions) {
+            this.cubePositions = cubePositions;
+        }
 
         @Override
         public void run() {
@@ -193,8 +202,8 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
         final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
 
+        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
         // Load the texture
         androidDataHandle = loadTexture(activityContext, R.drawable.usb_android);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -215,8 +224,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 glUnused) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Set our per-vertex lighting program.
-        glUseProgram(programHandle);
 
         // Calculate position of the light. Push into the distance.
         Matrix.setIdentityM(lightModelMatrix, 0);
@@ -225,37 +232,42 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(lightPosInWorldSpace, 0, lightModelMatrix, 0, lightPosInModelSpace, 0);
         viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
 
+        // Set our per-vertex lighting program.
+        glUseProgram(programHandle);
+
+
         // Draw a cube. Translate the cube into the screen.
-        Matrix.setIdentityM(modelMatrix, 0);
-        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -3.5f);
+        modelMatrix.setIdentity();
+        modelMatrix.translate(new Point3D(0.0f, 0.0f, -3.5f));
 
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix (which currently contains model * view).
-        viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
+        mvpMatrix.multiply(modelMatrix, viewMatrix);
+        mvpMatrix.passTo(glGetUniformLocation(programHandle, "u_MVMatrix"));
 
-        // Pass in the modelview matrix.
-        glUniformMatrix4fv(glGetUniformLocation(programHandle, "u_MVMatrix"), 1, false, mvpMatrix, 0);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix (which now contains model * view * projection).
-        projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
+        mvpMatrix.multiply(projectionMatrix);
 
         // Pass in the combined matrix.
-        glUniformMatrix4fv(glGetUniformLocation(programHandle, "u_MVPMatrix"), 1, false, mvpMatrix, 0);
+        mvpMatrix.passTo(glGetUniformLocation(programHandle, "u_MVPMatrix"));
 
-        // Pass in the light position in eye space.
-        glUniform3f(glGetUniformLocation(programHandle, "u_LightPos"), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
-
-        // Pass in the texture information
-        // Set the active texture unit to texture unit 0.
-        glActiveTexture(GL_TEXTURE0);
-
-        // Bind the texture to this unit.
-        glBindTexture(GL_TEXTURE_2D, androidDataHandle);
-
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(glGetUniformLocation(programHandle, "u_Texture"), 0);
+        passLightingData();
+        passTextureData();
 
         if (cubes != null) {
             cubes.render(programHandle, cubePositions.size());
         }
+    }
+
+    private void passLightingData() {
+        // Pass in the light position in eye space.
+        glUniform3f(glGetUniformLocation(programHandle, "u_LightPos"), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+    }
+
+    private void passTextureData() {
+        // Pass in the texture information
+        // Set the active texture unit to texture unit 0.
+        glActiveTexture(GL_TEXTURE0);
+        // Bind the texture to this unit.
+        glBindTexture(GL_TEXTURE_2D, androidDataHandle);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        glUniform1i(glGetUniformLocation(programHandle, "u_Texture"), 0);
     }
 }
