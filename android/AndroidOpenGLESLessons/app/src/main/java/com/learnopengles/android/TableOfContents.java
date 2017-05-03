@@ -15,18 +15,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
-import com.learnopengles.android.activity.LessonElevenActivity;
-import com.learnopengles.android.activity.LessonNineActivity;
-import com.learnopengles.android.activity.LessonOneActivity;
-import com.learnopengles.android.activity.LessonSevenBActivity;
-import com.learnopengles.android.activity.LessonTenActivity;
-import com.learnopengles.android.activity.LessonTwoActivity;
-import com.learnopengles.android.activity.LessonThreeActivity;
-import com.learnopengles.android.activity.LessonFourActivity;
-import com.learnopengles.android.activity.LessonFiveActivity;
-import com.learnopengles.android.activity.LessonSixActivity;
-import com.learnopengles.android.activity.LessonSevenActivity;
-import com.learnopengles.android.activity.LessonEightActivity;
+import com.learnopengles.android.activity.*;
 
 public class TableOfContents extends ListActivity 
 {
@@ -126,6 +115,14 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eight_subtitle));
 			data.add(item);
 			activityMapping.put(i++, LessonEightActivity.class);
+		}
+		{
+			final Map<String, Object> item = new HashMap<>();
+			item.put(ITEM_IMAGE, R.drawable.ic_lesson_eight);
+			item.put(ITEM_TITLE, getText(R.string.lesson_eight_b));
+			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eight_b_subtitle));
+			data.add(item);
+			activityMapping.put(i++, LessonEightBActivity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();
