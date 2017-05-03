@@ -3,13 +3,16 @@ package com.learnopengles.android.lesson8b;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import com.learnopengles.android.program.Program;
+
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.lesson8b.IndexBufferObjectRenderer.COLOR_ATTRIBUTE;
-import static com.learnopengles.android.lesson8b.IndexBufferObjectRenderer.NORMAL_ATTRIBUTE;
-import static com.learnopengles.android.lesson8b.IndexBufferObjectRenderer.POSITION_ATTRIBUTE;
+import static com.learnopengles.android.lesson8b.IndexBufferObjectRenderer.*;
+import static com.learnopengles.android.program.AttributeVariable.COLOR;
+import static com.learnopengles.android.program.AttributeVariable.NORMAL;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -160,12 +163,12 @@ public class HeightMap {
         }
     }
 
-    void render(int program) {
+    void render(Program program) {
         if (vbo[0] > 0 && ibo[0] > 0) {
 
-            positionAttribute = glGetAttribLocation(program, POSITION_ATTRIBUTE);
-            normalAttribute = glGetAttribLocation(program, NORMAL_ATTRIBUTE);
-            colorAttribute = glGetAttribLocation(program, COLOR_ATTRIBUTE);
+            positionAttribute = program.getHandle(POSITION);
+            normalAttribute = program.getHandle(NORMAL);
+            colorAttribute = program.getHandle(COLOR);
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 

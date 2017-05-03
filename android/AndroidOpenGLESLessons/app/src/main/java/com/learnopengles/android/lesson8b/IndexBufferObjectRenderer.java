@@ -3,19 +3,20 @@ package com.learnopengles.android.lesson8b;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
-import com.learnopengles.android.R;
 import com.learnopengles.android.activity.LessonEightBActivity;
 import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static com.learnopengles.android.program.AttributeVariable.*;
+import static com.learnopengles.android.program.UniformVariable.*;
+import static java.util.Arrays.asList;
 
 /**
  * This class implements our custom renderer. Note that the GL10 parameter
@@ -85,8 +86,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	 */
 	private final float[] lightPosInEyeSpace = new float[4];
 
-	/** This is a handle to our cube shading program. */
-	private int program;
+	private Program program;
 
 	/** Retain the most recent delta for touch events. */
 	// These still work without volatile, but refreshes are not guaranteed to
@@ -117,15 +117,9 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 		viewMatrix.onSurfaceCreated();
 
-		final String vertexShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_vertex_shader_no_tex);
-		final String fragmentShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_fragment_shader_no_tex);
+        program = Program.createProgram("per_pixel_vertex_shader_no_tex", "per_pixel_fragment_shader_no_tex", asList(POSITION, NORMAL, COLOR));
 
-		final int vertexShaderHandle = ShaderHelper.compileShader(GL_VERTEX_SHADER, vertexShader);
-		final int fragmentShaderHandle = ShaderHelper.compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-		program = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[] {POSITION_ATTRIBUTE, NORMAL_ATTRIBUTE, COLOR_ATTRIBUTE });
-
-		// Initialize the accumulated rotation matrix
+        // Initialize the accumulated rotation matrix
 		Matrix.setIdentityM(accumulatedRotation, 0);
 	}
 
@@ -139,12 +133,12 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Set our per-vertex lighting program.
-		glUseProgram(program);
+        program.useForRendering();
 
 		// Set program handles for cube drawing.
-		mvpMatrixUniform = glGetUniformLocation(program, MVP_MATRIX_UNIFORM);
-		mvMatrixUniform = glGetUniformLocation(program, MV_MATRIX_UNIFORM);
-		lightPosUniform = glGetUniformLocation(program, LIGHT_POSITION_UNIFORM);
+        mvpMatrixUniform  = program.getHandle(MVP_MATRIX);
+		mvMatrixUniform = program.getHandle(MV_MATRIX);
+		lightPosUniform = program.getHandle(LIGHT_POSITION);
 
 
 		// Calculate position of the light. Push into the distance.
