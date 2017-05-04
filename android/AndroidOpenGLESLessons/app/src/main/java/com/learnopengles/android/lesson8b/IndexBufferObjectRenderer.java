@@ -1,9 +1,7 @@
 package com.learnopengles.android.lesson8b;
 
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 
-import com.learnopengles.android.activity.LessonEightBActivity;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
@@ -67,10 +65,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
         modelMatrix.setIdentity();
         modelMatrix.translate(new Point3D(0.0f, 0.0f, -12f));
 
-        mvpMatrix.multiply(modelMatrix, viewMatrix);
-        mvpMatrix.passTo(program.getHandle(MV_MATRIX));
-
-		mvpMatrix.multiply(projectionMatrix);
+        mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
 		// Render the heightmap.
