@@ -28,7 +28,6 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	/** References to other main objects. */
 	private final LessonEightBActivity lessonEightActivity;
 
-
 	/**
 	 * Store the model matrix. This matrix is used to move models from object
 	 * space (where each model can be thought of being located at the center of
@@ -47,7 +46,6 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	/** Additional matrices. */
 	private final float[] accumulatedRotation = new float[16];
-	private final float[] currentRotation = new float[16];
 	private final float[] lightModelMatrix = new float[16];
 	private final float[] temporaryMatrix = new float[16];
 
@@ -87,12 +85,6 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	private final float[] lightPosInEyeSpace = new float[4];
 
 	private Program program;
-
-	/** Retain the most recent delta for touch events. */
-	// These still work without volatile, but refreshes are not guaranteed to
-	// happen.
-	public volatile float deltaX;
-	public volatile float deltaY;
 
 	/** The current heightmap object. */
 	private HeightMap heightMap;
@@ -153,22 +145,6 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		Matrix.setIdentityM(modelMatrix, 0);
 		Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -12f);
 
-		// Set a matrix that contains the current rotation.
-		Matrix.setIdentityM(currentRotation, 0);
-		Matrix.rotateM(currentRotation, 0, deltaX, 0.0f, 1.0f, 0.0f);
-		Matrix.rotateM(currentRotation, 0, deltaY, 1.0f, 0.0f, 0.0f);
-		deltaX = 0.0f;
-		deltaY = 0.0f;
-
-		// Multiply the current rotation by the accumulated rotation, and then
-		// set the accumulated rotation to the result.
-		Matrix.multiplyMM(temporaryMatrix, 0, currentRotation, 0, accumulatedRotation, 0);
-		System.arraycopy(temporaryMatrix, 0, accumulatedRotation, 0, 16);
-
-		// Rotate the cube taking the overall rotation into account.
-		Matrix.multiplyMM(temporaryMatrix, 0, modelMatrix, 0, accumulatedRotation, 0);
-		System.arraycopy(temporaryMatrix, 0, modelMatrix, 0, 16);
-
 		// This multiplies the view matrix by the model matrix, and stores
 		// the result in the MVP matrix
 		// (which currently contains model * view).
@@ -180,8 +156,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		// This multiplies the modelview matrix by the projection matrix,
 		// and stores the result in the MVP matrix
 		// (which now contains model * view * projection).
-		projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix, temporaryMatrix);
-		System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
+		projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
 
 		// Pass in the combined matrix.
 		glUniformMatrix4fv(mvpMatrixUniform, 1, false, mvpMatrix, 0);
@@ -192,6 +167,4 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		// Render the heightmap.
 		heightMap.render(program);
 	}
-
-
 }

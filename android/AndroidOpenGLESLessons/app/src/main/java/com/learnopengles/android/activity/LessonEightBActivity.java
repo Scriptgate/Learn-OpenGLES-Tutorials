@@ -31,12 +31,9 @@ public class LessonEightBActivity extends Activity {
 			// Request an OpenGL ES 2.0 compatible context.
 			glSurfaceView.setEGLContextClientVersion(2);
 
-			final DisplayMetrics displayMetrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
 			// Set the renderer to our demo renderer, defined below.
 			renderer = new IndexBufferObjectRenderer(this, glSurfaceView);
-			glSurfaceView.setRenderer(renderer, displayMetrics.density);
+			glSurfaceView.setRenderer(renderer);
 		} else {
 			// This is where you could create an OpenGL ES 1.x compatible
 			// renderer if you wanted to support both ES 1 and ES 2.
