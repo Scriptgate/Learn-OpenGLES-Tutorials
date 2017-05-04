@@ -4,6 +4,9 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.activity.LessonEightBActivity;
+import com.learnopengles.android.common.Point3D;
+import com.learnopengles.android.component.ModelMatrix;
+import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
@@ -30,8 +33,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	 * space (where each model can be thought of being located at the center of
 	 * the universe) to world space.
 	 */
-	private final float[] modelMatrix = new float[16];
-
+	private final ModelMatrix modelMatrix = new ModelMatrix();
 	private final ViewMatrix viewMatrix = createViewInFrontOrigin();
 	private final ProjectionMatrix projectionMatrix = createProjectionMatrix(1000.0f);
 
@@ -39,10 +41,9 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	 * Allocate storage for the final combined matrix. This will be passed into
 	 * the shader program.
 	 */
-	private final float[] mvpMatrix = new float[16];
+	private final ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
 	/** Additional matrices. */
-	private final float[] accumulatedRotation = new float[16];
 	private final float[] lightModelMatrix = new float[16];
 
     /**
@@ -89,9 +90,6 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		viewMatrix.onSurfaceCreated();
 
         program = Program.createProgram("per_pixel_vertex_shader_no_tex", "per_pixel_fragment_shader_no_tex", asList(POSITION, NORMAL, COLOR));
-
-        // Initialize the accumulated rotation matrix
-		Matrix.setIdentityM(accumulatedRotation, 0);
 	}
 
 	@Override
@@ -115,24 +113,24 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 		// Draw the heightmap.
 		// Translate the heightmap into the screen.
-		Matrix.setIdentityM(modelMatrix, 0);
-		Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, -12f);
+        modelMatrix.setIdentity();
+        modelMatrix.translate(new Point3D(0.0f, 0.0f, -12f));
 
 		// This multiplies the view matrix by the model matrix, and stores
 		// the result in the MVP matrix
 		// (which currently contains model * view).
-        viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
+        mvpMatrix.multiply(modelMatrix, viewMatrix);
 
 		// Pass in the modelview matrix.
-		glUniformMatrix4fv(program.getHandle(MV_MATRIX), 1, false, mvpMatrix, 0);
+        mvpMatrix.passTo(program.getHandle(MV_MATRIX));
 
 		// This multiplies the modelview matrix by the projection matrix,
 		// and stores the result in the MVP matrix
 		// (which now contains model * view * projection).
-		projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
+        mvpMatrix.multiply(projectionMatrix);
 
 		// Pass in the combined matrix.
-		glUniformMatrix4fv(program.getHandle(MVP_MATRIX), 1, false, mvpMatrix, 0);
+        mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
 		// Pass in the light position in eye space.
 		glUniform3f(program.getHandle(LIGHT_POSITION), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
