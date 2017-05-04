@@ -28,19 +28,9 @@ import static java.util.Arrays.asList;
  */
 public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
-    /**
-	 * Store the model matrix. This matrix is used to move models from object
-	 * space (where each model can be thought of being located at the center of
-	 * the universe) to world space.
-	 */
 	private final ModelMatrix modelMatrix = new ModelMatrix();
 	private final ViewMatrix viewMatrix = createViewInFrontOrigin();
 	private final ProjectionMatrix projectionMatrix = createProjectionMatrix(1000.0f);
-
-	/**
-	 * Allocate storage for the final combined matrix. This will be passed into
-	 * the shader program.
-	 */
 	private final ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
 	/** Additional matrices. */
@@ -84,7 +74,6 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		// Set the background clear color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		// Enable depth testing
 		glEnable(GL_DEPTH_TEST);
 
 		viewMatrix.onSurfaceCreated();
@@ -116,20 +105,10 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
         modelMatrix.setIdentity();
         modelMatrix.translate(new Point3D(0.0f, 0.0f, -12f));
 
-		// This multiplies the view matrix by the model matrix, and stores
-		// the result in the MVP matrix
-		// (which currently contains model * view).
         mvpMatrix.multiply(modelMatrix, viewMatrix);
-
-		// Pass in the modelview matrix.
         mvpMatrix.passTo(program.getHandle(MV_MATRIX));
 
-		// This multiplies the modelview matrix by the projection matrix,
-		// and stores the result in the MVP matrix
-		// (which now contains model * view * projection).
-        mvpMatrix.multiply(projectionMatrix);
-
-		// Pass in the combined matrix.
+		mvpMatrix.multiply(projectionMatrix);
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
 		// Pass in the light position in eye space.
