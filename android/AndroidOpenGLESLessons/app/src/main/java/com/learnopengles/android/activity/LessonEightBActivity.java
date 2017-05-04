@@ -5,14 +5,12 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 
 import com.learnopengles.android.lesson8b.IndexBufferObjectRenderer;
 import com.learnopengles.android.lesson8b.LessonEightGLSurfaceView;
 
 public class LessonEightBActivity extends Activity {
 	private LessonEightGLSurfaceView glSurfaceView;
-	private IndexBufferObjectRenderer renderer;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,7 +30,7 @@ public class LessonEightBActivity extends Activity {
 			glSurfaceView.setEGLContextClientVersion(2);
 
 			// Set the renderer to our demo renderer, defined below.
-			renderer = new IndexBufferObjectRenderer(this, glSurfaceView);
+			IndexBufferObjectRenderer renderer = new IndexBufferObjectRenderer(glSurfaceView);
 			glSurfaceView.setRenderer(renderer);
 		} else {
 			// This is where you could create an OpenGL ES 1.x compatible

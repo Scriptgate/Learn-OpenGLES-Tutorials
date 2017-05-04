@@ -25,10 +25,7 @@ import static java.util.Arrays.asList;
  */
 public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
-	/** References to other main objects. */
-	private final LessonEightBActivity lessonEightActivity;
-
-	/**
+    /**
 	 * Store the model matrix. This matrix is used to move models from object
 	 * space (where each model can be thought of being located at the center of
 	 * the universe) to world space.
@@ -47,23 +44,11 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	/** Additional matrices. */
 	private final float[] accumulatedRotation = new float[16];
 	private final float[] lightModelMatrix = new float[16];
-	private final float[] temporaryMatrix = new float[16];
 
 	/** OpenGL handles to our program uniforms. */
 	private int mvpMatrixUniform;
 	private int mvMatrixUniform;
 	private int lightPosUniform;
-
-	/** Identifiers for our uniforms and attributes inside the shaders. */
-	private static final String MVP_MATRIX_UNIFORM = "u_MVPMatrix";
-	private static final String MV_MATRIX_UNIFORM = "u_MVMatrix";
-	private static final String LIGHT_POSITION_UNIFORM = "u_LightPos";
-
-	//TODO: These fields are used in both program and heightmap, find where they belong
-	public static final String POSITION_ATTRIBUTE = "a_Position";
-	public static final String NORMAL_ATTRIBUTE = "a_Normal";
-	public static final String COLOR_ATTRIBUTE = "a_Color";
-
 
 	/**
 	 * Used to hold a light centered on the origin in model space. We need a 4th
@@ -92,9 +77,8 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	/**
 	 * Initialize the model data.
 	 */
-	public IndexBufferObjectRenderer(final LessonEightBActivity lessonEightActivity, ErrorHandler errorHandler) {
-		this.lessonEightActivity = lessonEightActivity;
-		heightMap = new HeightMap(errorHandler);
+	public IndexBufferObjectRenderer(ErrorHandler errorHandler) {
+        heightMap = new HeightMap(errorHandler);
 	}
 
 	@Override
