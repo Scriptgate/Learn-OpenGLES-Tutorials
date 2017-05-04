@@ -45,12 +45,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	private final float[] accumulatedRotation = new float[16];
 	private final float[] lightModelMatrix = new float[16];
 
-	/** OpenGL handles to our program uniforms. */
-	private int mvpMatrixUniform;
-	private int mvMatrixUniform;
-	private int lightPosUniform;
-
-	/**
+    /**
 	 * Used to hold a light centered on the origin in model space. We need a 4th
 	 * coordinate so we can get translations to work when we multiply this by
 	 * our transformation matrices.
@@ -111,13 +106,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		// Set our per-vertex lighting program.
         program.useForRendering();
 
-		// Set program handles for cube drawing.
-        mvpMatrixUniform  = program.getHandle(MVP_MATRIX);
-		mvMatrixUniform = program.getHandle(MV_MATRIX);
-		lightPosUniform = program.getHandle(LIGHT_POSITION);
-
-
-		// Calculate position of the light. Push into the distance.
+        // Calculate position of the light. Push into the distance.
 		Matrix.setIdentityM(lightModelMatrix, 0);
 		Matrix.translateM(lightModelMatrix, 0, 0.0f, 7.5f, -8.0f);
 
@@ -135,7 +124,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
         viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
 
 		// Pass in the modelview matrix.
-		glUniformMatrix4fv(mvMatrixUniform, 1, false, mvpMatrix, 0);
+		glUniformMatrix4fv(program.getHandle(MV_MATRIX), 1, false, mvpMatrix, 0);
 
 		// This multiplies the modelview matrix by the projection matrix,
 		// and stores the result in the MVP matrix
@@ -143,10 +132,10 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		projectionMatrix.multiplyWithMatrixAndStore(mvpMatrix);
 
 		// Pass in the combined matrix.
-		glUniformMatrix4fv(mvpMatrixUniform, 1, false, mvpMatrix, 0);
+		glUniformMatrix4fv(program.getHandle(MVP_MATRIX), 1, false, mvpMatrix, 0);
 
 		// Pass in the light position in eye space.
-		glUniform3f(lightPosUniform, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+		glUniform3f(program.getHandle(LIGHT_POSITION), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 
 		// Render the heightmap.
 		heightMap.render(program);
