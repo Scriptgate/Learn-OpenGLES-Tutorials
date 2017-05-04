@@ -1,6 +1,5 @@
 package com.learnopengles.android.lesson8b;
 
-import android.opengl.Matrix;
 import android.util.Log;
 
 import com.learnopengles.android.program.Program;
@@ -9,9 +8,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.lesson8b.IndexBufferObjectRenderer.*;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
-import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
@@ -23,13 +20,12 @@ public class HeightMap {
 
     /** Additional constants. */
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
-    private static final int NORMAL_DATA_SIZE_IN_ELEMENTS = 3;
     private static final int COLOR_DATA_SIZE_IN_ELEMENTS = 4;
 
     private static final int BYTES_PER_FLOAT = 4;
     private static final int BYTES_PER_SHORT = 2;
 
-    private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
+    private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
 
     static final int SIZE_PER_SIDE = 32;
     static final float MIN_POSITION = -5f;
@@ -37,7 +33,6 @@ public class HeightMap {
 
     /** OpenGL handles to our program attributes. */
     private int positionAttribute;
-    private int normalAttribute;
     private int colorAttribute;
 
     private final ErrorHandler errorHandler;
@@ -53,7 +48,7 @@ public class HeightMap {
 
     public void initialize() {
         try {
-            final int floatsPerVertex = POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS;
+            final int floatsPerVertex = POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS;
             final int xLength = SIZE_PER_SIDE;
             final int yLength = SIZE_PER_SIDE;
 
@@ -76,28 +71,6 @@ public class HeightMap {
                     heightMapVertexData[offset++] = xPosition;
                     heightMapVertexData[offset++] = yPosition;
                     heightMapVertexData[offset++] = ((xPosition * xPosition) + (yPosition * yPosition)) / 10f;
-
-                    // Cheap normal using a derivative of the function.
-                    // The slope for X will be 2X, for Y will be 2Y.
-                    // Divide by 10 since the position's Z is also divided by 10.
-                    final float xSlope = (2 * xPosition) / 10f;
-                    final float ySlope = (2 * yPosition) / 10f;
-
-                    // Calculate the normal using the cross product of the slopes.
-                    final float[] planeVectorX = {1f, 0f, xSlope};
-                    final float[] planeVectorY = {0f, 1f, ySlope};
-                    final float[] normalVector = {
-                            (planeVectorX[1] * planeVectorY[2]) - (planeVectorX[2] * planeVectorY[1]),
-                            (planeVectorX[2] * planeVectorY[0]) - (planeVectorX[0] * planeVectorY[2]),
-                            (planeVectorX[0] * planeVectorY[1]) - (planeVectorX[1] * planeVectorY[0])
-                    };
-
-                    // Normalize the normal
-                    final float length = Matrix.length(normalVector[0], normalVector[1], normalVector[2]);
-
-                    heightMapVertexData[offset++] = normalVector[0] / length;
-                    heightMapVertexData[offset++] = normalVector[1] / length;
-                    heightMapVertexData[offset++] = normalVector[2] / length;
 
                     // Add some fancy colors.
                     heightMapVertexData[offset++] = xRatio;
@@ -167,7 +140,6 @@ public class HeightMap {
         if (vbo[0] > 0 && ibo[0] > 0) {
 
             positionAttribute = program.getHandle(POSITION);
-            normalAttribute = program.getHandle(NORMAL);
             colorAttribute = program.getHandle(COLOR);
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
@@ -176,10 +148,7 @@ public class HeightMap {
             glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
             glEnableVertexAttribArray(positionAttribute);
 
-            glVertexAttribPointer(normalAttribute, NORMAL_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
-            glEnableVertexAttribArray(normalAttribute);
-
-            glVertexAttribPointer(colorAttribute, COLOR_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, (POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT);
+            glVertexAttribPointer(colorAttribute, COLOR_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
             glEnableVertexAttribArray(colorAttribute);
 
             // Draw
