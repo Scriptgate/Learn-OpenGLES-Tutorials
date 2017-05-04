@@ -78,7 +78,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 		viewMatrix.onSurfaceCreated();
 
-        program = Program.createProgram("per_pixel_vertex_shader_no_tex", "per_pixel_fragment_shader_no_tex", asList(POSITION, NORMAL, COLOR));
+        program = Program.createProgram("per_pixel_vertex_shader_position_color", "per_pixel_fragment_shader_position_color", asList(POSITION, NORMAL, COLOR));
 	}
 
 	@Override
