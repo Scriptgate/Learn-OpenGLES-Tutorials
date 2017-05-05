@@ -2,8 +2,8 @@ package com.learnopengles.android.lesson7;
 
 import java.nio.FloatBuffer;
 
-import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 

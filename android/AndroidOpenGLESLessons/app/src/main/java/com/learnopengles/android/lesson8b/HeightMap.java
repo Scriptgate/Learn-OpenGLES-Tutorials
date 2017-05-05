@@ -6,7 +6,7 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 

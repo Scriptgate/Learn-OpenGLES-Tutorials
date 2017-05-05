@@ -3,7 +3,7 @@ package com.learnopengles.android.cube.data;
 
 import java.nio.FloatBuffer;
 
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 
 public class CubeData {
 

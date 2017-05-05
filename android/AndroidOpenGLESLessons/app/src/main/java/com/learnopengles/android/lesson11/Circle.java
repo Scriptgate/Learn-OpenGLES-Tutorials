@@ -7,7 +7,7 @@ import com.learnopengles.android.renderer.drawable.Drawable;
 
 import java.nio.FloatBuffer;
 
-import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 

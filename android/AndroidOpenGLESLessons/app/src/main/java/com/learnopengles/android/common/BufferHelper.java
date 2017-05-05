@@ -6,7 +6,7 @@ import java.nio.ShortBuffer;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
-public class FloatBufferHelper {
+public class BufferHelper {
 
     public static final int BYTES_PER_FLOAT = 4;
     public static final int BYTES_PER_SHORT = 2;

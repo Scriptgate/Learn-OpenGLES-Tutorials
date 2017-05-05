@@ -14,7 +14,7 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGenBuffers;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.common.FloatBufferHelper.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 
 public class CubesVertexBufferObjectSeparateBuffers extends Cubes {
     final int cubePositionsBufferIdx;
