@@ -6,6 +6,8 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.BufferHelper.BYTES_PER_SHORT;
 import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
@@ -22,9 +24,6 @@ public class HeightMap {
      */
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
     private static final int COLOR_DATA_SIZE_IN_ELEMENTS = 4;
-
-    private static final int BYTES_PER_FLOAT = 4;
-    private static final int BYTES_PER_SHORT = 2;
 
     private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
 
