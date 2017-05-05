@@ -30,13 +30,9 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	private HeightMap heightMap;
 
-	public IndexBufferObjectRenderer(ErrorHandler errorHandler) {
-        heightMap = new HeightMap(errorHandler);
-	}
-
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-		heightMap.initialize();
+		heightMap = new HeightMap();
 
 		// Set the background clear color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -67,6 +63,8 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
 		// Render the heightmap.
-		heightMap.render(program);
+        if(heightMap != null) {
+            heightMap.render(program);
+        }
 	}
 }
