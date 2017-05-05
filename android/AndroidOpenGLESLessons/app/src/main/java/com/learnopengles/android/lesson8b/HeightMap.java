@@ -1,17 +1,14 @@
 package com.learnopengles.android.lesson8b;
 
-import android.util.Log;
-
 import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.FloatBufferHelper.allocateBuffer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
 
 public class HeightMap {
 
@@ -44,15 +41,10 @@ public class HeightMap {
 
         final int floatsPerVertex = POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS;
 
-        final float[] heightMapVertexData = buildVertexData(floatsPerVertex, SIZE_PER_SIDE, SIZE_PER_SIDE);
-        final FloatBuffer heightMapVertexDataBuffer = allocateDirect(heightMapVertexData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-        heightMapVertexDataBuffer.put(heightMapVertexData).position(0);
+        final FloatBuffer heightMapVertexDataBuffer = allocateBuffer(buildVertexData(floatsPerVertex, SIZE_PER_SIDE, SIZE_PER_SIDE));
+        final ShortBuffer heightMapIndexDataBuffer = allocateBuffer(buildIndexData(SIZE_PER_SIDE, SIZE_PER_SIDE));
 
-        final short[] heightMapIndexData = buildIndexData(SIZE_PER_SIDE, SIZE_PER_SIDE);
-        final ShortBuffer heightMapIndexDataBuffer = allocateDirect(heightMapIndexData.length * BYTES_PER_SHORT).order(nativeOrder()).asShortBuffer();
-        heightMapIndexDataBuffer.put(heightMapIndexData).position(0);
-
-        indexCount = heightMapIndexData.length;
+        indexCount = heightMapIndexDataBuffer.capacity();
 
         final int[] buffers = new int[2];
         glGenBuffers(2, buffers, 0);
