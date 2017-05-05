@@ -7,14 +7,13 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 import com.learnopengles.android.program.Program;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 import static java.util.Arrays.asList;
@@ -22,15 +21,25 @@ import static java.util.Arrays.asList;
 public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	private final ModelMatrix modelMatrix = new ModelMatrix();
-	private final ViewMatrix viewMatrix = createViewInFrontOrigin();
-	private final ProjectionMatrix projectionMatrix = createProjectionMatrix(1000.0f);
+	private final ViewMatrix viewMatrix;
+	private final ProjectionMatrix projectionMatrix = new IsometricProjectionMatrix(100.0f);
 	private final ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
 	private Program program;
 
 	private HeightMap heightMap;
 
-	@Override
+    public IndexBufferObjectRenderer() {
+        float dist = 5;
+
+        Point3D eye = new Point3D(dist, dist, dist);
+        Point3D look = new Point3D(0.0f, 0.0f, 0.0f);
+        Point3D up = new Point3D(0.0f, 1.0f, 0.0f);
+
+        viewMatrix = new ViewMatrix(eye, look, up);
+    }
+
+    @Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
 		heightMap = new HeightMap();
 
@@ -57,7 +66,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
         modelMatrix.setIdentity();
 		// Translate the heightmap into the screen.
-        modelMatrix.translate(new Point3D(0.0f, 0.0f, -12f));
+//        viewMatrix.translate(new Point3D(-1.75f, 0.0f, 1.75f));
 
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));

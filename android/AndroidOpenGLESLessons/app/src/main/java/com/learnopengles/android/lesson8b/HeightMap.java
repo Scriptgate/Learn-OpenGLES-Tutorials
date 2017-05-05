@@ -1,16 +1,23 @@
 package com.learnopengles.android.lesson8b;
 
+import com.learnopengles.android.common.Color;
+import com.learnopengles.android.common.ColorPoint3D;
+import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
+import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_SHORT;
 import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.Color.BLUE;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static java.util.Arrays.asList;
 
 public class HeightMap {
 
@@ -40,8 +47,8 @@ public class HeightMap {
 
         final int floatsPerVertex = POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS;
 
-        final FloatBuffer heightMapVertexDataBuffer = allocateBuffer(buildVertexData(floatsPerVertex, SIZE_PER_SIDE, SIZE_PER_SIDE));
-        final ShortBuffer heightMapIndexDataBuffer = allocateBuffer(buildIndexData(SIZE_PER_SIDE, SIZE_PER_SIDE));
+        final FloatBuffer heightMapVertexDataBuffer = allocateBuffer(buildVertexData(new Point3D(), BLUE, 1, 0.2f, 1));
+        final ShortBuffer heightMapIndexDataBuffer = allocateBuffer(buildIndexData());
 
         indexCount = heightMapIndexDataBuffer.capacity();
 
@@ -60,65 +67,60 @@ public class HeightMap {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    private short[] buildIndexData(int xLength, int yLength) {
-        // Now build the index data
-        final int numStripsRequired = yLength - 1;
-        final int numDegensRequired = 2 * (numStripsRequired - 1);
-        final int verticesPerStrip = 2 * xLength;
+    private short[] buildIndexData() {
+        final short frontA = 0;
+        final short frontB = 1;
+        final short frontC = 2;
+        final short frontD = 3;
+        final short backA = 4;
+        final short backB = 5;
+//      final short backC;
+        final short backD = 6;
 
-        final short[] heightMapIndexData = new short[(verticesPerStrip * numStripsRequired) + numDegensRequired];
+        short[] FRONT = new short[]{frontA, frontB, frontC, frontD};
+        short[] RIGHT = new short[]{frontB, backB, frontD, backD};
+        short[] TOP = new short[]{backA, backB, frontA, frontB};
+
+        short[] data = new short[18];
 
         int offset = 0;
-
-        for (int y = 0; y < yLength - 1; y++) {
-            if (y > 0) {
-                // Degenerate begin: repeat first vertex
-                heightMapIndexData[offset++] = (short) (y * yLength);
-            }
-
-            for (int x = 0; x < xLength; x++) {
-                // One part of the strip
-                heightMapIndexData[offset++] = (short) ((y * yLength) + x);
-                heightMapIndexData[offset++] = (short) (((y + 1) * yLength) + x);
-            }
-
-            if (y < yLength - 2) {
-                // Degenerate end: repeat last vertex
-                heightMapIndexData[offset++] = (short) (((y + 1) * yLength) + (xLength - 1));
-            }
+        for (short[] face : asList(FRONT, RIGHT, TOP)) {
+            data[offset++] = face[0];
+            data[offset++] = face[2];
+            data[offset++] = face[1];
+            data[offset++] = face[2];
+            data[offset++] = face[3];
+            data[offset++] = face[1];
         }
-        return heightMapIndexData;
+        return data;
     }
 
-    private float[] buildVertexData(int floatsPerVertex, int xLength, int yLength) {
-        final float[] heightMapVertexData = new float[xLength * yLength * floatsPerVertex];
+    private float[] buildVertexData(Point3D position, Color color, float width, float height, float depth) {
+        //@formatter:off
+        final ColorPoint3D frontA = new ColorPoint3D(new Point3D(position.x,         position.y + height, position.z + depth), color);
+        final ColorPoint3D frontB = new ColorPoint3D(new Point3D(position.x + width, position.y + height, position.z + depth), color);
+        final ColorPoint3D frontC = new ColorPoint3D(new Point3D(position.x,         position.y,          position.z + depth), color);
+        final ColorPoint3D frontD = new ColorPoint3D(new Point3D(position.x + width, position.y,          position.z + depth), color);
+        final ColorPoint3D backA  = new ColorPoint3D(new Point3D(position.x,         position.y + height, position.z), color);
+        final ColorPoint3D backB  = new ColorPoint3D(new Point3D(position.x + width, position.y + height, position.z), color);
+//      final ColorPoint3D backC  = new ColorPoint3D(new Point3D(position.x,         position.y,          position.z), color);
+        final ColorPoint3D backD  = new ColorPoint3D(new Point3D(position.x + width, position.y,          position.z), color);
+        //@formatter:on
 
+        List<ColorPoint3D> points = asList(frontA, frontB, frontC, frontD, backA, backB, backD);
+
+        float[] data = new float[points.size() * (POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS)];
         int offset = 0;
-
-        // First, build the data for the vertex buffer
-        for (int y = 0; y < yLength; y++) {
-            for (int x = 0; x < xLength; x++) {
-                final float xRatio = x / (float) (xLength - 1);
-
-                // Build our heightmap from the top down, so that our triangles are counter-clockwise.
-                final float yRatio = 1f - (y / (float) (yLength - 1));
-
-                final float xPosition = MIN_POSITION + (xRatio * POSITION_RANGE);
-                final float yPosition = MIN_POSITION + (yRatio * POSITION_RANGE);
-
-                // Position
-                heightMapVertexData[offset++] = xPosition;
-                heightMapVertexData[offset++] = yPosition;
-                heightMapVertexData[offset++] = ((xPosition * xPosition) + (yPosition * yPosition)) / 10f;
-
-                // Add some fancy colors.
-                heightMapVertexData[offset++] = xRatio;
-                heightMapVertexData[offset++] = yRatio;
-                heightMapVertexData[offset++] = 0.5f;
-                heightMapVertexData[offset++] = 1f;
-            }
+        for (ColorPoint3D colorPoint3D : points) {
+            data[offset++] = colorPoint3D.point.x;
+            data[offset++] = colorPoint3D.point.y;
+            data[offset++] = colorPoint3D.point.z;
+            data[offset++] = colorPoint3D.color.red;
+            data[offset++] = colorPoint3D.color.green;
+            data[offset++] = colorPoint3D.color.blue;
+            data[offset++] = colorPoint3D.color.alpha;
         }
-        return heightMapVertexData;
+        return data;
     }
 
     void render(Program program) {
@@ -133,7 +135,7 @@ public class HeightMap {
         glEnableVertexAttribArray(colorAttribute);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
-        glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_SHORT, 0);
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
