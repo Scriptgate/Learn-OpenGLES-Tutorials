@@ -31,12 +31,12 @@ public class HeightMap {
 
     private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
 
-    static final int SIZE_PER_SIDE = 32;
-    static final float MIN_POSITION = -5f;
-    static final float POSITION_RANGE = 10f;
+    private static final int SIZE_PER_SIDE = 32;
+    private static final float MIN_POSITION = -5f;
+    private static final float POSITION_RANGE = 10f;
 
-    private final int[] vbo = new int[1];
-    private final int[] ibo = new int[1];
+    private final int vboBufferIndex;
+    private final int iboBufferIndex;
 
     private int indexCount;
 
@@ -54,14 +54,15 @@ public class HeightMap {
 
         indexCount = heightMapIndexData.length;
 
-        glGenBuffers(1, vbo, 0);
-        glGenBuffers(1, ibo, 0);
+        final int[] buffers = new int[2];
+        glGenBuffers(2, buffers, 0);
+        vboBufferIndex = buffers[0];
+        iboBufferIndex = buffers[1];
 
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
         glBufferData(GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT, heightMapVertexDataBuffer, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, heightMapIndexDataBuffer.capacity() * BYTES_PER_SHORT, heightMapIndexDataBuffer, GL_STATIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -130,7 +131,7 @@ public class HeightMap {
     }
 
     void render(Program program) {
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
 
         int positionAttribute = program.getHandle(POSITION);
         glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
@@ -140,7 +141,7 @@ public class HeightMap {
         glVertexAttribPointer(colorAttribute, COLOR_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
         glEnableVertexAttribArray(colorAttribute);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
         glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_SHORT, 0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -148,14 +149,7 @@ public class HeightMap {
     }
 
     void release() {
-        if (vbo[0] > 0) {
-            glDeleteBuffers(vbo.length, vbo, 0);
-            vbo[0] = 0;
-        }
-
-        if (ibo[0] > 0) {
-            glDeleteBuffers(ibo.length, ibo, 0);
-            ibo[0] = 0;
-        }
+        final int[] buffersToDelete = new int[]{vboBufferIndex, iboBufferIndex};
+        glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
     }
 }
