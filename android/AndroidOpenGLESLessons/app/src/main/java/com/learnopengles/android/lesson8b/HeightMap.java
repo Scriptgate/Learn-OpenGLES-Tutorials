@@ -44,30 +44,30 @@ public class HeightMap {
 
     public void initialize() {
         try {
-            final int floatsPerVertex = POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS;
+        final int floatsPerVertex = POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS;
 
-            final float[] heightMapVertexData = buildVertexData(floatsPerVertex, SIZE_PER_SIDE, SIZE_PER_SIDE);
-            final FloatBuffer heightMapVertexDataBuffer = allocateDirect(heightMapVertexData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-            heightMapVertexDataBuffer.put(heightMapVertexData).position(0);
+        final float[] heightMapVertexData = buildVertexData(floatsPerVertex, SIZE_PER_SIDE, SIZE_PER_SIDE);
+        final FloatBuffer heightMapVertexDataBuffer = allocateDirect(heightMapVertexData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
+        heightMapVertexDataBuffer.put(heightMapVertexData).position(0);
 
-            final short[] heightMapIndexData = buildIndexData(SIZE_PER_SIDE, SIZE_PER_SIDE);
-            final ShortBuffer heightMapIndexDataBuffer = allocateDirect(heightMapIndexData.length * BYTES_PER_SHORT).order(nativeOrder()).asShortBuffer();
-            heightMapIndexDataBuffer.put(heightMapIndexData).position(0);
+        final short[] heightMapIndexData = buildIndexData(SIZE_PER_SIDE, SIZE_PER_SIDE);
+        final ShortBuffer heightMapIndexDataBuffer = allocateDirect(heightMapIndexData.length * BYTES_PER_SHORT).order(nativeOrder()).asShortBuffer();
+        heightMapIndexDataBuffer.put(heightMapIndexData).position(0);
 
-            indexCount = heightMapIndexData.length;
+        indexCount = heightMapIndexData.length;
 
             glGenBuffers(1, vbo, 0);
             glGenBuffers(1, ibo, 0);
 
             if (vbo[0] > 0 && ibo[0] > 0) {
                 glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-                glBufferData(GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT, heightMapVertexDataBuffer, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT, heightMapVertexDataBuffer, GL_STATIC_DRAW);
 
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, heightMapIndexDataBuffer.capacity() * BYTES_PER_SHORT, heightMapIndexDataBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, heightMapIndexDataBuffer.capacity() * BYTES_PER_SHORT, heightMapIndexDataBuffer, GL_STATIC_DRAW);
 
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             } else {
                 errorHandler.handleError(ErrorHandler.ErrorType.BUFFER_CREATION_ERROR, "glGenBuffers");
             }

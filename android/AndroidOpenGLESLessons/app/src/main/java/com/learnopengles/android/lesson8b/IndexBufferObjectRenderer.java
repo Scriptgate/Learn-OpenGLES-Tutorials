@@ -57,12 +57,10 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	public void onDrawFrame(GL10 glUnused) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// Set our per-vertex lighting program.
         program.useForRendering();
 
-		// Draw the heightmap.
-		// Translate the heightmap into the screen.
         modelMatrix.setIdentity();
+		// Translate the heightmap into the screen.
         modelMatrix.translate(new Point3D(0.0f, 0.0f, -12f));
 
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
