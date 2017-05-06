@@ -65,13 +65,10 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
         program.useForRendering();
 
         modelMatrix.setIdentity();
-		// Translate the heightmap into the screen.
-//        viewMatrix.translate(new Point3D(-1.75f, 0.0f, 1.75f));
 
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
-		// Render the heightmap.
         if(heightMap != null) {
             heightMap.render(program);
         }
