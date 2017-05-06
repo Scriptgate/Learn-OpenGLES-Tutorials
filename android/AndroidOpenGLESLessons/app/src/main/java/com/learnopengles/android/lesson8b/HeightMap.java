@@ -7,16 +7,12 @@ import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.Arrays;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_SHORT;
-import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
+import static com.learnopengles.android.common.BufferHelper.*;
 import static com.learnopengles.android.common.Color.BLUE;
-import static com.learnopengles.android.program.AttributeVariable.COLOR;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.AttributeVariable.*;
 import static java.util.Arrays.asList;
 
 public class HeightMap {
@@ -26,17 +22,10 @@ public class HeightMap {
      */
     private static final String TAG = "HeightMap";
 
-    /**
-     * Additional constants.
-     */
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
     private static final int COLOR_DATA_SIZE_IN_ELEMENTS = 4;
 
     private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
-
-    private static final int SIZE_PER_SIDE = 32;
-    private static final float MIN_POSITION = -5f;
-    private static final float POSITION_RANGE = 10f;
 
     private final int vboBufferIndex;
     private final int iboBufferIndex;
@@ -44,8 +33,6 @@ public class HeightMap {
     private int indexCount;
 
     public HeightMap() {
-
-        final int floatsPerVertex = POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS;
 
         final FloatBuffer heightMapVertexDataBuffer = allocateBuffer(buildVertexData(new Point3D(), BLUE, 1, 0.2f, 1));
         final ShortBuffer heightMapIndexDataBuffer = allocateBuffer(buildIndexData());
