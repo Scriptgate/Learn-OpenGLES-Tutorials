@@ -1,6 +1,5 @@
 package com.learnopengles.android.lesson8b;
 
-import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point2D;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.program.Program;
@@ -11,7 +10,6 @@ import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.*;
-import static com.learnopengles.android.common.Color.BLUE;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 import static java.util.Arrays.asList;
@@ -37,8 +35,8 @@ public class HeightMap {
     public HeightMap(int textureHandle) {
         this.textureHandle = textureHandle;
 
-        final FloatBuffer heightMapVertexDataBuffer = allocateBuffer(buildVertexData(new Point3D(), BLUE, 1, 0.2f, 1));
-        final ShortBuffer heightMapIndexDataBuffer = allocateBuffer(buildIndexData());
+        final FloatBuffer heightMapVertexDataBuffer = buildVertexData(new Point3D(), 1, 0.2f, 1);
+        final ShortBuffer heightMapIndexDataBuffer = buildIndexData();
 
         indexCount = heightMapIndexDataBuffer.capacity();
 
@@ -57,14 +55,13 @@ public class HeightMap {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    private short[] buildIndexData() {
+    private ShortBuffer buildIndexData() {
         final short frontA = 0;
         final short frontB = 1;
         final short frontC = 2;
         final short frontD = 3;
         final short backA = 4;
         final short backB = 5;
-//      final short backC;
         final short backD = 6;
 
         short[] FRONT = new short[]{frontA, frontB, frontC, frontD};
@@ -82,10 +79,10 @@ public class HeightMap {
             data[offset++] = face[3];
             data[offset++] = face[1];
         }
-        return data;
+        return allocateBuffer(data);
     }
 
-    private float[] buildVertexData(Point3D position, Color color, float width, float height, float depth) {
+    private FloatBuffer buildVertexData(Point3D position, float width, float height, float depth) {
 
         Point2D p1 = new Point2D(0.0f, 0.0f);
         Point2D p2 = new Point2D(width, 0.0f);
@@ -112,7 +109,7 @@ public class HeightMap {
             data[offset++] = point.textureCoordinate.x;
             data[offset++] = point.textureCoordinate.y;
         }
-        return data;
+        return allocateBuffer(data);
     }
 
     private class Vertex {
