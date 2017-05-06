@@ -8,6 +8,6 @@ public class LessonEightBActivity extends AbstractActivity {
 
 	@Override
 	GLSurfaceView.Renderer getRenderer() {
-		return new IndexBufferObjectRenderer();
+		return new IndexBufferObjectRenderer(this);
 	}
 }

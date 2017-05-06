@@ -1,7 +1,9 @@
 package com.learnopengles.android.lesson8b;
 
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 
+import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
@@ -14,6 +16,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 import static java.util.Arrays.asList;
@@ -29,7 +32,11 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	private HeightMap heightMap;
 
-    public IndexBufferObjectRenderer() {
+    private Context activityContext;
+
+    public IndexBufferObjectRenderer(Context context) {
+        this.activityContext = context;
+
         float dist = 5;
 
         Point3D eye = new Point3D(dist, dist, dist);
@@ -41,16 +48,20 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
     @Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-		heightMap = new HeightMap();
+        int textureDataHandle = loadTexture(activityContext, R.drawable.triangle);
+		heightMap = new HeightMap(textureDataHandle);
 
 		// Set the background clear color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		glEnable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
 
 		viewMatrix.onSurfaceCreated();
 
-        program = Program.createProgram("per_pixel_vertex_shader_position_color", "per_pixel_fragment_shader_position_color", asList(POSITION, COLOR));
+        program = Program.createProgram("per_pixel_vertex_shader_texture", "per_pixel_fragment_shader_texture", asList(POSITION, TEXTURE_COORDINATE));
+
+
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson8b;
 
 import com.learnopengles.android.common.Color;
-import com.learnopengles.android.common.ColorPoint3D;
+import com.learnopengles.android.common.Point2D;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.program.Program;
 
@@ -13,6 +13,7 @@ import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.*;
 import static com.learnopengles.android.common.Color.BLUE;
 import static com.learnopengles.android.program.AttributeVariable.*;
+import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 import static java.util.Arrays.asList;
 
 public class HeightMap {
@@ -23,16 +24,18 @@ public class HeightMap {
     private static final String TAG = "HeightMap";
 
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
-    private static final int COLOR_DATA_SIZE_IN_ELEMENTS = 4;
+    private static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
 
-    private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
+    private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
 
     private final int vboBufferIndex;
     private final int iboBufferIndex;
 
     private int indexCount;
+    private int textureHandle;
 
-    public HeightMap() {
+    public HeightMap(int textureHandle) {
+        this.textureHandle = textureHandle;
 
         final FloatBuffer heightMapVertexDataBuffer = allocateBuffer(buildVertexData(new Point3D(), BLUE, 1, 0.2f, 1));
         final ShortBuffer heightMapIndexDataBuffer = allocateBuffer(buildIndexData());
@@ -83,49 +86,73 @@ public class HeightMap {
     }
 
     private float[] buildVertexData(Point3D position, Color color, float width, float height, float depth) {
+
+        Point2D p1 = new Point2D(0.0f, 0.0f);
+        Point2D p2 = new Point2D(width, 0.0f);
+        Point2D p3 = new Point2D(0.0f, height);
+
         //@formatter:off
-        final ColorPoint3D frontA = new ColorPoint3D(new Point3D(position.x,         position.y + height, position.z + depth), color);
-        final ColorPoint3D frontB = new ColorPoint3D(new Point3D(position.x + width, position.y + height, position.z + depth), color);
-        final ColorPoint3D frontC = new ColorPoint3D(new Point3D(position.x,         position.y,          position.z + depth), color);
-        final ColorPoint3D frontD = new ColorPoint3D(new Point3D(position.x + width, position.y,          position.z + depth), color);
-        final ColorPoint3D backA  = new ColorPoint3D(new Point3D(position.x,         position.y + height, position.z), color);
-        final ColorPoint3D backB  = new ColorPoint3D(new Point3D(position.x + width, position.y + height, position.z), color);
-//      final ColorPoint3D backC  = new ColorPoint3D(new Point3D(position.x,         position.y,          position.z), color);
-        final ColorPoint3D backD  = new ColorPoint3D(new Point3D(position.x + width, position.y,          position.z), color);
+        final Vertex frontA = new Vertex(new Point3D(position.x,         position.y + height, position.z + depth), p1);
+        final Vertex frontB = new Vertex(new Point3D(position.x + width, position.y + height, position.z + depth), p2);
+        final Vertex frontC = new Vertex(new Point3D(position.x,         position.y,          position.z + depth), p3);
+        final Vertex frontD = new Vertex(new Point3D(position.x + width, position.y,          position.z + depth), p1);
+        final Vertex backA  = new Vertex(new Point3D(position.x,         position.y + height, position.z), p3);
+        final Vertex backB  = new Vertex(new Point3D(position.x + width, position.y + height, position.z), p1);
+        final Vertex backD  = new Vertex(new Point3D(position.x + width, position.y,          position.z), p3);
         //@formatter:on
 
-        List<ColorPoint3D> points = asList(frontA, frontB, frontC, frontD, backA, backB, backD);
+        List<Vertex> points = asList(frontA, frontB, frontC, frontD, backA, backB, backD);
 
-        float[] data = new float[points.size() * (POSITION_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS)];
+        float[] data = new float[points.size() * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS)];
         int offset = 0;
-        for (ColorPoint3D colorPoint3D : points) {
-            data[offset++] = colorPoint3D.point.x;
-            data[offset++] = colorPoint3D.point.y;
-            data[offset++] = colorPoint3D.point.z;
-            data[offset++] = colorPoint3D.color.red;
-            data[offset++] = colorPoint3D.color.green;
-            data[offset++] = colorPoint3D.color.blue;
-            data[offset++] = colorPoint3D.color.alpha;
+        for (Vertex point : points) {
+            data[offset++] = point.position.x;
+            data[offset++] = point.position.y;
+            data[offset++] = point.position.z;
+            data[offset++] = point.textureCoordinate.x;
+            data[offset++] = point.textureCoordinate.y;
         }
         return data;
     }
 
+    private class Vertex {
+        private Point3D position;
+        private Point2D textureCoordinate;
+
+        private Vertex(Point3D position, Point2D textureCoordinate) {
+            this.position = position;
+            this.textureCoordinate = textureCoordinate;
+        }
+
+    }
+
     void render(Program program) {
+        setTexture(program);
+
         glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
 
         int positionAttribute = program.getHandle(POSITION);
         glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
         glEnableVertexAttribArray(positionAttribute);
 
-        int colorAttribute = program.getHandle(COLOR);
-        glVertexAttribPointer(colorAttribute, COLOR_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
-        glEnableVertexAttribArray(colorAttribute);
+        int textureCoordinateAttribute = program.getHandle(TEXTURE_COORDINATE);
+        glVertexAttribPointer(textureCoordinateAttribute, TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
+        glEnableVertexAttribArray(textureCoordinateAttribute);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
         glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    private void setTexture(Program program) {
+        // Set the active texture unit to texture unit 0.
+        glActiveTexture(GL_TEXTURE0);
+        // Bind the texture to this unit.
+        glBindTexture(GL_TEXTURE_2D, textureHandle);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        glUniform1i(program.getHandle(TEXTURE), 0);
     }
 
     void release() {
