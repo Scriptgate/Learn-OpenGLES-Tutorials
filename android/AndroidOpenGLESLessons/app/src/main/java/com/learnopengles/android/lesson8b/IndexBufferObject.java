@@ -67,18 +67,18 @@ public class IndexBufferObject {
         short[] rightFace = new short[]{frontD, frontB, backD, backB};
         short[] topFace = new short[]{backB, frontB, backA, frontA};
 
-        short[] data = new short[18];
+        ShortBuffer indexBuffer = allocateShortBuffer(18);
 
-        int offset = 0;
         for (short[] face : asList(frontFace, rightFace, topFace)) {
-            data[offset++] = face[0];
-            data[offset++] = face[2];
-            data[offset++] = face[1];
-            data[offset++] = face[2];
-            data[offset++] = face[3];
-            data[offset++] = face[1];
+            indexBuffer.put(face[0]);
+            indexBuffer.put(face[2]);
+            indexBuffer.put(face[1]);
+            indexBuffer.put(face[2]);
+            indexBuffer.put(face[3]);
+            indexBuffer.put(face[1]);
         }
-        return allocateBuffer(data);
+        indexBuffer.position(0);
+        return indexBuffer;
     }
 
     private FloatBuffer buildVertexData(Point3D position, float width, float height, float depth) {
