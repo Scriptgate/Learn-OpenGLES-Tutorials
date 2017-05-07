@@ -82,7 +82,6 @@ public class IndexBufferObject {
     }
 
     private FloatBuffer buildVertexData(Point3D position, float width, float height, float depth) {
-
         TextureTriangle texture = new TextureTriangle(15);
 
         //@formatter:off
@@ -97,16 +96,12 @@ public class IndexBufferObject {
 
         List<Vertex> points = asList(frontA, frontB, frontC, frontD, backA, backB, backD);
 
-        float[] data = new float[points.size() * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS)];
-        int offset = 0;
+        FloatBuffer vertexBuffer = allocateFloatBuffer(points.size() * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
         for (Vertex point : points) {
-            data[offset++] = point.position.x;
-            data[offset++] = point.position.y;
-            data[offset++] = point.position.z;
-            data[offset++] = point.textureCoordinate.x;
-            data[offset++] = point.textureCoordinate.y;
+            point.putIn(vertexBuffer);
         }
-        return allocateBuffer(data);
+        vertexBuffer.position(0);
+        return vertexBuffer;
     }
 
     void render(Program program) {

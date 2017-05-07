@@ -60,8 +60,6 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		viewMatrix.onSurfaceCreated();
 
         program = Program.createProgram("per_pixel_vertex_shader_texture", "per_pixel_fragment_shader_texture", asList(POSITION, TEXTURE_COORDINATE));
-
-
 	}
 
 	@Override
