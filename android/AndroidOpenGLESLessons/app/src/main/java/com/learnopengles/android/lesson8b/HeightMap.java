@@ -110,33 +110,6 @@ public class HeightMap {
         return allocateBuffer(data);
     }
 
-    private class TextureTriangle {
-        private Point2D p1;
-        private Point2D p2;
-        private Point2D p3;
-
-        public TextureTriangle(int colorIndex) {
-
-            int offsetX = colorIndex / 4;
-            int offsetY = colorIndex % 4;
-
-            this.p1 = new Point2D(0.25f * offsetX, 0.25f*offsetY);
-            this.p2 = new Point2D(0.25f * offsetX + 0.25f, 0.25f * offsetY);
-            this.p3 = new Point2D(0.25f * offsetX, 0.25f*offsetY + 0.25f);
-        }
-    }
-
-    private class Vertex {
-        private Point3D position;
-        private Point2D textureCoordinate;
-
-        private Vertex(Point3D position, Point2D textureCoordinate) {
-            this.position = position;
-            this.textureCoordinate = textureCoordinate;
-        }
-
-    }
-
     void render(Program program) {
         setTexture(program);
 
