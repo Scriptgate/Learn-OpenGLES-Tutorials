@@ -35,7 +35,7 @@ public class HeightMap {
     public HeightMap(int textureHandle) {
         this.textureHandle = textureHandle;
 
-        final FloatBuffer heightMapVertexDataBuffer = buildVertexData(new Point3D(), 1, 0.2f, 1);
+        final FloatBuffer heightMapVertexDataBuffer = buildVertexData(new Point3D(), 1, 1, 1);
         final ShortBuffer heightMapIndexDataBuffer = buildIndexData();
 
         indexCount = heightMapIndexDataBuffer.capacity();
@@ -65,8 +65,8 @@ public class HeightMap {
         final short backD = 6;
 
         short[] FRONT = new short[]{frontA, frontB, frontC, frontD};
-        short[] RIGHT = new short[]{frontB, backB, frontD, backD};
-        short[] TOP = new short[]{backA, backB, frontA, frontB};
+        short[] RIGHT = new short[]{frontD, frontB, backD, backB};
+        short[] TOP = new short[]{backB, frontB, backA, frontA};
 
         short[] data = new short[18];
 
@@ -84,18 +84,16 @@ public class HeightMap {
 
     private FloatBuffer buildVertexData(Point3D position, float width, float height, float depth) {
 
-        Point2D p1 = new Point2D(0.0f, 0.0f);
-        Point2D p2 = new Point2D(width, 0.0f);
-        Point2D p3 = new Point2D(0.0f, height);
+        TextureTriangle texture = new TextureTriangle(width, height);
 
         //@formatter:off
-        final Vertex frontA = new Vertex(new Point3D(position.x,         position.y + height, position.z + depth), p1);
-        final Vertex frontB = new Vertex(new Point3D(position.x + width, position.y + height, position.z + depth), p2);
-        final Vertex frontC = new Vertex(new Point3D(position.x,         position.y,          position.z + depth), p3);
-        final Vertex frontD = new Vertex(new Point3D(position.x + width, position.y,          position.z + depth), p1);
-        final Vertex backA  = new Vertex(new Point3D(position.x,         position.y + height, position.z), p3);
-        final Vertex backB  = new Vertex(new Point3D(position.x + width, position.y + height, position.z), p1);
-        final Vertex backD  = new Vertex(new Point3D(position.x + width, position.y,          position.z), p3);
+        final Vertex frontA = new Vertex(new Point3D(position.x,         position.y + height, position.z + depth), texture.p1);
+        final Vertex frontB = new Vertex(new Point3D(position.x + width, position.y + height, position.z + depth), texture.p2);
+        final Vertex frontC = new Vertex(new Point3D(position.x,         position.y,          position.z + depth), texture.p3);
+        final Vertex frontD = new Vertex(new Point3D(position.x + width, position.y,          position.z + depth), texture.p1);
+        final Vertex backA  = new Vertex(new Point3D(position.x,         position.y + height, position.z), texture.p3);
+        final Vertex backB  = new Vertex(new Point3D(position.x + width, position.y + height, position.z), texture.p1);
+        final Vertex backD  = new Vertex(new Point3D(position.x + width, position.y,          position.z), texture.p3);
         //@formatter:on
 
         List<Vertex> points = asList(frontA, frontB, frontC, frontD, backA, backB, backD);
@@ -110,6 +108,18 @@ public class HeightMap {
             data[offset++] = point.textureCoordinate.y;
         }
         return allocateBuffer(data);
+    }
+
+    private class TextureTriangle {
+        private Point2D p1;
+        private Point2D p2;
+        private Point2D p3;
+
+        public TextureTriangle(float width, float height) {
+            this.p1 = new Point2D(0, 0);
+            this.p2 = new Point2D(width, 0);
+            this.p3 = new Point2D(0, height);
+        }
     }
 
     private class Vertex {
