@@ -34,7 +34,7 @@ public class IndexBufferObject {
     public IndexBufferObject(int textureHandle) {
         this.textureHandle = textureHandle;
 
-        final FloatBuffer heightMapVertexDataBuffer = buildVertexData(new Point3D(), 1, 0.2f, 1);
+        final FloatBuffer heightMapVertexDataBuffer = buildVertexData(1, 0.2f, 1);
         final ShortBuffer heightMapIndexDataBuffer = buildIndexData();
 
         indexCount = heightMapIndexDataBuffer.capacity();
@@ -55,50 +55,63 @@ public class IndexBufferObject {
     }
 
     private ShortBuffer buildIndexData() {
-        final short frontA = 0;
-        final short frontB = 1;
-        final short frontC = 2;
-        final short frontD = 3;
-        final short backA = 4;
-        final short backB = 5;
-        final short backD = 6;
 
-        short[] frontFace = new short[]{frontA, frontB, frontC, frontD};
-        short[] rightFace = new short[]{frontD, frontB, backD, backB};
-        short[] topFace = new short[]{backB, frontB, backA, frontA};
+        int numberOfCubes = 16;
+        ShortBuffer indexBuffer = allocateShortBuffer(18 * numberOfCubes);
 
-        ShortBuffer indexBuffer = allocateShortBuffer(18);
+        short indexOffset = 0;
 
-        for (short[] face : asList(frontFace, rightFace, topFace)) {
-            indexBuffer.put(face[0]);
-            indexBuffer.put(face[2]);
-            indexBuffer.put(face[1]);
-            indexBuffer.put(face[2]);
-            indexBuffer.put(face[3]);
-            indexBuffer.put(face[1]);
+        for (int i = 0; i < numberOfCubes; i++) {
+            final short frontA = indexOffset++;
+            final short frontB = indexOffset++;
+            final short frontC = indexOffset++;
+            final short frontD = indexOffset++;
+            final short backA = indexOffset++;
+            final short backB = indexOffset++;
+            final short backD = indexOffset++;
+
+            short[] frontFace = new short[]{frontA, frontB, frontC, frontD};
+            short[] rightFace = new short[]{frontD, frontB, backD, backB};
+            short[] topFace = new short[]{backB, frontB, backA, frontA};
+
+            for (short[] face : asList(frontFace, rightFace, topFace)) {
+                indexBuffer.put(face[0]);
+                indexBuffer.put(face[2]);
+                indexBuffer.put(face[1]);
+                indexBuffer.put(face[2]);
+                indexBuffer.put(face[3]);
+                indexBuffer.put(face[1]);
+            }
         }
         indexBuffer.position(0);
         return indexBuffer;
     }
 
-    private FloatBuffer buildVertexData(Point3D position, float width, float height, float depth) {
-        TextureTriangle texture = new TextureTriangle(15);
+    private FloatBuffer buildVertexData(float width, float height, float depth) {
 
-        //@formatter:off
-        final Vertex frontA = new Vertex(new Point3D(position.x,         position.y + height, position.z + depth), texture.p1);
-        final Vertex frontB = new Vertex(new Point3D(position.x + width, position.y + height, position.z + depth), texture.p2);
-        final Vertex frontC = new Vertex(new Point3D(position.x,         position.y,          position.z + depth), texture.p3);
-        final Vertex frontD = new Vertex(new Point3D(position.x + width, position.y,          position.z + depth), texture.p1);
-        final Vertex backA  = new Vertex(new Point3D(position.x,         position.y + height, position.z), texture.p3);
-        final Vertex backB  = new Vertex(new Point3D(position.x + width, position.y + height, position.z), texture.p1);
-        final Vertex backD  = new Vertex(new Point3D(position.x + width, position.y,          position.z), texture.p3);
-        //@formatter:on
+        int numberOfCubes = 16;
+        FloatBuffer vertexBuffer = allocateFloatBuffer(7 * numberOfCubes * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
 
-        List<Vertex> points = asList(frontA, frontB, frontC, frontD, backA, backB, backD);
+        Point3D position = new Point3D();
 
-        FloatBuffer vertexBuffer = allocateFloatBuffer(points.size() * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
-        for (Vertex point : points) {
-            point.putIn(vertexBuffer);
+        for (int i = 0; i < numberOfCubes; i++) {
+            TextureTriangle texture = new TextureTriangle(i);
+
+            //@formatter:off
+            final Vertex frontA = new Vertex(new Point3D(position.x,         position.y + height, position.z + depth), texture.p1);
+            final Vertex frontB = new Vertex(new Point3D(position.x + width, position.y + height, position.z + depth), texture.p2);
+            final Vertex frontC = new Vertex(new Point3D(position.x,         position.y,          position.z + depth), texture.p3);
+            final Vertex frontD = new Vertex(new Point3D(position.x + width, position.y,          position.z + depth), texture.p1);
+            final Vertex backA  = new Vertex(new Point3D(position.x,         position.y + height, position.z), texture.p3);
+            final Vertex backB  = new Vertex(new Point3D(position.x + width, position.y + height, position.z), texture.p1);
+            final Vertex backD  = new Vertex(new Point3D(position.x + width, position.y,          position.z), texture.p3);
+            //@formatter:on
+
+            for (Vertex point : asList(frontA, frontB, frontC, frontD, backA, backB, backD)) {
+                point.putIn(vertexBuffer);
+            }
+
+            position.y += 0.2f;
         }
         vertexBuffer.position(0);
         return vertexBuffer;
