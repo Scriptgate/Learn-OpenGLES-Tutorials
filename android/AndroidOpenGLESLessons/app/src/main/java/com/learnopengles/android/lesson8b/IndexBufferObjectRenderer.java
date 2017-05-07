@@ -48,7 +48,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
     @Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        int textureDataHandle = loadTexture(activityContext, R.drawable.triangle);
+        int textureDataHandle = loadTexture(activityContext, R.drawable.colormap);
 		heightMap = new HeightMap(textureDataHandle);
 
 		// Set the background clear color to black.

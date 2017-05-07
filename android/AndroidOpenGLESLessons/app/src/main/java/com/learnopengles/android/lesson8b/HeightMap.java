@@ -35,7 +35,7 @@ public class HeightMap {
     public HeightMap(int textureHandle) {
         this.textureHandle = textureHandle;
 
-        final FloatBuffer heightMapVertexDataBuffer = buildVertexData(new Point3D(), 1, 1, 1);
+        final FloatBuffer heightMapVertexDataBuffer = buildVertexData(new Point3D(), 1, 0.2f, 1);
         final ShortBuffer heightMapIndexDataBuffer = buildIndexData();
 
         indexCount = heightMapIndexDataBuffer.capacity();
@@ -64,14 +64,14 @@ public class HeightMap {
         final short backB = 5;
         final short backD = 6;
 
-        short[] FRONT = new short[]{frontA, frontB, frontC, frontD};
-        short[] RIGHT = new short[]{frontD, frontB, backD, backB};
-        short[] TOP = new short[]{backB, frontB, backA, frontA};
+        short[] frontFace = new short[]{frontA, frontB, frontC, frontD};
+        short[] rightFace = new short[]{frontD, frontB, backD, backB};
+        short[] topFace = new short[]{backB, frontB, backA, frontA};
 
         short[] data = new short[18];
 
         int offset = 0;
-        for (short[] face : asList(FRONT, RIGHT, TOP)) {
+        for (short[] face : asList(frontFace, rightFace, topFace)) {
             data[offset++] = face[0];
             data[offset++] = face[2];
             data[offset++] = face[1];
@@ -84,7 +84,7 @@ public class HeightMap {
 
     private FloatBuffer buildVertexData(Point3D position, float width, float height, float depth) {
 
-        TextureTriangle texture = new TextureTriangle(width, height);
+        TextureTriangle texture = new TextureTriangle(15);
 
         //@formatter:off
         final Vertex frontA = new Vertex(new Point3D(position.x,         position.y + height, position.z + depth), texture.p1);
@@ -115,10 +115,14 @@ public class HeightMap {
         private Point2D p2;
         private Point2D p3;
 
-        public TextureTriangle(float width, float height) {
-            this.p1 = new Point2D(0, 0);
-            this.p2 = new Point2D(width, 0);
-            this.p3 = new Point2D(0, height);
+        public TextureTriangle(int colorIndex) {
+
+            int offsetX = colorIndex / 4;
+            int offsetY = colorIndex % 4;
+
+            this.p1 = new Point2D(0.25f * offsetX, 0.25f*offsetY);
+            this.p2 = new Point2D(0.25f * offsetX + 0.25f, 0.25f * offsetY);
+            this.p3 = new Point2D(0.25f * offsetX, 0.25f*offsetY + 0.25f);
         }
     }
 
