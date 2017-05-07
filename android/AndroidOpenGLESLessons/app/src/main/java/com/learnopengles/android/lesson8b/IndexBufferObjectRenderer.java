@@ -30,7 +30,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	private Program program;
 
-	private HeightMap heightMap;
+	private IndexBufferObject ibo;
 
     private Context activityContext;
 
@@ -48,8 +48,8 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
     @Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
-        int textureDataHandle = loadTexture(activityContext, R.drawable.colormap);
-		heightMap = new HeightMap(textureDataHandle);
+        int textureHandle = loadTexture(activityContext, R.drawable.colormap);
+		ibo = new IndexBufferObject(textureHandle);
 
 		// Set the background clear color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -80,8 +80,8 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
-        if(heightMap != null) {
-            heightMap.render(program);
+        if(ibo != null) {
+            ibo.render(program);
         }
 	}
 }

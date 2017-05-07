@@ -1,6 +1,5 @@
 package com.learnopengles.android.lesson8b;
 
-import com.learnopengles.android.common.Point2D;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.program.Program;
 
@@ -14,12 +13,12 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 import static java.util.Arrays.asList;
 
-public class HeightMap {
+public class IndexBufferObject {
 
     /**
      * Used for debug logs. max 23 characters
      */
-    private static final String TAG = "HeightMap";
+    private static final String TAG = "IndexBufferObject";
 
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
     private static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
@@ -32,7 +31,7 @@ public class HeightMap {
     private int indexCount;
     private int textureHandle;
 
-    public HeightMap(int textureHandle) {
+    public IndexBufferObject(int textureHandle) {
         this.textureHandle = textureHandle;
 
         final FloatBuffer heightMapVertexDataBuffer = buildVertexData(new Point3D(), 1, 0.2f, 1);
