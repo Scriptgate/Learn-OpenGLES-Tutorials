@@ -1,8 +1,12 @@
 package com.learnopengles.android.cube;
 
 import com.learnopengles.android.common.Color;
+import com.learnopengles.android.common.ColorFace;
+import com.learnopengles.android.common.Face;
 import com.learnopengles.android.common.Point2D;
+import com.learnopengles.android.common.Point2DFace;
 import com.learnopengles.android.common.Point3D;
+import com.learnopengles.android.common.Point3DFace;
 
 import java.util.ArrayList;
 import java.util.List;

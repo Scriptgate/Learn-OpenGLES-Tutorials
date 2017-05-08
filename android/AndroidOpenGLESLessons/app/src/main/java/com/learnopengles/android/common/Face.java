@@ -1,4 +1,4 @@
-package com.learnopengles.android.cube;
+package com.learnopengles.android.common;
 
 public abstract class Face<T> {
 
@@ -7,14 +7,14 @@ public abstract class Face<T> {
     private final T p3;
     private final T p4;
 
-    Face(T p1, T p2, T p3, T p4) {
+    public Face(T p1, T p2, T p3, T p4) {
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
         this.p4 = p4;
     }
 
-    void addFaceToArray(float[] data, int offset) {
+    public void addFaceToArray(float[] data, int offset) {
         // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
         // if the points are counter-clockwise we are looking at the "front". If not we are looking at
         // the back. OpenGL has an optimization where all back-facing triangles are culled, since they
@@ -34,9 +34,9 @@ public abstract class Face<T> {
         addToArray(p2, data, offset + numberOfElements * 5);
     }
 
-    abstract int getNumberOfElements();
+    public abstract int getNumberOfElements();
 
-    abstract void addToArray(T element, float[] data, int offset);
+    public abstract void addToArray(T element, float[] data, int offset);
 }
 
 
