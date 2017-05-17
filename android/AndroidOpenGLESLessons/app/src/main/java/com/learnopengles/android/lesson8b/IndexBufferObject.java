@@ -5,7 +5,6 @@ import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.*;
@@ -25,38 +24,39 @@ public class IndexBufferObject {
 
     private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
 
-    private final int vboBufferIndex;
-    private final int iboBufferIndex;
+    private BufferPair bufferA;
+    private BufferPair bufferB;
 
-    private int indexCount;
     private int textureHandle;
+
+    private static final int CUBES_PER_BUFFER = 8;
 
     public IndexBufferObject(int textureHandle) {
         this.textureHandle = textureHandle;
 
-        final FloatBuffer heightMapVertexDataBuffer = buildVertexData(1, 0.2f, 1);
-        final ShortBuffer heightMapIndexDataBuffer = buildIndexData();
 
-        indexCount = heightMapIndexDataBuffer.capacity();
+        final int[] bufferIndices = new int[4];
+        glGenBuffers(bufferIndices.length, bufferIndices, 0);
 
-        final int[] buffers = new int[2];
-        glGenBuffers(2, buffers, 0);
-        vboBufferIndex = buffers[0];
-        iboBufferIndex = buffers[1];
+        bufferA = BufferPair.allocate(bufferIndices[0], bufferIndices[1]);
+        bufferB = BufferPair.allocate(bufferIndices[2], bufferIndices[3]);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
-        glBufferData(GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT, heightMapVertexDataBuffer, GL_STATIC_DRAW);
+        int indexOffset = 0;
+        bufferA.addData(
+                buildVertexData(CUBES_PER_BUFFER, new Point3D(), indexOffset),
+                buildIndexData(CUBES_PER_BUFFER)
+        );
+        indexOffset += CUBES_PER_BUFFER;
+        bufferB.addData(
+                buildVertexData(CUBES_PER_BUFFER, new Point3D(0, 0.2f * indexOffset, 0), indexOffset),
+                buildIndexData(CUBES_PER_BUFFER)
+        );
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, heightMapIndexDataBuffer.capacity() * BYTES_PER_SHORT, heightMapIndexDataBuffer, GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    private ShortBuffer buildIndexData() {
+    private static ShortBuffer buildIndexData(int numberOfCubes) {
 
-        int numberOfCubes = 16;
         ShortBuffer indexBuffer = allocateShortBuffer(18 * numberOfCubes);
 
         short indexOffset = 0;
@@ -87,15 +87,17 @@ public class IndexBufferObject {
         return indexBuffer;
     }
 
-    private FloatBuffer buildVertexData(float width, float height, float depth) {
+    private static FloatBuffer buildVertexData(int numberOfCubes, Point3D offset, int indexOffset) {
+        float width = 1;
+        float height = 0.2f;
+        float depth = 1;
 
-        int numberOfCubes = 16;
         FloatBuffer vertexBuffer = allocateFloatBuffer(7 * numberOfCubes * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
 
-        Point3D position = new Point3D();
+        Point3D position = new Point3D(offset.x, offset.y, offset.z);
 
         for (int i = 0; i < numberOfCubes; i++) {
-            TextureTriangle texture = new TextureTriangle(i);
+            TextureTriangle texture = new TextureTriangle(i + indexOffset);
 
             //@formatter:off
             final Vertex frontA = new Vertex(new Point3D(position.x,         position.y + height, position.z + depth), texture.p1);
@@ -117,24 +119,83 @@ public class IndexBufferObject {
         return vertexBuffer;
     }
 
+    private static class BufferPair {
+        private final int vboBufferIndex;
+        private final int iboBufferIndex;
+
+        private int indexCount = 0;
+
+        BufferPair(int vboBufferIndex, int iboBufferIndex) {
+            this.vboBufferIndex = vboBufferIndex;
+            this.iboBufferIndex = iboBufferIndex;
+        }
+
+        static BufferPair allocate(int vboBufferIndex, int iboBufferIndex) {
+            final FloatBuffer heightMapVertexDataBuffer = allocateFloatBuffer(7 * CUBES_PER_BUFFER * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
+            final ShortBuffer heightMapIndexDataBuffer = allocateShortBuffer(18 * CUBES_PER_BUFFER);
+
+            glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
+            glBufferData(GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT, heightMapVertexDataBuffer, GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, heightMapIndexDataBuffer.capacity() * BYTES_PER_SHORT, heightMapIndexDataBuffer, GL_STATIC_DRAW);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+            return new BufferPair(vboBufferIndex, iboBufferIndex);
+        }
+
+        void addData(FloatBuffer vertexBuffer, ShortBuffer indexBuffer) {
+            long start = System.currentTimeMillis();
+
+            int vertexDataOffsetInBytes = 0;
+            int vertexDataSizeInBytes = vertexBuffer.capacity() * BYTES_PER_FLOAT;
+            System.out.println("Adding data (" + vertexDataSizeInBytes + " bytes) with " + vertexDataOffsetInBytes + " bytes offset to the vertex buffer");
+
+            glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
+            glBufferSubData(GL_ARRAY_BUFFER, vertexDataOffsetInBytes, vertexDataSizeInBytes, vertexBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+            int indexDataOffsetInBytes = 0;
+            int indexDataSizeInBytes = indexBuffer.capacity() * BYTES_PER_SHORT;
+            System.out.println("Adding data (" + indexDataSizeInBytes + " bytes) with " + indexDataOffsetInBytes + " bytes offset to the index buffer");
+
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexDataOffsetInBytes, indexDataSizeInBytes, indexBuffer);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+            indexCount += indexBuffer.capacity();
+
+            vertexBuffer.limit(0);
+            indexBuffer.limit(0);
+
+            long elapsedTimeMillis = (System.currentTimeMillis() - start);
+            int totalDataInBytes = vertexBuffer.capacity() * BYTES_PER_FLOAT + indexBuffer.capacity() * BYTES_PER_SHORT;
+            System.out.println("IBO transfer from CPU to GPU for " + indexBuffer.capacity() + " events (" + totalDataInBytes + " bytes) took " + elapsedTimeMillis + " ms.");
+        }
+    }
+
     void render(Program program) {
         setTexture(program);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
+        for (BufferPair buffer : asList(bufferA, bufferB)) {
+            glBindBuffer(GL_ARRAY_BUFFER, buffer.vboBufferIndex);
 
-        int positionAttribute = program.getHandle(POSITION);
-        glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
-        glEnableVertexAttribArray(positionAttribute);
+            int positionAttribute = program.getHandle(POSITION);
+            glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
+            glEnableVertexAttribArray(positionAttribute);
 
-        int textureCoordinateAttribute = program.getHandle(TEXTURE_COORDINATE);
-        glVertexAttribPointer(textureCoordinateAttribute, TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
-        glEnableVertexAttribArray(textureCoordinateAttribute);
+            int textureCoordinateAttribute = program.getHandle(TEXTURE_COORDINATE);
+            glVertexAttribPointer(textureCoordinateAttribute, TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
+            glEnableVertexAttribArray(textureCoordinateAttribute);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
-        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.iboBufferIndex);
+            glDrawElements(GL_TRIANGLES, buffer.indexCount, GL_UNSIGNED_SHORT, 0);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
     }
 
     private void setTexture(Program program) {
@@ -147,7 +208,7 @@ public class IndexBufferObject {
     }
 
     void release() {
-        final int[] buffersToDelete = new int[]{vboBufferIndex, iboBufferIndex};
+        final int[] buffersToDelete = new int[]{bufferA.vboBufferIndex, bufferA.iboBufferIndex, bufferB.vboBufferIndex, bufferB.iboBufferIndex};
         glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
     }
 }
