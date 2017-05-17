@@ -1,5 +1,7 @@
 package com.learnopengles.android.lesson8b;
 
+import com.learnopengles.android.program.Program;
+
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
@@ -11,8 +13,13 @@ import static com.learnopengles.android.common.BufferHelper.allocateShortBuffer;
 import static com.learnopengles.android.lesson8b.IndexBufferObjects.CUBES_PER_BUFFER;
 import static com.learnopengles.android.lesson8b.IndexBufferObjects.POSITION_DATA_SIZE_IN_ELEMENTS;
 import static com.learnopengles.android.lesson8b.IndexBufferObjects.TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
 
 public class IndexBufferObject {
+
+    private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
+
     public final int vboBufferIndex;
     public final int iboBufferIndex;
 
@@ -66,5 +73,23 @@ public class IndexBufferObject {
         long elapsedTimeMillis = (System.currentTimeMillis() - start);
         int totalDataInBytes = vertexBuffer.capacity() * BYTES_PER_FLOAT + indexBuffer.capacity() * BYTES_PER_SHORT;
         System.out.println("IBO transfer from CPU to GPU for " + indexBuffer.capacity() + " events (" + totalDataInBytes + " bytes) took " + elapsedTimeMillis + " ms.");
+    }
+
+    public void render(Program program) {
+        glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
+
+        int positionAttribute = program.getHandle(POSITION);
+        glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
+        glEnableVertexAttribArray(positionAttribute);
+
+        int textureCoordinateAttribute = program.getHandle(TEXTURE_COORDINATE);
+        glVertexAttribPointer(textureCoordinateAttribute, TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
+        glEnableVertexAttribArray(textureCoordinateAttribute);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_SHORT, 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 }

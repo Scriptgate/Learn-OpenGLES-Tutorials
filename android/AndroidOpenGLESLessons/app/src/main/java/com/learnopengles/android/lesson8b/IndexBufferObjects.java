@@ -8,7 +8,6 @@ import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.*;
-import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 import static java.util.Arrays.asList;
 
@@ -21,8 +20,6 @@ public class IndexBufferObjects {
 
     public static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
     public static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
-
-    private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
 
     private IndexBufferObject bufferA;
     private IndexBufferObject bufferB;
@@ -122,24 +119,8 @@ public class IndexBufferObjects {
 
     void render(Program program) {
         setTexture(program);
-
         for (IndexBufferObject buffer : asList(bufferA, bufferB)) {
-
-            glBindBuffer(GL_ARRAY_BUFFER, buffer.vboBufferIndex);
-
-            int positionAttribute = program.getHandle(POSITION);
-            glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
-            glEnableVertexAttribArray(positionAttribute);
-
-            int textureCoordinateAttribute = program.getHandle(TEXTURE_COORDINATE);
-            glVertexAttribPointer(textureCoordinateAttribute, TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
-            glEnableVertexAttribArray(textureCoordinateAttribute);
-
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer.iboBufferIndex);
-            glDrawElements(GL_TRIANGLES, buffer.indexCount, GL_UNSIGNED_SHORT, 0);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+            buffer.render(program);
         }
     }
 
