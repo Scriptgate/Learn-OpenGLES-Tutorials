@@ -30,7 +30,14 @@ public class IndexBufferObject {
         this.iboBufferIndex = iboBufferIndex;
     }
 
-    static IndexBufferObject allocate(int vboBufferIndex, int iboBufferIndex) {
+    static IndexBufferObject allocate() {
+
+        final int[] indices = new int[2];
+        glGenBuffers(indices.length, indices, 0);
+
+        final int vboBufferIndex = indices[0];
+        final int iboBufferIndex = indices[1];
+
         final FloatBuffer heightMapVertexDataBuffer = allocateFloatBuffer(7 * CUBES_PER_BUFFER * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
         final ShortBuffer heightMapIndexDataBuffer = allocateShortBuffer(18 * CUBES_PER_BUFFER);
 

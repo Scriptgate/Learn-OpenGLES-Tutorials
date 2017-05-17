@@ -26,11 +26,8 @@ public class IndexBufferObjects {
     public IndexBufferObjects(int textureHandle) {
         this.textureHandle = textureHandle;
 
-        final int[] bufferIndices = new int[4];
-        glGenBuffers(bufferIndices.length, bufferIndices, 0);
-
-        bufferA = IndexBufferObject.allocate(bufferIndices[0], bufferIndices[1]);
-        bufferB = IndexBufferObject.allocate(bufferIndices[2], bufferIndices[3]);
+        bufferA = IndexBufferObject.allocate();
+        bufferB = IndexBufferObject.allocate();
 
         int indexOffset = 0;
         bufferA.addData(
