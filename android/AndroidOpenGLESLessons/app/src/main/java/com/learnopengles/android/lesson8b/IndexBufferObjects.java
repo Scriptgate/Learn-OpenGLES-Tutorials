@@ -3,11 +3,13 @@ package com.learnopengles.android.lesson8b;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.program.Program;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.lesson8b.IndexDataBufferFactory.createIndexData;
 import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.createVertexData;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
-import static java.util.Arrays.asList;
 
 public class IndexBufferObjects {
 
@@ -16,8 +18,7 @@ public class IndexBufferObjects {
      */
     private static final String TAG = "IndexBufferObjects";
 
-    private IndexBufferObject bufferA;
-    private IndexBufferObject bufferB;
+    private List<IndexBufferObject> buffers;
 
     private int textureHandle;
 
@@ -26,8 +27,9 @@ public class IndexBufferObjects {
     public IndexBufferObjects(int textureHandle) {
         this.textureHandle = textureHandle;
 
-        bufferA = IndexBufferObject.allocate();
-        bufferB = IndexBufferObject.allocate();
+
+        IndexBufferObject bufferA = IndexBufferObject.allocate();
+        IndexBufferObject bufferB = IndexBufferObject.allocate();
 
         int indexOffset = 0;
         bufferA.addData(
@@ -39,11 +41,15 @@ public class IndexBufferObjects {
                 createVertexData(CUBES_PER_BUFFER, new Point3D(0, 0.2f * indexOffset, 0), indexOffset),
                 createIndexData(CUBES_PER_BUFFER)
         );
+
+        buffers = new ArrayList<>();
+        buffers.add(bufferA);
+        buffers.add(bufferB);
     }
 
     void render(Program program) {
         setTexture(program);
-        for (IndexBufferObject buffer : asList(bufferA, bufferB)) {
+        for (IndexBufferObject buffer : buffers) {
             buffer.render(program);
         }
     }
@@ -58,7 +64,12 @@ public class IndexBufferObjects {
     }
 
     void release() {
-        final int[] buffersToDelete = new int[]{bufferA.vboBufferIndex, bufferA.iboBufferIndex, bufferB.vboBufferIndex, bufferB.iboBufferIndex};
+        final int[] buffersToDelete = new int[buffers.size() * 2];
+        int index = 0;
+        for (IndexBufferObject buffer : buffers) {
+            buffersToDelete[index++] = buffer.vboBufferIndex;
+            buffersToDelete[index++] = buffer.iboBufferIndex;
+        }
         glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
     }
 }
