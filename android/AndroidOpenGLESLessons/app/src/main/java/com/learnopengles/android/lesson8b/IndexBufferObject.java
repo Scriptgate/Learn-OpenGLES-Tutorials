@@ -11,8 +11,8 @@ import static com.learnopengles.android.common.BufferHelper.BYTES_PER_SHORT;
 import static com.learnopengles.android.common.BufferHelper.allocateFloatBuffer;
 import static com.learnopengles.android.common.BufferHelper.allocateShortBuffer;
 import static com.learnopengles.android.lesson8b.IndexBufferObjects.CUBES_PER_BUFFER;
-import static com.learnopengles.android.lesson8b.IndexBufferObjects.POSITION_DATA_SIZE_IN_ELEMENTS;
-import static com.learnopengles.android.lesson8b.IndexBufferObjects.TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS;
+import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.POSITION_DATA_SIZE_IN_ELEMENTS;
+import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
 
