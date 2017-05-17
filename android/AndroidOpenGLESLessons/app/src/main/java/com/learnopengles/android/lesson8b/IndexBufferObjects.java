@@ -27,24 +27,18 @@ public class IndexBufferObjects {
     public IndexBufferObjects(int textureHandle) {
         this.textureHandle = textureHandle;
 
-
-        IndexBufferObject bufferA = IndexBufferObject.allocate();
-        IndexBufferObject bufferB = IndexBufferObject.allocate();
+        buffers = new ArrayList<>();
 
         int indexOffset = 0;
-        bufferA.addData(
-                createVertexData(CUBES_PER_BUFFER, new Point3D(), indexOffset),
-                createIndexData(CUBES_PER_BUFFER)
-        );
-        indexOffset += CUBES_PER_BUFFER;
-        bufferB.addData(
-                createVertexData(CUBES_PER_BUFFER, new Point3D(0, 0.2f * indexOffset, 0), indexOffset),
-                createIndexData(CUBES_PER_BUFFER)
-        );
-
-        buffers = new ArrayList<>();
-        buffers.add(bufferA);
-        buffers.add(bufferB);
+        for (int i = 0; i < 2; i++) {
+            IndexBufferObject buffer = IndexBufferObject.allocate();
+            buffer.addData(
+                    createVertexData(CUBES_PER_BUFFER, new Point3D(0, 0.2f * indexOffset, 0), indexOffset),
+                    createIndexData(CUBES_PER_BUFFER)
+            );
+            buffers.add(buffer);
+            indexOffset += CUBES_PER_BUFFER;
+        }
     }
 
     void render(Program program) {
