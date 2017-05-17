@@ -12,12 +12,12 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 import static java.util.Arrays.asList;
 
-public class IndexBufferObject {
+public class IndexBufferObjects {
 
     /**
      * Used for debug logs. max 23 characters
      */
-    private static final String TAG = "IndexBufferObject";
+    private static final String TAG = "IndexBufferObjects";
 
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
     private static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
@@ -31,7 +31,7 @@ public class IndexBufferObject {
 
     private static final int CUBES_PER_BUFFER = 8;
 
-    public IndexBufferObject(int textureHandle) {
+    public IndexBufferObjects(int textureHandle) {
         this.textureHandle = textureHandle;
 
 

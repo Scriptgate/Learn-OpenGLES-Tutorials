@@ -30,7 +30,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	private Program program;
 
-	private IndexBufferObject ibo;
+	private IndexBufferObjects ibo;
 
     private Context activityContext;
 
@@ -49,7 +49,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
     @Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
         int textureHandle = loadTexture(activityContext, R.drawable.colormap);
-		ibo = new IndexBufferObject(textureHandle);
+		ibo = new IndexBufferObjects(textureHandle);
 
 		// Set the background clear color to black.
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
