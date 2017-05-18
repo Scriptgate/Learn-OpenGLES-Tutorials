@@ -10,8 +10,8 @@ import static java.util.Arrays.asList;
 
 public class VertexDataBufferFactory {
 
-    public static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
-    public static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
+    static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
+    static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
 
     private static final int VERTICES_PER_CUBE = 7;
 

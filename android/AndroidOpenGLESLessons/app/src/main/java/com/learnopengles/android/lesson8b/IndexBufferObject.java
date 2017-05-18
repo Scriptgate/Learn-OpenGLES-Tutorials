@@ -19,10 +19,10 @@ public class IndexBufferObject {
 
     private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
 
-    public final int vboBufferIndex;
-    public final int iboBufferIndex;
+    final int vboBufferIndex;
+    final int iboBufferIndex;
 
-    public int indexCount = 0;
+    private int indexCount = 0;
 
     IndexBufferObject(int vboBufferIndex, int iboBufferIndex) {
         this.vboBufferIndex = vboBufferIndex;
