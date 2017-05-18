@@ -22,22 +22,24 @@ public class IndexBufferObjects {
 
     private int textureHandle;
 
-    public static final int CUBES_PER_BUFFER = 8;
+    private static final int NUMBER_OF_CUBES = 16;
+    private static final int NUMBER_OF_BUFFERS = 8;
 
     public IndexBufferObjects(int textureHandle) {
         this.textureHandle = textureHandle;
 
         buffers = new ArrayList<>();
+        int cubesPerBuffer = NUMBER_OF_CUBES / NUMBER_OF_BUFFERS;
 
         int indexOffset = 0;
-        for (int i = 0; i < 2; i++) {
-            IndexBufferObject buffer = IndexBufferObject.allocate();
+        for (int i = 0; i < NUMBER_OF_BUFFERS; i++) {
+            IndexBufferObject buffer = IndexBufferObject.allocate(cubesPerBuffer);
             buffer.addData(
-                    createVertexData(CUBES_PER_BUFFER, new Point3D(0, 0.2f * indexOffset, 0), indexOffset),
-                    createIndexData(CUBES_PER_BUFFER)
+                    createVertexData(cubesPerBuffer, new Point3D(0, 0.3f * indexOffset, 0), indexOffset),
+                    createIndexData(cubesPerBuffer)
             );
             buffers.add(buffer);
-            indexOffset += CUBES_PER_BUFFER;
+            indexOffset += cubesPerBuffer;
         }
     }
 

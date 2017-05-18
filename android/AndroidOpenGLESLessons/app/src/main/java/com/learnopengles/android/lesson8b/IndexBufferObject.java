@@ -10,7 +10,6 @@ import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_SHORT;
 import static com.learnopengles.android.common.BufferHelper.allocateFloatBuffer;
 import static com.learnopengles.android.common.BufferHelper.allocateShortBuffer;
-import static com.learnopengles.android.lesson8b.IndexBufferObjects.CUBES_PER_BUFFER;
 import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.POSITION_DATA_SIZE_IN_ELEMENTS;
 import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
@@ -30,7 +29,7 @@ public class IndexBufferObject {
         this.iboBufferIndex = iboBufferIndex;
     }
 
-    static IndexBufferObject allocate() {
+    static IndexBufferObject allocate(int numberOfCubes) {
 
         final int[] indices = new int[2];
         glGenBuffers(indices.length, indices, 0);
@@ -38,8 +37,8 @@ public class IndexBufferObject {
         final int vboBufferIndex = indices[0];
         final int iboBufferIndex = indices[1];
 
-        final FloatBuffer heightMapVertexDataBuffer = allocateFloatBuffer(7 * CUBES_PER_BUFFER * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
-        final ShortBuffer heightMapIndexDataBuffer = allocateShortBuffer(18 * CUBES_PER_BUFFER);
+        final FloatBuffer heightMapVertexDataBuffer = allocateFloatBuffer(7 * numberOfCubes * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
+        final ShortBuffer heightMapIndexDataBuffer = allocateShortBuffer(18 * numberOfCubes);
 
         glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
         glBufferData(GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT, heightMapVertexDataBuffer, GL_STATIC_DRAW);

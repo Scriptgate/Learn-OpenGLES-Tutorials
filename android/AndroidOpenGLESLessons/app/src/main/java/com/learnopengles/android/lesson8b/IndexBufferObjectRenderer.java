@@ -58,6 +58,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
         glDisable(GL_BLEND);
 
 		viewMatrix.onSurfaceCreated();
+        viewMatrix.translate(new Point3D(0, -2, 0));
 
         program = Program.createProgram("per_pixel_vertex_shader_texture", "per_pixel_fragment_shader_texture", asList(POSITION, TEXTURE_COORDINATE));
 	}
