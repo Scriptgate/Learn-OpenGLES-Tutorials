@@ -3,14 +3,14 @@ package com.learnopengles.android.lesson8b;
 
 import java.nio.ShortBuffer;
 
-import static com.learnopengles.android.common.BufferHelper.allocateShortBuffer;
+import static com.learnopengles.android.lesson8b.IndexBufferObject.allocateIndexBuffer;
 import static java.util.Arrays.asList;
 
 public class IndexDataBufferFactory {
 
     static ShortBuffer createIndexData(int numberOfCubes) {
 
-        ShortBuffer indexBuffer = allocateShortBuffer(18 * numberOfCubes);
+        ShortBuffer indexBuffer = allocateIndexBuffer(numberOfCubes);
 
         short indexOffset = 0;
 

@@ -10,12 +10,16 @@ import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_SHORT;
 import static com.learnopengles.android.common.BufferHelper.allocateFloatBuffer;
 import static com.learnopengles.android.common.BufferHelper.allocateShortBuffer;
-import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.POSITION_DATA_SIZE_IN_ELEMENTS;
-import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
 
 public class IndexBufferObject {
+
+    private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
+    private static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
+
+    private static final int INDICES_PER_CUBE = 18;
+    private static final int VERTICES_PER_CUBE = 7;
 
     private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
 
@@ -37,14 +41,14 @@ public class IndexBufferObject {
         final int vboBufferIndex = indices[0];
         final int iboBufferIndex = indices[1];
 
-        final FloatBuffer heightMapVertexDataBuffer = allocateFloatBuffer(7 * numberOfCubes * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
-        final ShortBuffer heightMapIndexDataBuffer = allocateShortBuffer(18 * numberOfCubes);
+        final FloatBuffer vertexDataBuffer = allocateVertexBuffer(numberOfCubes);
+        final ShortBuffer indexDataBuffer = allocateIndexBuffer(numberOfCubes);
 
         glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
-        glBufferData(GL_ARRAY_BUFFER, heightMapVertexDataBuffer.capacity() * BYTES_PER_FLOAT, heightMapVertexDataBuffer, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer.capacity() * BYTES_PER_FLOAT, vertexDataBuffer, GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, heightMapIndexDataBuffer.capacity() * BYTES_PER_SHORT, heightMapIndexDataBuffer, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer.capacity() * BYTES_PER_SHORT, indexDataBuffer, GL_STATIC_DRAW);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -97,5 +101,13 @@ public class IndexBufferObject {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    static FloatBuffer allocateVertexBuffer(int numberOfCubes) {
+        return allocateFloatBuffer(VERTICES_PER_CUBE * numberOfCubes * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
+    }
+
+    static ShortBuffer allocateIndexBuffer(int numberOfCubes) {
+        return allocateShortBuffer(INDICES_PER_CUBE * numberOfCubes);
     }
 }

@@ -1,26 +1,20 @@
 package com.learnopengles.android.lesson8b;
 
-
 import com.learnopengles.android.common.Point3D;
 
 import java.nio.FloatBuffer;
 
-import static com.learnopengles.android.common.BufferHelper.allocateFloatBuffer;
+import static com.learnopengles.android.lesson8b.IndexBufferObject.allocateVertexBuffer;
 import static java.util.Arrays.asList;
 
 public class VertexDataBufferFactory {
-
-    static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
-    static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
-
-    private static final int VERTICES_PER_CUBE = 7;
 
     static FloatBuffer createVertexData(int numberOfCubes, Point3D offset, int indexOffset) {
         float width = 1;
         float height = 0.2f;
         float depth = 1;
 
-        FloatBuffer vertexBuffer = allocateFloatBuffer(VERTICES_PER_CUBE * numberOfCubes * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
+        FloatBuffer vertexBuffer = allocateVertexBuffer(numberOfCubes);
 
         Point3D position = new Point3D(offset.x, offset.y, offset.z);
 
