@@ -31,4 +31,15 @@ public class BufferHelper {
         return buffer;
     }
 
+    public static void putIn(FloatBuffer buffer, Point2D point) {
+        buffer.put(point.x);
+        buffer.put(point.y);
+    }
+
+    public static void putIn(FloatBuffer buffer, Point3D point) {
+        buffer.put(point.x);
+        buffer.put(point.y);
+        buffer.put(point.z);
+    }
+
 }

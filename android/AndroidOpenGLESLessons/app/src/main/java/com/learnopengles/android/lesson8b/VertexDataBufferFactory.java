@@ -1,44 +1,72 @@
 package com.learnopengles.android.lesson8b;
 
+import com.learnopengles.android.common.Point2D;
 import com.learnopengles.android.common.Point3D;
 
 import java.nio.FloatBuffer;
+import java.util.List;
 
-import static com.learnopengles.android.lesson8b.IndexBufferObject.allocateVertexBuffer;
+import static com.learnopengles.android.common.BufferHelper.putIn;
+import static com.learnopengles.android.lesson8b.IndexBufferObject.allocatePositionDataBuffer;
+import static com.learnopengles.android.lesson8b.IndexBufferObject.allocateTextureDataBuffer;
 import static java.util.Arrays.asList;
 
 public class VertexDataBufferFactory {
 
-    static FloatBuffer createVertexData(int numberOfCubes, Point3D offset, int indexOffset) {
-        float width = 1;
-        float height = 0.2f;
-        float depth = 1;
-
-        FloatBuffer vertexBuffer = allocateVertexBuffer(numberOfCubes);
+    static FloatBuffer createPositionData(int numberOfCubes, Point3D offset) {
+        FloatBuffer positionDataBuffer = allocatePositionDataBuffer(numberOfCubes);
 
         Point3D position = new Point3D(offset.x, offset.y, offset.z);
 
         for (int i = 0; i < numberOfCubes; i++) {
-            TextureTriangle texture = new TextureTriangle(i + indexOffset);
-
-            //@formatter:off
-            final Vertex frontA = new Vertex(new Point3D(position.x,         position.y + height, position.z + depth), texture.p1);
-            final Vertex frontB = new Vertex(new Point3D(position.x + width, position.y + height, position.z + depth), texture.p2);
-            final Vertex frontC = new Vertex(new Point3D(position.x,         position.y,          position.z + depth), texture.p3);
-            final Vertex frontD = new Vertex(new Point3D(position.x + width, position.y,          position.z + depth), texture.p1);
-            final Vertex backA  = new Vertex(new Point3D(position.x,         position.y + height, position.z), texture.p3);
-            final Vertex backB  = new Vertex(new Point3D(position.x + width, position.y + height, position.z), texture.p1);
-            final Vertex backD  = new Vertex(new Point3D(position.x + width, position.y,          position.z), texture.p3);
-            //@formatter:on
-
-            for (Vertex point : asList(frontA, frontB, frontC, frontD, backA, backB, backD)) {
-                point.putIn(vertexBuffer);
+            for (Point3D point : buildVertices(position)) {
+                putIn(positionDataBuffer, point);
             }
-
             position.y += 0.2f;
         }
-        vertexBuffer.position(0);
-        return vertexBuffer;
+        positionDataBuffer.position(0);
+        return positionDataBuffer;
     }
 
+    private static List<Point3D> buildVertices(Point3D position) {
+        float width = 1;
+        float height = 0.2f;
+        float depth = 1;
+        //@formatter:off
+        final Point3D frontA = new Point3D(position.x,         position.y + height, position.z + depth);
+        final Point3D frontB = new Point3D(position.x + width, position.y + height, position.z + depth);
+        final Point3D frontC = new Point3D(position.x,         position.y,          position.z + depth);
+        final Point3D frontD = new Point3D(position.x + width, position.y,          position.z + depth);
+        final Point3D backA  = new Point3D(position.x,         position.y + height, position.z);
+        final Point3D backB  = new Point3D(position.x + width, position.y + height, position.z);
+        final Point3D backD  = new Point3D(position.x + width, position.y,          position.z);
+        //@formatter:on
+
+        return asList(frontA, frontB, frontC, frontD, backA, backB, backD);
+    }
+
+    static FloatBuffer createTextureData(int numberOfCubes, int indexOffset) {
+        FloatBuffer textureDataBuffer = allocateTextureDataBuffer(numberOfCubes);
+
+        for (int i = 0; i < numberOfCubes; i++) {
+            TextureTriangle texture = new TextureTriangle(i + indexOffset);
+            for (Point2D point : buildVertices(texture)) {
+                putIn(textureDataBuffer, point);
+            }
+        }
+        textureDataBuffer.position(0);
+        return textureDataBuffer;
+    }
+
+    private static List<Point2D> buildVertices(TextureTriangle texture) {
+        final Point2D frontA = texture.p1;
+        final Point2D frontB = texture.p2;
+        final Point2D frontC = texture.p3;
+        final Point2D frontD = texture.p1;
+        final Point2D backA = texture.p3;
+        final Point2D backB = texture.p1;
+        final Point2D backD = texture.p3;
+
+        return asList(frontA, frontB, frontC, frontD, backA, backB, backD);
+    }
 }

@@ -8,11 +8,11 @@ import static java.util.Arrays.asList;
 
 public class IndexDataBufferFactory {
 
-    static ShortBuffer createIndexData(int numberOfCubes) {
+    static ShortBuffer createIndexData(int numberOfCubes, short offset) {
 
         ShortBuffer indexBuffer = allocateIndexBuffer(numberOfCubes);
 
-        short indexOffset = 0;
+        short indexOffset = offset;
 
         for (int i = 0; i < numberOfCubes; i++) {
             final short frontA = indexOffset++;

@@ -21,16 +21,17 @@ public class IndexBufferObject {
     private static final int INDICES_PER_CUBE = 18;
     private static final int VERTICES_PER_CUBE = 7;
 
-    private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
-
     final int vboBufferIndex;
     final int iboBufferIndex;
 
     private int indexCount = 0;
 
-    IndexBufferObject(int vboBufferIndex, int iboBufferIndex) {
+    private final int capacity;
+
+    IndexBufferObject(int vboBufferIndex, int iboBufferIndex, int capacity) {
         this.vboBufferIndex = vboBufferIndex;
         this.iboBufferIndex = iboBufferIndex;
+        this.capacity = capacity;
     }
 
     static IndexBufferObject allocate(int numberOfCubes) {
@@ -41,59 +42,79 @@ public class IndexBufferObject {
         final int vboBufferIndex = indices[0];
         final int iboBufferIndex = indices[1];
 
-        final FloatBuffer vertexDataBuffer = allocateVertexBuffer(numberOfCubes);
-        final ShortBuffer indexDataBuffer = allocateIndexBuffer(numberOfCubes);
-
         glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
-        glBufferData(GL_ARRAY_BUFFER, vertexDataBuffer.capacity() * BYTES_PER_FLOAT, vertexDataBuffer, GL_STATIC_DRAW);
+        int vertexDataSizeInBytes = getVertexBufferSize(numberOfCubes) * BYTES_PER_FLOAT;
+        glBufferData(GL_ARRAY_BUFFER, vertexDataSizeInBytes, null, GL_DYNAMIC_DRAW);
+        logData("Buffer Data", "vertex buffer", vertexDataSizeInBytes, 0);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataBuffer.capacity() * BYTES_PER_SHORT, indexDataBuffer, GL_STATIC_DRAW);
+        int indexDataSizeInBytes = getIndexBufferSize(numberOfCubes) * BYTES_PER_SHORT;
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataSizeInBytes, null, GL_DYNAMIC_DRAW);
+        logData("Buffer Data", "index buffer", indexDataSizeInBytes, 0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-        return new IndexBufferObject(vboBufferIndex, iboBufferIndex);
+        return new IndexBufferObject(vboBufferIndex, iboBufferIndex, numberOfCubes);
     }
 
-    void addData(FloatBuffer vertexBuffer, ShortBuffer indexBuffer) {
+    void addData(FloatBuffer positionDataBuffer, FloatBuffer textureDataBuffer, ShortBuffer indexBuffer) {
         long start = System.currentTimeMillis();
 
-        int vertexDataOffsetInBytes = 0;
-        int vertexDataSizeInBytes = vertexBuffer.capacity() * BYTES_PER_FLOAT;
-        System.out.println("Adding data (" + vertexDataSizeInBytes + " bytes) with " + vertexDataOffsetInBytes + " bytes offset to the vertex buffer");
-
         glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
-        glBufferSubData(GL_ARRAY_BUFFER, vertexDataOffsetInBytes, vertexDataSizeInBytes, vertexBuffer);
+        {
+            int positionDataSizeInBytes = positionDataBuffer.capacity() * BYTES_PER_FLOAT;
+            int positionDataOffsetInBytes = (indexCount / INDICES_PER_CUBE) * VERTICES_PER_CUBE * POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT;
+            logData("Buffer Sub Data", "position data buffer", positionDataSizeInBytes, positionDataOffsetInBytes);
+            glBufferSubData(GL_ARRAY_BUFFER, positionDataOffsetInBytes, positionDataSizeInBytes, positionDataBuffer);
+
+            int textureDataSizeInBytes = textureDataBuffer.capacity() * BYTES_PER_FLOAT;
+            int totalPositionDataSizeInBytes = (capacity * VERTICES_PER_CUBE * POSITION_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
+            int textureDataOffsetInBytes = totalPositionDataSizeInBytes + (indexCount / INDICES_PER_CUBE) * VERTICES_PER_CUBE * TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT;
+            logData("Buffer Sub Data", "texture data buffer", textureDataSizeInBytes, textureDataOffsetInBytes);
+            glBufferSubData(GL_ARRAY_BUFFER, textureDataOffsetInBytes, textureDataSizeInBytes, textureDataBuffer);
+        }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        int indexDataOffsetInBytes = 0;
-        int indexDataSizeInBytes = indexBuffer.capacity() * BYTES_PER_SHORT;
-        System.out.println("Adding data (" + indexDataSizeInBytes + " bytes) with " + indexDataOffsetInBytes + " bytes offset to the index buffer");
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexDataOffsetInBytes, indexDataSizeInBytes, indexBuffer);
+        {
+            int indexDataOffsetInBytes = indexCount * BYTES_PER_SHORT;
+            int indexDataSizeInBytes = indexBuffer.capacity() * BYTES_PER_SHORT;
+            logData("Buffer Sub Data", "index buffer", indexDataSizeInBytes, indexDataOffsetInBytes);
+
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexDataOffsetInBytes, indexDataSizeInBytes, indexBuffer);
+        }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         indexCount += indexBuffer.capacity();
 
-        vertexBuffer.limit(0);
+        positionDataBuffer.limit(0);
+        textureDataBuffer.limit(0);
         indexBuffer.limit(0);
 
         long elapsedTimeMillis = (System.currentTimeMillis() - start);
-        int totalDataInBytes = vertexBuffer.capacity() * BYTES_PER_FLOAT + indexBuffer.capacity() * BYTES_PER_SHORT;
+        int totalDataInBytes = (positionDataBuffer.capacity() + textureDataBuffer.capacity()) * BYTES_PER_FLOAT + indexBuffer.capacity() * BYTES_PER_SHORT;
         System.out.println("IBO transfer from CPU to GPU for " + indexBuffer.capacity() + " events (" + totalDataInBytes + " bytes) took " + elapsedTimeMillis + " ms.");
+        System.out.println("IBO status: ");
+        System.out.println("\t- index count: " + indexCount);
+    }
+
+    private static void logData(String method, String buffer, int sizeInBytes, int offsetInBytes) {
+        System.out.println(method + ": " + buffer);
+        System.out.println("\t- bytes: " + sizeInBytes);
+        System.out.println("\t- offset: " + offsetInBytes);
     }
 
     public void render(Program program) {
         glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
 
         int positionAttribute = program.getHandle(POSITION);
-        glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
+        glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(positionAttribute);
 
         int textureCoordinateAttribute = program.getHandle(TEXTURE_COORDINATE);
-        glVertexAttribPointer(textureCoordinateAttribute, TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
+        glVertexAttribPointer(textureCoordinateAttribute, TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, 0, (capacity * VERTICES_PER_CUBE) * POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
         glEnableVertexAttribArray(textureCoordinateAttribute);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
@@ -103,11 +124,23 @@ public class IndexBufferObject {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    static FloatBuffer allocateVertexBuffer(int numberOfCubes) {
-        return allocateFloatBuffer(VERTICES_PER_CUBE * numberOfCubes * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS));
+    static FloatBuffer allocatePositionDataBuffer(int numberOfCubes) {
+        return allocateFloatBuffer(VERTICES_PER_CUBE * numberOfCubes * POSITION_DATA_SIZE_IN_ELEMENTS);
+    }
+
+    static FloatBuffer allocateTextureDataBuffer(int numberOfCubes) {
+        return allocateFloatBuffer(VERTICES_PER_CUBE * numberOfCubes * TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS);
+    }
+
+    private static int getVertexBufferSize(int numberOfCubes) {
+        return VERTICES_PER_CUBE * numberOfCubes * (POSITION_DATA_SIZE_IN_ELEMENTS + TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS);
     }
 
     static ShortBuffer allocateIndexBuffer(int numberOfCubes) {
         return allocateShortBuffer(INDICES_PER_CUBE * numberOfCubes);
+    }
+
+    private static int getIndexBufferSize(int numberOfCubes) {
+        return INDICES_PER_CUBE * numberOfCubes;
     }
 }
