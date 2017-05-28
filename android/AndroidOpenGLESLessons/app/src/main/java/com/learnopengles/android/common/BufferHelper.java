@@ -3,6 +3,8 @@ package com.learnopengles.android.common;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
+import java8.util.function.Consumer;
+
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -29,6 +31,24 @@ public class BufferHelper {
         ShortBuffer buffer = allocateShortBuffer(data.length);
         buffer.put(data).position(0);
         return buffer;
+    }
+
+    public static Consumer<Point2D> putPoint2DIn(final FloatBuffer buffer) {
+        return new Consumer<Point2D>() {
+            @Override
+            public void accept(Point2D point) {
+                putIn(buffer, point);
+            }
+        };
+    }
+
+    public static Consumer<Point3D> putPoint3DIn(final FloatBuffer buffer) {
+        return new Consumer<Point3D>() {
+            @Override
+            public void accept(Point3D point) {
+                putIn(buffer, point);
+            }
+        };
     }
 
     public static void putIn(FloatBuffer buffer, Point2D point) {

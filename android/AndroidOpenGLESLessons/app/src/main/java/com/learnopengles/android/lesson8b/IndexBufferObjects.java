@@ -1,6 +1,5 @@
 package com.learnopengles.android.lesson8b;
 
-import com.learnopengles.android.BuildConfig;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.program.Program;
 
@@ -8,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.lesson8b.IndexDataBufferFactory.createIndexData;
-import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.createPositionData;
-import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.createTextureData;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 
 public class IndexBufferObjects {
@@ -25,37 +21,48 @@ public class IndexBufferObjects {
 
     private int textureHandle;
 
-    private static final int NUMBER_OF_CUBES =16;
+    private static final int NUMBER_OF_CUBES = 16;
     private static final int NUMBER_OF_BUFFERS = 8;
+    private static final int CUBES_PER_BUFFER = NUMBER_OF_CUBES / NUMBER_OF_BUFFERS;
 
     public IndexBufferObjects(int textureHandle) {
         this.textureHandle = textureHandle;
 
         buffers = new ArrayList<>();
-        int cubesPerBuffer = NUMBER_OF_CUBES / NUMBER_OF_BUFFERS;
-        int halfOfTheCubes = cubesPerBuffer / 2;
+
+        int halfOfTheCubes = CUBES_PER_BUFFER / 2;
+
+        List<Cube> cubes = buildCubes();
+
+        for (int i = 0; i < NUMBER_OF_BUFFERS; i++) {
+            IndexBufferObject buffer = IndexBufferObject.allocate(CUBES_PER_BUFFER);
+
+            List<Cube> firstHalf = cubes.subList(CUBES_PER_BUFFER * i, CUBES_PER_BUFFER * i + halfOfTheCubes);
+            List<Cube> secondHalf = cubes.subList(CUBES_PER_BUFFER * i + halfOfTheCubes, CUBES_PER_BUFFER * (i + 1));
+            buffer.addData(new IndexBufferObjectCreator(firstHalf));
+            buffer.addData(new IndexBufferObjectCreator(secondHalf));
+            buffers.add(buffer);
+        }
+    }
+
+    private List<Cube> buildCubes() {
+
+
+        List<Cube> cubes = new ArrayList<>();
 
         Point3D offset = new Point3D();
         int indexOffset = 0;
-        for (int i = 0; i < NUMBER_OF_BUFFERS; i++) {
-            IndexBufferObject buffer = IndexBufferObject.allocate(cubesPerBuffer);
-            buffer.addData(
-                    createPositionData(halfOfTheCubes, offset),
-                    createTextureData(halfOfTheCubes, indexOffset),
-                    createIndexData(halfOfTheCubes, (short) 0)
-            );
-            offset.y += halfOfTheCubes * 0.2f;
-            indexOffset += halfOfTheCubes;
-            short indicesOffset = (short) (7*halfOfTheCubes);
-            buffer.addData(
-                    createPositionData(halfOfTheCubes, offset),
-                    createTextureData(halfOfTheCubes, indexOffset),
-                    createIndexData(halfOfTheCubes, indicesOffset)
-            );
-            offset.y += halfOfTheCubes * 0.2f + OFFSET_BETWEEN_BUFFERS;
-            indexOffset += halfOfTheCubes;
-            buffers.add(buffer);
+
+        for (int i = 0; i < NUMBER_OF_CUBES; i++) {
+
+            if (i % CUBES_PER_BUFFER == 0) {
+                offset.y += OFFSET_BETWEEN_BUFFERS;
+            }
+            cubes.add(new Cube(new Point3D(offset.x, offset.y, offset.z), indexOffset));
+            offset.y += 0.2f;
+            indexOffset++;
         }
+        return cubes;
     }
 
     void render(Program program) {

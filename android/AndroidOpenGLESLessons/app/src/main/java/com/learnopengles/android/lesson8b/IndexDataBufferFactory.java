@@ -2,26 +2,32 @@ package com.learnopengles.android.lesson8b;
 
 
 import java.nio.ShortBuffer;
+import java.util.List;
 
 import static com.learnopengles.android.lesson8b.IndexBufferObject.allocateIndexBuffer;
 import static java.util.Arrays.asList;
 
 public class IndexDataBufferFactory {
 
-    static ShortBuffer createIndexData(int numberOfCubes, short offset) {
+    static ShortBuffer createIndexData(List<Cube> cubes, short indexOffset) {
+        int numberOfCubes = cubes.size();
+        return createIndexData(numberOfCubes, indexOffset);
+    }
+
+    static ShortBuffer createIndexData(int numberOfCubes, short indexOffset) {
 
         ShortBuffer indexBuffer = allocateIndexBuffer(numberOfCubes);
 
-        short indexOffset = offset;
+        short index = indexOffset;
 
         for (int i = 0; i < numberOfCubes; i++) {
-            final short frontA = indexOffset++;
-            final short frontB = indexOffset++;
-            final short frontC = indexOffset++;
-            final short frontD = indexOffset++;
-            final short backA = indexOffset++;
-            final short backB = indexOffset++;
-            final short backD = indexOffset++;
+            final short frontA = index++;
+            final short frontB = index++;
+            final short frontC = index++;
+            final short frontD = index++;
+            final short backA = index++;
+            final short backB = index++;
+            final short backD = index++;
 
             short[] frontFace = new short[]{frontA, frontB, frontC, frontD};
             short[] rightFace = new short[]{frontD, frontB, backD, backB};

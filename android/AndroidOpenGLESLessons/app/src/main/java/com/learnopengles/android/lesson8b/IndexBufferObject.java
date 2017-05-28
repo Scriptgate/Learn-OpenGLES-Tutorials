@@ -26,77 +26,77 @@ public class IndexBufferObject {
 
     private int indexCount = 0;
 
+    private int count = 0;
     private final int capacity;
 
-    IndexBufferObject(int vboBufferIndex, int iboBufferIndex, int capacity) {
+    private IndexBufferObject(int vboBufferIndex, int iboBufferIndex, int capacity) {
         this.vboBufferIndex = vboBufferIndex;
         this.iboBufferIndex = iboBufferIndex;
         this.capacity = capacity;
+
+        glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
+        int vertexDataSizeInBytes = getVertexBufferSize(capacity) * BYTES_PER_FLOAT;
+        glBufferData(GL_ARRAY_BUFFER, vertexDataSizeInBytes, null, GL_DYNAMIC_DRAW);
+        logData("Buffer Data", "vertex buffer", vertexDataSizeInBytes, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
+        int indexDataSizeInBytes = getIndexBufferSize(capacity) * BYTES_PER_SHORT;
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataSizeInBytes, null, GL_DYNAMIC_DRAW);
+        logData("Buffer Data", "index buffer", indexDataSizeInBytes, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
     static IndexBufferObject allocate(int numberOfCubes) {
-
         final int[] indices = new int[2];
         glGenBuffers(indices.length, indices, 0);
 
         final int vboBufferIndex = indices[0];
         final int iboBufferIndex = indices[1];
 
-        glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
-        int vertexDataSizeInBytes = getVertexBufferSize(numberOfCubes) * BYTES_PER_FLOAT;
-        glBufferData(GL_ARRAY_BUFFER, vertexDataSizeInBytes, null, GL_DYNAMIC_DRAW);
-        logData("Buffer Data", "vertex buffer", vertexDataSizeInBytes, 0);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
-        int indexDataSizeInBytes = getIndexBufferSize(numberOfCubes) * BYTES_PER_SHORT;
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataSizeInBytes, null, GL_DYNAMIC_DRAW);
-        logData("Buffer Data", "index buffer", indexDataSizeInBytes, 0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
         return new IndexBufferObject(vboBufferIndex, iboBufferIndex, numberOfCubes);
     }
 
-    void addData(FloatBuffer positionDataBuffer, FloatBuffer textureDataBuffer, ShortBuffer indexBuffer) {
+    void addData(IndexBufferObjectCreator creator) {
         long start = System.currentTimeMillis();
+
+        IndexBufferObjectData data = creator.createData((short) (count  * VERTICES_PER_CUBE));
 
         glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
         {
-            int positionDataSizeInBytes = positionDataBuffer.capacity() * BYTES_PER_FLOAT;
-            int positionDataOffsetInBytes = (indexCount / INDICES_PER_CUBE) * VERTICES_PER_CUBE * POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT;
+            int positionDataSizeInBytes = data.positionDataBuffer.capacity() * BYTES_PER_FLOAT;
+            int positionDataOffsetInBytes = count * VERTICES_PER_CUBE * POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT;
             logData("Buffer Sub Data", "position data buffer", positionDataSizeInBytes, positionDataOffsetInBytes);
-            glBufferSubData(GL_ARRAY_BUFFER, positionDataOffsetInBytes, positionDataSizeInBytes, positionDataBuffer);
+            glBufferSubData(GL_ARRAY_BUFFER, positionDataOffsetInBytes, positionDataSizeInBytes, data.positionDataBuffer);
 
-            int textureDataSizeInBytes = textureDataBuffer.capacity() * BYTES_PER_FLOAT;
+            int textureDataSizeInBytes = data.textureDataBuffer.capacity() * BYTES_PER_FLOAT;
             int totalPositionDataSizeInBytes = (capacity * VERTICES_PER_CUBE * POSITION_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
-            int textureDataOffsetInBytes = totalPositionDataSizeInBytes + (indexCount / INDICES_PER_CUBE) * VERTICES_PER_CUBE * TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT;
+            int textureDataOffsetInBytes = totalPositionDataSizeInBytes + count * VERTICES_PER_CUBE * TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT;
             logData("Buffer Sub Data", "texture data buffer", textureDataSizeInBytes, textureDataOffsetInBytes);
-            glBufferSubData(GL_ARRAY_BUFFER, textureDataOffsetInBytes, textureDataSizeInBytes, textureDataBuffer);
+            glBufferSubData(GL_ARRAY_BUFFER, textureDataOffsetInBytes, textureDataSizeInBytes, data.textureDataBuffer);
         }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboBufferIndex);
         {
             int indexDataOffsetInBytes = indexCount * BYTES_PER_SHORT;
-            int indexDataSizeInBytes = indexBuffer.capacity() * BYTES_PER_SHORT;
+            int indexDataSizeInBytes = data.indexBuffer.capacity() * BYTES_PER_SHORT;
             logData("Buffer Sub Data", "index buffer", indexDataSizeInBytes, indexDataOffsetInBytes);
 
-            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexDataOffsetInBytes, indexDataSizeInBytes, indexBuffer);
+            glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexDataOffsetInBytes, indexDataSizeInBytes, data.indexBuffer);
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-        indexCount += indexBuffer.capacity();
+        indexCount += data.indexBuffer.capacity();
+        count += data.numberOfCubes;
 
-        positionDataBuffer.limit(0);
-        textureDataBuffer.limit(0);
-        indexBuffer.limit(0);
+        data.release();
 
         long elapsedTimeMillis = (System.currentTimeMillis() - start);
-        int totalDataInBytes = (positionDataBuffer.capacity() + textureDataBuffer.capacity()) * BYTES_PER_FLOAT + indexBuffer.capacity() * BYTES_PER_SHORT;
-        System.out.println("IBO transfer from CPU to GPU for " + indexBuffer.capacity() + " events (" + totalDataInBytes + " bytes) took " + elapsedTimeMillis + " ms.");
+        int totalDataInBytes = (data.positionDataBuffer.capacity() + data.textureDataBuffer.capacity()) * BYTES_PER_FLOAT + data.indexBuffer.capacity() * BYTES_PER_SHORT;
+        System.out.println("IBO transfer from CPU to GPU for " + data.indexBuffer.capacity() + " events (" + totalDataInBytes + " bytes) took " + elapsedTimeMillis + " ms.");
         System.out.println("IBO status: ");
+        System.out.println("\t- capacity: " + count + "/" + capacity);
         System.out.println("\t- index count: " + indexCount);
     }
 
