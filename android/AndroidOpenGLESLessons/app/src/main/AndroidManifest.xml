@@ -25,43 +25,43 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.LessonOneActivity"
+            android:name=".lesson1.LessonOneActivity"
             android:label="@string/lesson_one" />
         <activity
-            android:name=".activity.LessonTwoActivity"
+            android:name=".lesson2.LessonTwoActivity"
             android:label="@string/lesson_two" />
         <activity
-            android:name=".activity.LessonThreeActivity"
+            android:name=".lesson3.LessonThreeActivity"
             android:label="@string/lesson_three" />
         <activity
-            android:name=".activity.LessonFourActivity"
+            android:name=".lesson4.LessonFourActivity"
             android:label="@string/lesson_four" />
         <activity
-            android:name=".activity.LessonFiveActivity"
+            android:name=".lesson5.LessonFiveActivity"
             android:label="@string/lesson_five" />
         <activity
-            android:name=".activity.LessonSixActivity"
+            android:name=".lesson6.LessonSixActivity"
             android:label="@string/lesson_six" />
         <activity
-            android:name=".activity.LessonSevenActivity"
+            android:name=".lesson7.LessonSevenActivity"
             android:label="@string/lesson_seven" />
         <activity
-            android:name=".activity.LessonSevenBActivity"
+            android:name=".lesson7b.LessonSevenBActivity"
             android:label="@string/lesson_seven_b" />
         <activity
-            android:name=".activity.LessonEightActivity"
+            android:name=".lesson8.LessonEightActivity"
             android:label="@string/lesson_eight" />
         <activity
-            android:name=".activity.LessonEightBActivity"
+            android:name=".lesson8b.LessonEightBActivity"
             android:label="@string/lesson_eight_b" />
         <activity
-            android:name=".activity.LessonNineActivity"
+            android:name=".lesson9.LessonNineActivity"
             android:label="@string/lesson_nine" />
         <activity
-            android:name=".activity.LessonTenActivity"
+            android:name=".lesson10.LessonTenActivity"
             android:label="@string/lesson_ten" />
         <activity
-            android:name=".activity.LessonElevenActivity"
+            android:name=".lesson11.LessonElevenActivity"
             android:label="@string/lesson_eleven" />
 
         <service

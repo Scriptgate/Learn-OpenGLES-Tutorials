@@ -28,7 +28,7 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static java.util.Arrays.asList;
 
-public class LineRenderer implements GLSurfaceView.Renderer {
+class LineRenderer implements GLSurfaceView.Renderer {
 
     private ModelMatrix modelMatrix;
     private ViewMatrix viewMatrix;
@@ -46,7 +46,7 @@ public class LineRenderer implements GLSurfaceView.Renderer {
     private List<Line> lines = new ArrayList<>();
     private List<Circle> circles = new ArrayList<>();
 
-    public LineRenderer() {
+    LineRenderer() {
 
         modelMatrix = new ModelMatrix();
 

@@ -1,4 +1,4 @@
-package com.learnopengles.android.activity;
+package com.learnopengles.android.lesson7;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -11,8 +11,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.lesson7.LessonSevenGLSurfaceView;
-import com.learnopengles.android.lesson7.VertexBufferObjectRenderer;
 
 public class LessonSevenActivity extends Activity {
 	/** Hold a reference to our GLSurfaceView */

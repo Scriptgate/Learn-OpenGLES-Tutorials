@@ -15,7 +15,19 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
-import com.learnopengles.android.activity.*;
+import com.learnopengles.android.lesson1.LessonOneActivity;
+import com.learnopengles.android.lesson10.LessonTenActivity;
+import com.learnopengles.android.lesson11.LessonElevenActivity;
+import com.learnopengles.android.lesson2.LessonTwoActivity;
+import com.learnopengles.android.lesson3.LessonThreeActivity;
+import com.learnopengles.android.lesson4.LessonFourActivity;
+import com.learnopengles.android.lesson5.LessonFiveActivity;
+import com.learnopengles.android.lesson6.LessonSixActivity;
+import com.learnopengles.android.lesson7.LessonSevenActivity;
+import com.learnopengles.android.lesson7b.LessonSevenBActivity;
+import com.learnopengles.android.lesson8.LessonEightActivity;
+import com.learnopengles.android.lesson8b.LessonEightBActivity;
+import com.learnopengles.android.lesson9.LessonNineActivity;
 
 public class TableOfContents extends ListActivity 
 {
@@ -42,7 +54,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_one));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_one_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonOneActivity.class);			
+			activityMapping.put(i++, LessonOneActivity.class);
 		}
 		
 		{

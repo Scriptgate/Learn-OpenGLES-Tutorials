@@ -34,7 +34,7 @@ import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
 
-public class CameraRenderer implements GLSurfaceView.Renderer {
+class CameraRenderer implements GLSurfaceView.Renderer {
 
     private ModelMatrix modelMatrix;
     private ViewMatrix viewMatrix;
@@ -52,7 +52,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private List<Cube> cubes;
     private Light light;
 
-    public CameraRenderer(final Context activityContext) {
+    CameraRenderer(final Context activityContext) {
         this.activityContext = activityContext;
         modelMatrix = new ModelMatrix();
 

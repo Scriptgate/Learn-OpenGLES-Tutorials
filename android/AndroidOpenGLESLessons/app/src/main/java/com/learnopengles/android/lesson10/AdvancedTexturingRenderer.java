@@ -41,7 +41,7 @@ import static java.util.Arrays.asList;
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class AdvancedTexturingRenderer implements GLSurfaceView.Renderer {
+class AdvancedTexturingRenderer implements GLSurfaceView.Renderer {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -65,7 +65,7 @@ public class AdvancedTexturingRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public AdvancedTexturingRenderer(final Context activityContext) {
+    AdvancedTexturingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
         CubeDataCollection cubeData = cubeData()

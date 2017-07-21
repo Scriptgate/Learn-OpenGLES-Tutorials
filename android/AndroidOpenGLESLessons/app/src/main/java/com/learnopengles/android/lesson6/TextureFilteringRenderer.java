@@ -37,7 +37,7 @@ import static java.util.Collections.singletonList;
  * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
  * renderers -- the static class GLES20 is used instead.
  */
-public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
+class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -98,7 +98,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public TextureFilteringRenderer(final Context activityContext) {
+    TextureFilteringRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
         // Initialize the buffers.
@@ -207,7 +207,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix, temporaryMatrix);
     }
 
-    public void setMinFilter(final int filter) {
+    void setMinFilter(final int filter) {
         if (brickDataHandle != 0 && grassDataHandle != 0) {
             glBindTexture(GL_TEXTURE_2D, brickDataHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
@@ -218,7 +218,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void setMagFilter(final int filter) {
+    void setMagFilter(final int filter) {
         if (brickDataHandle != 0 && grassDataHandle != 0) {
             glBindTexture(GL_TEXTURE_2D, brickDataHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);

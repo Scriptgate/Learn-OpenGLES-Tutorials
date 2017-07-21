@@ -1,26 +1,23 @@
-package com.learnopengles.android.activity;
+package com.learnopengles.android.lesson7b;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 
-import com.learnopengles.android.lesson8.LessonEightGLSurfaceView;
-import com.learnopengles.android.lesson8.IndexBufferObjectRenderer;
+import com.learnopengles.android.lesson7b.LessonSevenBGLSurfaceView;
+import com.learnopengles.android.lesson7b.VertexBufferObjectRenderer;
 
-public class LessonEightActivity extends Activity {	
-	private LessonEightGLSurfaceView glSurfaceView;
-	private IndexBufferObjectRenderer renderer;
+public class LessonSevenBActivity extends Activity {
+	/** Hold a reference to our GLSurfaceView */
+	private LessonSevenBGLSurfaceView mGLSurfaceView;
 
-	@Override
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);		
+		super.onCreate(savedInstanceState);
 
-		glSurfaceView = new LessonEightGLSurfaceView(this);
-		
-		setContentView(glSurfaceView);
+		mGLSurfaceView = new LessonSevenBGLSurfaceView(this);
 
 		// Check if the system supports OpenGL ES 2.0.
 		final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -29,19 +26,18 @@ public class LessonEightActivity extends Activity {
 
 		if (supportsEs2) {
 			// Request an OpenGL ES 2.0 compatible context.
-			glSurfaceView.setEGLContextClientVersion(2);
-
-			final DisplayMetrics displayMetrics = new DisplayMetrics();
-			getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+			mGLSurfaceView.setEGLContextClientVersion(2);
 
 			// Set the renderer to our demo renderer, defined below.
-			renderer = new IndexBufferObjectRenderer(this, glSurfaceView);
-			glSurfaceView.setRenderer(renderer, displayMetrics.density);
+            VertexBufferObjectRenderer mRenderer = new VertexBufferObjectRenderer(this, mGLSurfaceView);
+			mGLSurfaceView.setRenderer(mRenderer);
 		} else {
 			// This is where you could create an OpenGL ES 1.x compatible
 			// renderer if you wanted to support both ES 1 and ES 2.
 			return;
-		}		
+		}
+
+		setContentView(mGLSurfaceView);
 	}
 
 	@Override
@@ -49,7 +45,7 @@ public class LessonEightActivity extends Activity {
 		// The activity must call the GL surface view's onResume() on activity
 		// onResume().
 		super.onResume();
-		glSurfaceView.onResume();
+		mGLSurfaceView.onResume();
 	}
 
 	@Override
@@ -57,6 +53,6 @@ public class LessonEightActivity extends Activity {
 		// The activity must call the GL surface view's onPause() on activity
 		// onPause().
 		super.onPause();
-		glSurfaceView.onPause();
+		mGLSurfaceView.onPause();
 	}
 }

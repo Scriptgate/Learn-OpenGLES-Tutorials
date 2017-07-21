@@ -4,7 +4,6 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.activity.LessonEightActivity;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.component.ViewMatrix;
@@ -22,7 +21,7 @@ import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOr
  * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
  * used instead.
  */
-public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	/** References to other main objects. */
 	private final LessonEightActivity lessonEightActivity;
@@ -61,9 +60,9 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	private static final String LIGHT_POSITION_UNIFORM = "u_LightPos";
 
 	//TODO: These fields are used in both program and heightmap, find where they belong
-	public static final String POSITION_ATTRIBUTE = "a_Position";
-	public static final String NORMAL_ATTRIBUTE = "a_Normal";
-	public static final String COLOR_ATTRIBUTE = "a_Color";
+	static final String POSITION_ATTRIBUTE = "a_Position";
+	static final String NORMAL_ATTRIBUTE = "a_Normal";
+	static final String COLOR_ATTRIBUTE = "a_Color";
 
 
 	/**
@@ -91,8 +90,8 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	/** Retain the most recent delta for touch events. */
 	// These still work without volatile, but refreshes are not guaranteed to
 	// happen.
-	public volatile float deltaX;
-	public volatile float deltaY;
+	volatile float deltaX;
+	volatile float deltaY;
 
 	/** The current heightmap object. */
 	private HeightMap heightMap;
@@ -100,7 +99,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	/**
 	 * Initialize the model data.
 	 */
-	public IndexBufferObjectRenderer(final LessonEightActivity lessonEightActivity, ErrorHandler errorHandler) {
+	IndexBufferObjectRenderer(final LessonEightActivity lessonEightActivity, ErrorHandler errorHandler) {
 		this.lessonEightActivity = lessonEightActivity;
 		heightMap = new HeightMap(errorHandler);
 	}

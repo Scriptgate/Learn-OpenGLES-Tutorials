@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
+import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 
 public abstract class AbstractActivity extends Activity {
@@ -39,7 +40,7 @@ public abstract class AbstractActivity extends Activity {
         setContentView(mGLSurfaceView);
     }
 
-    abstract GLSurfaceView.Renderer getRenderer();
+    public abstract Renderer getRenderer();
 
     @Override
     protected void onResume() {

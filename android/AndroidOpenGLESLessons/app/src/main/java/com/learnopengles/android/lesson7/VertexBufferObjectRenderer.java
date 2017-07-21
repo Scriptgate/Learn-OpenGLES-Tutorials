@@ -4,7 +4,6 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.activity.LessonSevenActivity;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ProjectionMatrix;
@@ -31,7 +30,7 @@ import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData
  * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
  * used instead.
  */
-public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -104,8 +103,8 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     private int androidDataHandle;
 
     // These still work without volatile, but refreshes are not guaranteed to happen.
-    public volatile float deltaX;
-    public volatile float deltaY;
+    volatile float deltaX;
+    volatile float deltaY;
 
     /**
      * Thread executor for generating cube data in the background.
@@ -120,7 +119,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public VertexBufferObjectRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
+    VertexBufferObjectRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
         this.lessonSevenActivity = lessonSevenActivity;
         this.glSurfaceView = glSurfaceView;
     }
@@ -129,7 +128,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         singleThreadedExecutor.submit(new GenDataRunnable(cubeFactor, toggleVbos, toggleStride));
     }
 
-    class GenDataRunnable implements Runnable {
+    private class GenDataRunnable implements Runnable {
         final int requestedCubeFactor;
         final boolean toggleVBOs;
         final boolean toggleStride;
@@ -268,23 +267,23 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void decreaseCubeCount() {
+    void decreaseCubeCount() {
         if (lastRequestedCubeFactor > 1) {
             generateCubes(--lastRequestedCubeFactor, false, false);
         }
     }
 
-    public void increaseCubeCount() {
+    void increaseCubeCount() {
         if (lastRequestedCubeFactor < 16) {
             generateCubes(++lastRequestedCubeFactor, false, false);
         }
     }
 
-    public void toggleVBOs() {
+    void toggleVBOs() {
         generateCubes(lastRequestedCubeFactor, true, false);
     }
 
-    public void toggleStride() {
+    void toggleStride() {
         generateCubes(lastRequestedCubeFactor, false, true);
     }
 

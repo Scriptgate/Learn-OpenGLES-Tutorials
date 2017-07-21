@@ -16,10 +16,7 @@ import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
-import static android.opengl.GLES20.glClear;
-import static android.opengl.GLES20.glClearColor;
+import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewBehindOrigin;
@@ -29,7 +26,7 @@ import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static java.util.Arrays.asList;
 
-public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
+class BasicDrawingRenderer implements GLSurfaceView.Renderer {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewBehindOrigin();
@@ -44,7 +41,7 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public BasicDrawingRenderer() {
+    BasicDrawingRenderer() {
         // Define points for equilateral triangles.
 
         // Draw the triangle facing straight on.

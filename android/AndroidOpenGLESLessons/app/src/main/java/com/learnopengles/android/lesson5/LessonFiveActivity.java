@@ -1,4 +1,4 @@
-package com.learnopengles.android.activity;
+package com.learnopengles.android.lesson5;
 
 import android.app.Activity;
 import android.app.ActivityManager;

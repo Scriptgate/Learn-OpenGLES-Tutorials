@@ -21,7 +21,7 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
-public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
 	private final ModelMatrix modelMatrix = new ModelMatrix();
 	private final ViewMatrix viewMatrix;
@@ -34,7 +34,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
     private Context activityContext;
 
-    public IndexBufferObjectRenderer(Context context) {
+    IndexBufferObjectRenderer(Context context) {
         this.activityContext = context;
 
         float dist = 5;
