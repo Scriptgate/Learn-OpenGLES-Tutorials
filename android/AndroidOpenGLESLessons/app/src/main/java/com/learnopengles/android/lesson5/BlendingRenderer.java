@@ -11,10 +11,6 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.Renderer;
-import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import java.util.ArrayList;
@@ -29,8 +25,6 @@ import static com.learnopengles.android.component.ProjectionMatrix.createProject
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.Program.createProgram;
@@ -64,7 +58,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
 
     private List<Cube> cubes;
 
-    private Renderer<Cube> renderer;
+    private CubeRenderer renderer;
 
     /**
      * Initialize the model data.
@@ -84,15 +78,7 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
         cubes.add(new Cube(cubeData, new Point3D(0.0f, 0.0f, -5.0f)));
     }
 
-    protected String getVertexShader() {
-        return "color_vertex_shader";
-    }
-
-    protected String getFragmentShader() {
-        return "color_fragment_shader";
-    }
-
-    public void switchMode() {
+    void switchMode() {
         blending = !blending;
 
         if (blending) {
@@ -134,17 +120,9 @@ public class BlendingRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR));
+        program = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
 
-        renderer = new Renderer<>(program,
-                asList(
-                        new ModelMatrixCubeRenderer(modelMatrix),
-                        positionCubeRenderer(),
-                        colorCubeRenderer(),
-                        new MVPRenderer<Cube>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix),
-                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
-                )
-        );
+        renderer = new CubeRenderer(program,modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.learnopengles.android.lesson11;
 
 import android.opengl.GLSurfaceView;
-import android.os.SystemClock;
 
 import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point3D;
@@ -11,13 +10,6 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.IdentityModelMatrixRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.Renderer;
-import com.learnopengles.android.renderer.drawable.Drawable;
-import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
-import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +22,10 @@ import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.lesson11.Circle.createCircleInXPlane;
 import static com.learnopengles.android.lesson11.Circle.createCircleInYPlane;
 import static com.learnopengles.android.lesson11.Circle.createCircleInZPlane;
+import static com.learnopengles.android.lesson11.DrawableRenderer.createBasicLineRenderer;
+import static com.learnopengles.android.lesson11.DrawableRenderer.createCircleRenderer;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
-import static com.learnopengles.android.renderer.circle.DrawCircleRendererFactory.fillCircleRenderer;
 import static java.util.Arrays.asList;
 
 public class LineRenderer implements GLSurfaceView.Renderer {
@@ -45,8 +38,8 @@ public class LineRenderer implements GLSurfaceView.Renderer {
 
     private Program lineProgram;
 
-    private Renderer<Line> lineRenderer;
-    private Renderer<Circle> circleRenderer;
+    private DrawableRenderer lineRenderer;
+    private DrawableRenderer circleRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -107,17 +100,9 @@ public class LineRenderer implements GLSurfaceView.Renderer {
 
         lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
 
-        Renderer<Drawable> drawableRenderer = new Renderer<>(lineProgram,
-                asList(
-                        new IdentityModelMatrixRenderer<Drawable>(modelMatrix),
-                        new DrawablePositionRenderer<>(),
-                        new DrawableColorRenderer<>(),
-                        new MVPRenderer<Drawable>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix)
-                )
-        );
+        lineRenderer = createBasicLineRenderer(lineProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
 
-        lineRenderer = drawableRenderer.andThen(new DrawArraysRenderer<Line>(GL_LINES, 2));
-        circleRenderer = drawableRenderer.andThen(fillCircleRenderer());
+        circleRenderer = createCircleRenderer(lineProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
     }
 
     @Override

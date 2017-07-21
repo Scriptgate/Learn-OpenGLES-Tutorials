@@ -1,9 +1,9 @@
-package com.learnopengles.android.renderer.drawable;
+package com.learnopengles.android.lesson11;
 
 
 import java.nio.FloatBuffer;
 
-public interface Drawable {
+interface Drawable {
 
     float[] getColor();
 

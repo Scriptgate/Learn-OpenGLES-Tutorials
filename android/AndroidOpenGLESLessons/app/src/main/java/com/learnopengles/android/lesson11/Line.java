@@ -2,20 +2,19 @@ package com.learnopengles.android.lesson11;
 
 import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.renderer.drawable.Drawable;
 
 import java.nio.FloatBuffer;
 
 import static com.learnopengles.android.common.Color.RED;
 import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 
-public class Line implements Drawable {
+class Line implements Drawable {
 
     private FloatBuffer vertexBuffer;
 
     private Color color = RED;
 
-    public Line(Color color, Point3D from, Point3D to) {
+    Line(Color color, Point3D from, Point3D to) {
         this.color = color;
         setPoints(from, to);
     }

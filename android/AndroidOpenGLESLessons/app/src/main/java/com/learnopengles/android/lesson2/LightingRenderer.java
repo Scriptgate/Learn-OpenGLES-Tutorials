@@ -12,12 +12,8 @@ import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.Renderer;
-import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
-import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.light.LightRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +28,6 @@ import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOr
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.colorCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
@@ -60,8 +53,8 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
 
     private Light light;
 
-    private Renderer<Cube> renderer;
-    private Renderer<Light> lightRenderer;
+    private CubeRenderer renderer;
+    private LightRenderer lightRenderer;
 
     /**
      * Initialize the model data.
@@ -108,22 +101,8 @@ public class LightingRenderer implements GLSurfaceView.Renderer {
         viewMatrix.onSurfaceCreated();
 
         Program perVertexProgram = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL));
-        renderer = new Renderer<>(perVertexProgram,
-                asList(
-                        new ModelMatrixCubeRenderer(modelMatrix),
-
-                        positionCubeRenderer(),
-                        colorCubeRenderer(),
-                        normalCubeRenderer(),
-
-                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix),
-
-                        new LightPositionInEyeSpaceRenderer<Cube>(light),
-                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
-                )
-        );
-
-        lightRenderer = createLightRenderer(light, mvpMatrix, viewMatrix, projectionMatrix);
+        renderer = new CubeRenderer(perVertexProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
+        lightRenderer = createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
     }
 
     @Override

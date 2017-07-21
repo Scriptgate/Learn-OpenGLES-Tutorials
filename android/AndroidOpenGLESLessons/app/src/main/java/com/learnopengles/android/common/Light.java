@@ -4,13 +4,14 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.renderer.MVPWithProjectionThroughTemporaryMatrixRenderer;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.light.LightPositionInModelSpaceRenderer;
 
 import static android.opengl.GLES20.GL_POINTS;
+import static android.opengl.GLES20.glDisableVertexAttribArray;
+import static android.opengl.GLES20.glDrawArrays;
+import static android.opengl.GLES20.glVertexAttrib3fv;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 public class Light {
 
@@ -36,9 +37,16 @@ public class Light {
      * Draws a point representing the position of the light.
      */
     public void drawLight(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] temporaryMatrix) {
-        new LightPositionInModelSpaceRenderer().apply(program, this);
-        new MVPWithProjectionThroughTemporaryMatrixRenderer<>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix).apply(program, this);
-        new DrawArraysRenderer<>(GL_POINTS, 1);
+
+        int handle = program.getHandle(POSITION);
+        glDisableVertexAttribArray(handle);
+        glVertexAttrib3fv(handle, getPositionInModelSpace(), 0);
+
+        mvpMatrix.multiply(modelMatrix, viewMatrix);
+        mvpMatrix.multiply(projectionMatrix, temporaryMatrix);
+        mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
+
+        glDrawArrays(GL_POINTS, 0, 1);
     }
 
     public void setIdentity() {

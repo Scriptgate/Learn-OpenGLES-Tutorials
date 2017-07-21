@@ -3,7 +3,6 @@ package com.learnopengles.android.lesson11;
 
 import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.renderer.drawable.Drawable;
 
 import java.nio.FloatBuffer;
 
@@ -11,9 +10,9 @@ import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class Circle implements Drawable {
+class Circle implements Drawable {
 
-    public static final int NUMBER_OF_POINTS = 360;
+    static final int NUMBER_OF_POINTS = 360;
 
     private FloatBuffer vertexBuffer;
 
@@ -28,7 +27,7 @@ public class Circle implements Drawable {
         this.vertexBuffer = allocateBuffer(vertices);
     }
 
-    public static Circle createCircleInXPlane(Color color, Point3D center, float radius) {
+    static Circle createCircleInXPlane(Color color, Point3D center, float radius) {
         float[] vertices = new float[NUMBER_OF_POINTS * VERTEX_DATA_SIZE];
 
         int index = 0;
@@ -42,7 +41,7 @@ public class Circle implements Drawable {
         return new Circle(color, vertices);
     }
 
-    public static Circle createCircleInYPlane(Color color, Point3D center, float radius) {
+    static Circle createCircleInYPlane(Color color, Point3D center, float radius) {
         float[] vertices = new float[NUMBER_OF_POINTS * VERTEX_DATA_SIZE];
 
         int index = 0;
@@ -56,7 +55,7 @@ public class Circle implements Drawable {
         return new Circle(color, vertices);
     }
 
-    public static Circle createCircleInZPlane(Color color, Point3D center, float radius) {
+    static Circle createCircleInZPlane(Color color, Point3D center, float radius) {
         float[] vertices = new float[NUMBER_OF_POINTS * VERTEX_DATA_SIZE];
 
         int index = 0;

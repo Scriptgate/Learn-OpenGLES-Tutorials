@@ -14,13 +14,6 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.CubeDataFactory;
-import com.learnopengles.android.cube.renderer.AccumulatedRotationCubeRenderer;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.Renderer;
-import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
-import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.mvp.ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
 import com.learnopengles.android.program.Program;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -33,9 +26,6 @@ import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOr
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.textureCoordinateCubeRenderer;
 import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
@@ -94,16 +84,16 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     private int queuedMagFilter;
 
     // These still work without volatile, but refreshes are not guaranteed to happen.
-    public volatile float deltaX;
-    public volatile float deltaY;
+    volatile float deltaX;
+    volatile float deltaY;
 
     private Cube cube;
     private Cube plane;
 
     private Light light;
 
-    private Renderer<Cube> cubeRenderer;
-    private Renderer<Cube> planeRenderer;
+    private CubeRenderer cubeRenderer;
+    private PlaneRenderer planeRenderer;
 
     /**
      * Initialize the model data.
@@ -169,40 +159,8 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         Matrix.setIdentityM(accumulatedRotation, 0);
 
         Program program = createProgram("per_pixel_vertex_shader_tex_and_light", "per_pixel_fragment_shader_tex_and_light", asList(POSITION, NORMAL, TEXTURE_COORDINATE));
-        cubeRenderer = new Renderer<>(program,
-                asList(
-                        new ModelMatrixCubeRenderer(modelMatrix),
-
-                        new AccumulatedRotationCubeRenderer(accumulatedRotation, currentRotation, temporaryMatrix, modelMatrix),
-
-                        positionCubeRenderer(),
-                        normalCubeRenderer(),
-                        new TextureCubeRenderer(),
-                        textureCoordinateCubeRenderer(),
-
-                        new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix),
-
-                        new LightPositionInEyeSpaceRenderer<Cube>(light),
-                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
-                )
-        );
-
-        planeRenderer = new Renderer<>(program,
-                asList(
-                        new ModelMatrixCubeRenderer(modelMatrix),
-
-                        positionCubeRenderer(),
-                        normalCubeRenderer(),
-                        new TextureCubeRenderer(),
-                        textureCoordinateCubeRenderer(),
-
-
-                        new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix),
-
-                        new LightPositionInEyeSpaceRenderer<Cube>(light),
-                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
-                )
-        );
+        cubeRenderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, accumulatedRotation, currentRotation, temporaryMatrix, light);
+        planeRenderer = new PlaneRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, temporaryMatrix, light);
     }
 
     @Override

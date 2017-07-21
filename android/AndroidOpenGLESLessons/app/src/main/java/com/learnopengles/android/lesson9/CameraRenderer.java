@@ -15,13 +15,8 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
-import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
-import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.Renderer;
+import com.learnopengles.android.renderer.light.LightRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +29,6 @@ import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.cube.CubeDataFactory.*;
 import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.*;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
@@ -48,8 +42,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
     private ModelViewProjectionMatrix mvpMatrix;
 
-    private Renderer<Cube> cubeRenderer;
-    private Renderer<Light> lightRenderer;
+    private CubeRenderer cubeRenderer;
+    private LightRenderer lightRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -109,24 +103,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         viewMatrix.translate(new Point3D(-0.3f, 0.0f, -0.3f));
 
         Program program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
-        cubeRenderer = new Renderer<>(program,
-                asList(
-                        new ModelMatrixCubeRenderer(modelMatrix),
-
-                        positionCubeRenderer(),
-                        colorCubeRenderer(),
-                        normalCubeRenderer(),
-                        new TextureCubeRenderer(),
-                        textureCoordinateCubeRenderer(),
-
-                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix),
-
-                        new LightPositionInEyeSpaceRenderer<Cube>(light),
-                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
-                )
-        );
-
-        lightRenderer = createLightRenderer(light, mvpMatrix, viewMatrix, projectionMatrix);
+        cubeRenderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
+        lightRenderer = createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
 
         // Load the texture
         int textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
