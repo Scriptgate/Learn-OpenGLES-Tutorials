@@ -25,19 +25,13 @@ class BasicDrawingRenderer extends RendererBase {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewBehindOrigin();
-
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     private final List<Triangle> triangles = new ArrayList<>();
 
     private Program program;
 
-    /**
-     * Initialize the model data.
-     */
     BasicDrawingRenderer() {
-        // Define points for equilateral triangles.
-
         // Draw the triangle facing straight on.
         triangles.add(triangle()
                 .equilateral(1, RED, GREEN, BLUE)

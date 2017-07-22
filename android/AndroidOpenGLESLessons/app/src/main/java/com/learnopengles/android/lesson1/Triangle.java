@@ -18,16 +18,12 @@ import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 
 class Triangle {
-
     private static final int POSITION_DATA_OFFSET = 0;
     private static final int POSITION_DATA_SIZE = 3;
 
     private static final int COLOR_DATA_OFFSET = 3;
     private static final int COLOR_DATA_SIZE = 4;
 
-    /**
-     * How many elements per vertex.
-     */
     private static final int STRIDE_BYTES = (POSITION_DATA_SIZE + COLOR_DATA_SIZE) * BYTES_PER_FLOAT;
 
     private final FloatBuffer vertices;
@@ -39,27 +35,23 @@ class Triangle {
     }
 
     void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
-        modelMatrix.setIdentity();
 
+        modelMatrix.setIdentity();
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
-
-        // Pass in the position information
 
         int positionHandle = program.getHandle(POSITION);
         vertices.position(POSITION_DATA_OFFSET);
         glEnableVertexAttribArray(positionHandle);
         glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
-        // Pass in the color information
         int colorHandle = program.getHandle(COLOR);
         vertices.position(COLOR_DATA_OFFSET);
         glEnableVertexAttribArray(colorHandle);
         glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
 
-        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
-        mvpMatrix.passTo(mvpMatrixHandle);
+        mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
