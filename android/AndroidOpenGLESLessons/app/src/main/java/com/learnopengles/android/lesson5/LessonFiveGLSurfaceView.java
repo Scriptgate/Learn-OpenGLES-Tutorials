@@ -16,23 +16,20 @@ public class LessonFiveGLSurfaceView extends GLSurfaceView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event != null) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                if (renderer != null) {
-                    // Ensure we call switchMode() on the OpenGL thread.
-                    // queueEvent() is a method of GLSurfaceView that will do this for us.
-                    queueEvent(new Runnable() {
-                        @Override
-                        public void run() {
-                            renderer.switchMode();
-                        }
-                    });
+        if (event != null && event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (renderer != null) {
+                // Ensure we call switchMode() on the OpenGL thread.
+                // queueEvent() is a method of GLSurfaceView that will do this for us.
+                queueEvent(new Runnable() {
+                    @Override
+                    public void run() {
+                        renderer.switchMode();
+                    }
+                });
 
-                    return true;
-                }
+                return true;
             }
         }
-
         return super.onTouchEvent(event);
     }
 
