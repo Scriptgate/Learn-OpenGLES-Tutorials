@@ -6,7 +6,7 @@ import android.widget.Toast;
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.ActivityWithViewBase;
 
-public class LessonFiveActivity extends ActivityWithViewBase<LessonFiveGLSurfaceView> {
+public class Activity extends ActivityWithViewBase<LessonFiveGLSurfaceView> {
 
     private static final String SHOWED_TOAST = "showed_toast";
 

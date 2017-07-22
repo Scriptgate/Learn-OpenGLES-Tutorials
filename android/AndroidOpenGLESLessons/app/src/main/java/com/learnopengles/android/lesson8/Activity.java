@@ -5,7 +5,7 @@ import android.util.DisplayMetrics;
 
 import com.learnopengles.android.activity.ActivityWithViewBase;
 
-public class LessonEightActivity extends ActivityWithViewBase<LessonEightGLSurfaceView> {
+public class Activity extends ActivityWithViewBase<LessonEightGLSurfaceView> {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

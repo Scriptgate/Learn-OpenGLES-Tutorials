@@ -29,7 +29,7 @@ class VertexBufferObjectRenderer implements Renderer {
      */
     private static final String TAG = "VertexBufferObjectR";
 
-    private final LessonSevenActivity lessonSevenActivity;
+    private final Activity lessonSevenActivity;
     private final GLSurfaceView glSurfaceView;
 
     /**
@@ -112,7 +112,7 @@ class VertexBufferObjectRenderer implements Renderer {
     /**
      * Initialize the model data.
      */
-    VertexBufferObjectRenderer(final LessonSevenActivity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
+    VertexBufferObjectRenderer(final Activity lessonSevenActivity, final GLSurfaceView glSurfaceView) {
         this.lessonSevenActivity = lessonSevenActivity;
         this.glSurfaceView = glSurfaceView;
     }

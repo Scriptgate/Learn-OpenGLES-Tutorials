@@ -12,7 +12,7 @@ import android.view.View.OnClickListener;
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.ActivityWithViewBase;
 
-public class LessonSixActivity extends ActivityWithViewBase<LessonSixGLSurfaceView> {
+public class Activity extends ActivityWithViewBase<LessonSixGLSurfaceView> {
 
     private TextureFilteringRenderer renderer;
 

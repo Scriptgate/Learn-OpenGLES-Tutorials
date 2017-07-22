@@ -14,12 +14,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
-import com.learnopengles.android.lesson5.LessonFiveActivity;
-import com.learnopengles.android.lesson6.LessonSixActivity;
-import com.learnopengles.android.lesson7.LessonSevenActivity;
-import com.learnopengles.android.lesson7b.LessonSevenBActivity;
-import com.learnopengles.android.lesson8.LessonEightActivity;
-
 public class TableOfContents extends ListActivity 
 {
 	private static final String ITEM_IMAGE = "item_image";
@@ -81,7 +75,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_five));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_five_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonFiveActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson5.Activity.class);
 		}
 		
 		{
@@ -90,7 +84,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_six));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_six_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonSixActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson6.Activity.class);
 		}
 		
 		{
@@ -99,7 +93,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_seven));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_seven_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonSevenActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson7.Activity.class);
 		}
 
 		{
@@ -108,7 +102,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_seven_b));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_seven_b_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonSevenBActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson7b.Activity.class);
 		}
 		
 		{
@@ -117,7 +111,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_eight));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eight_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonEightActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson8.Activity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();

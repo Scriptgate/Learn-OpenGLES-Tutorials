@@ -37,19 +37,19 @@
             android:name=".lesson4.Activity"
             android:label="@string/lesson_four" />
         <activity
-            android:name=".lesson5.LessonFiveActivity"
+            android:name=".lesson5.Activity"
             android:label="@string/lesson_five" />
         <activity
-            android:name=".lesson6.LessonSixActivity"
+            android:name=".lesson6.Activity"
             android:label="@string/lesson_six" />
         <activity
-            android:name=".lesson7.LessonSevenActivity"
+            android:name=".lesson7.Activity"
             android:label="@string/lesson_seven" />
         <activity
-            android:name=".lesson7b.LessonSevenBActivity"
+            android:name=".lesson7b.Activity"
             android:label="@string/lesson_seven_b" />
         <activity
-            android:name=".lesson8.LessonEightActivity"
+            android:name=".lesson8.Activity"
             android:label="@string/lesson_eight" />
         <activity
             android:name=".lesson8b.Activity"

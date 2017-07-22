@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.learnopengles.android.activity.ActivityWithViewBase;
 
-public class LessonSevenBActivity extends ActivityWithViewBase<LessonSevenBGLSurfaceView> {
+public class Activity extends ActivityWithViewBase<LessonSevenBGLSurfaceView> {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

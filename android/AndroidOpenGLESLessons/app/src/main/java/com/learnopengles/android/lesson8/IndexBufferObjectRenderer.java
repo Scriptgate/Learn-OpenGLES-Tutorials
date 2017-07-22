@@ -16,7 +16,7 @@ import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOr
 class IndexBufferObjectRenderer implements Renderer {
 
 	/** References to other main objects. */
-	private final LessonEightActivity lessonEightActivity;
+	private final Activity lessonEightActivity;
 
 
 	/**
@@ -91,7 +91,7 @@ class IndexBufferObjectRenderer implements Renderer {
 	/**
 	 * Initialize the model data.
 	 */
-	IndexBufferObjectRenderer(final LessonEightActivity lessonEightActivity, ErrorHandler errorHandler) {
+	IndexBufferObjectRenderer(final Activity lessonEightActivity, ErrorHandler errorHandler) {
 		this.lessonEightActivity = lessonEightActivity;
 		heightMap = new HeightMap(errorHandler);
 	}

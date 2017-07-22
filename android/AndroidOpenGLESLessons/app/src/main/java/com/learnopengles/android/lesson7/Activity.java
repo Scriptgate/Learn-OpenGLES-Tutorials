@@ -9,7 +9,7 @@ import android.widget.Button;
 import com.learnopengles.android.R;
 import com.learnopengles.android.activity.ActivityWithViewBase;
 
-public class LessonSevenActivity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
+public class Activity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
 
     private VertexBufferObjectRenderer renderer;
 
