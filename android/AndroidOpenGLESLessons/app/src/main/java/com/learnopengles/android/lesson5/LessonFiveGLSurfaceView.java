@@ -4,6 +4,8 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
+import static com.learnopengles.android.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
+
 public class LessonFiveGLSurfaceView extends GLSurfaceView {
 
     private BlendingRenderer renderer;
@@ -34,9 +36,8 @@ public class LessonFiveGLSurfaceView extends GLSurfaceView {
         return super.onTouchEvent(event);
     }
 
-    // Hides superclass method.
     public void setRenderer(BlendingRenderer renderer) {
         this.renderer = renderer;
-        super.setRenderer(renderer);
+        super.setRenderer(adaptToGLSurfaceViewRenderer(renderer));
     }
 }

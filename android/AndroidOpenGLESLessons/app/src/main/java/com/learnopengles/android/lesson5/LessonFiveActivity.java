@@ -8,10 +8,8 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.lesson5.BlendingRenderer;
-import com.learnopengles.android.lesson5.LessonFiveGLSurfaceView;
 
-public class LessonFiveActivity extends Activity 
+public class LessonFiveActivity extends Activity
 {
 	/** Hold a reference to our GLSurfaceView */
 	private LessonFiveGLSurfaceView mGLSurfaceView;

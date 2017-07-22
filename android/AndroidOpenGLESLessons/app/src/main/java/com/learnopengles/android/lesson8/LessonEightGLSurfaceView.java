@@ -8,6 +8,8 @@ import android.widget.Toast;
 
 import com.learnopengles.android.R;
 
+import static com.learnopengles.android.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
+
 public class LessonEightGLSurfaceView extends GLSurfaceView implements ErrorHandler
 {	
 	private IndexBufferObjectRenderer renderer;
@@ -85,11 +87,10 @@ public class LessonEightGLSurfaceView extends GLSurfaceView implements ErrorHand
 		}		
 	}
 
-	// Hides superclass method.
 	public void setRenderer(IndexBufferObjectRenderer renderer, float density)
 	{
 		this.renderer = renderer;
 		this.density = density;
-		super.setRenderer(renderer);
+		super.setRenderer(adaptToGLSurfaceViewRenderer(renderer));
 	}
 }

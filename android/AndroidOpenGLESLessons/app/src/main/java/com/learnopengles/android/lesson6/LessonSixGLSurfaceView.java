@@ -5,6 +5,8 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import static com.learnopengles.android.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
+
 public class LessonSixGLSurfaceView extends GLSurfaceView 
 {	
 	private TextureFilteringRenderer mRenderer;
@@ -56,11 +58,10 @@ public class LessonSixGLSurfaceView extends GLSurfaceView
 		}		
 	}
 
-	// Hides superclass method.
 	public void setRenderer(TextureFilteringRenderer renderer, float density)
 	{
 		mRenderer = renderer;
 		mDensity = density;
-		super.setRenderer(renderer);
+		super.setRenderer(adaptToGLSurfaceViewRenderer(renderer));
 	}
 }

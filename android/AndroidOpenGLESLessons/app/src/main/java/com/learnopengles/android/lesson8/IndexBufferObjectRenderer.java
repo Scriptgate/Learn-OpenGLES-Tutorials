@@ -1,27 +1,19 @@
 package com.learnopengles.android.lesson8;
 
-import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.component.ViewMatrix;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import com.learnopengles.android.renderer.Renderer;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 
-/**
- * This class implements our custom renderer. Note that the GL10 parameter
- * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
- * used instead.
- */
-class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class IndexBufferObjectRenderer implements Renderer {
 
 	/** References to other main objects. */
 	private final LessonEightActivity lessonEightActivity;
@@ -105,7 +97,7 @@ class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	}
 
 	@Override
-	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+	public void onSurfaceCreated() {
 		heightMap.initialize();
 
 		// Set the background clear color to black.
@@ -129,12 +121,12 @@ class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	}
 
 	@Override
-	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+	public void onSurfaceChanged(int width, int height) {
 		projectionMatrix.onSurfaceChanged(width, height);
 	}
 
 	@Override
-	public void onDrawFrame(GL10 glUnused) {
+	public void onDrawFrame() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Set our per-vertex lighting program.

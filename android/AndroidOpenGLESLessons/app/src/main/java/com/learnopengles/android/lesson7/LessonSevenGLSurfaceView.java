@@ -5,6 +5,8 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import com.learnopengles.android.renderer.RendererAdapter;
+
 public class
 LessonSevenGLSurfaceView extends GLSurfaceView
 {	
@@ -55,11 +57,10 @@ LessonSevenGLSurfaceView extends GLSurfaceView
 		}		
 	}
 
-	// Hides superclass method.
 	public void setRenderer(VertexBufferObjectRenderer renderer, float density)
 	{
 		mRenderer = renderer;
 		mDensity = density;
-		super.setRenderer(renderer);
+		super.setRenderer(RendererAdapter.adaptToGLSurfaceViewRenderer(renderer));
 	}
 }

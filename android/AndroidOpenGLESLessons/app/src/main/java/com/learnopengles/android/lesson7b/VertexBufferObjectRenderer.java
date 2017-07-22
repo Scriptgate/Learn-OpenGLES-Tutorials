@@ -12,14 +12,12 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
+import com.learnopengles.android.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
@@ -30,12 +28,7 @@ import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
 import static java.util.Arrays.asList;
 
-/**
- * This class implements our custom renderer. Note that the GL10 parameter
- * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
- * used instead.
- */
-public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class VertexBufferObjectRenderer implements Renderer {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -98,7 +91,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public VertexBufferObjectRenderer(final Context activityContext, final GLSurfaceView glSurfaceView) {
+    VertexBufferObjectRenderer(final Context activityContext, final GLSurfaceView glSurfaceView) {
         this.activityContext = activityContext;
         this.glSurfaceView = glSurfaceView;
 
@@ -126,7 +119,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
         private List<Point3D> cubePositions;
 
-        public GenDataRunnable(List<Point3D> cubePositions) {
+        GenDataRunnable(List<Point3D> cubePositions) {
             this.cubePositions = cubePositions;
         }
 
@@ -181,7 +174,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+    public void onSurfaceCreated() {
         generateCubes();
 
         // Set the background clear color to black.
@@ -216,12 +209,12 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+    public void onSurfaceChanged(int width, int height) {
         projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override
-    public void onDrawFrame(GL10 glUnused) {
+    public void onDrawFrame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
