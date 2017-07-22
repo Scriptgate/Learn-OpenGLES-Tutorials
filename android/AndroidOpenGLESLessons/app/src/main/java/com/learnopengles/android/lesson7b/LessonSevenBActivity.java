@@ -12,11 +12,9 @@ public class LessonSevenBActivity extends ActivityWithViewBase<LessonSevenBGLSur
 
         glSurfaceView = new LessonSevenBGLSurfaceView(this);
 
-
         if (supportsOpenGLES20()) {
             glSurfaceView.setEGLContextClientVersion(2);
-            VertexBufferObjectRenderer mRenderer = new VertexBufferObjectRenderer(this, glSurfaceView);
-            glSurfaceView.setRenderer(mRenderer);
+            glSurfaceView.setRenderer(new VertexBufferObjectRenderer(this, glSurfaceView));
         } else {
             throw new UnsupportedOperationException("This activity requires OpenGL ES 2.0");
         }
