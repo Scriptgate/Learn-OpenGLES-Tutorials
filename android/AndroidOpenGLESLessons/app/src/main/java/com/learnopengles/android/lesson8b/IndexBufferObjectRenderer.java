@@ -1,7 +1,6 @@
 package com.learnopengles.android.lesson8b;
 
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point3D;
@@ -11,9 +10,7 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 import com.learnopengles.android.program.Program;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import com.learnopengles.android.renderer.Renderer;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
@@ -21,7 +18,7 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
-class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class IndexBufferObjectRenderer implements Renderer {
 
 	private final ModelMatrix modelMatrix = new ModelMatrix();
 	private final ViewMatrix viewMatrix;
@@ -47,7 +44,7 @@ class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+	public void onSurfaceCreated() {
         int textureHandle = loadTexture(activityContext, R.drawable.colormap);
 		ibo = new IndexBufferObjects(textureHandle);
 
@@ -64,12 +61,12 @@ class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	}
 
 	@Override
-	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+	public void onSurfaceChanged(int width, int height) {
 		projectionMatrix.onSurfaceChanged(width, height);
 	}
 
 	@Override
-	public void onDrawFrame(GL10 glUnused) {
+	public void onDrawFrame() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         program.useForRendering();

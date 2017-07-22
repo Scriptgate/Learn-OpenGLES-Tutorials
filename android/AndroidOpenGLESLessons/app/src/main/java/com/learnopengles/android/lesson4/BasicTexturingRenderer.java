@@ -1,7 +1,6 @@
 package com.learnopengles.android.lesson4;
 
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
@@ -15,13 +14,11 @@ import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.Renderer;
 import com.learnopengles.android.renderer.light.LightRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
@@ -37,11 +34,7 @@ import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
 
-/**
- * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
- * renderers -- the static class GLES20 is used instead.
- */
-class BasicTexturingRenderer implements GLSurfaceView.Renderer {
+class BasicTexturingRenderer implements Renderer {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -86,7 +79,7 @@ class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+    public void onSurfaceCreated() {
         // Set the background clear color to black.
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -114,12 +107,12 @@ class BasicTexturingRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(GL10 unused, int width, int height) {
+    public void onSurfaceChanged(int width, int height) {
         projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override
-    public void onDrawFrame(GL10 glUnused) {
+    public void onDrawFrame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Do a complete rotation every 10 seconds.

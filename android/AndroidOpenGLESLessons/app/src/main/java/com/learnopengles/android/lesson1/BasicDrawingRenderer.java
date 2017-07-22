@@ -1,6 +1,5 @@
 package com.learnopengles.android.lesson1;
 
-import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
 import com.learnopengles.android.common.Point3D;
@@ -9,12 +8,10 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
+import com.learnopengles.android.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
@@ -26,7 +23,7 @@ import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static java.util.Arrays.asList;
 
-class BasicDrawingRenderer implements GLSurfaceView.Renderer {
+class BasicDrawingRenderer implements Renderer {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewBehindOrigin();
@@ -65,7 +62,7 @@ class BasicDrawingRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+    public void onSurfaceCreated() {
         // Set the background clear color to gray.
         glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
 
@@ -77,12 +74,12 @@ class BasicDrawingRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(GL10 unused, int width, int height) {
+    public void onSurfaceChanged(int width, int height) {
         projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override
-    public void onDrawFrame(GL10 unused) {
+    public void onDrawFrame() {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         // Do a complete rotation every 10 seconds.

@@ -1,8 +1,7 @@
 package com.learnopengles.android.lesson1;
 
-import android.opengl.GLSurfaceView.Renderer;
-
 import com.learnopengles.android.activity.ActivityBase;
+import com.learnopengles.android.renderer.Renderer;
 
 public class Activity extends ActivityBase {
 

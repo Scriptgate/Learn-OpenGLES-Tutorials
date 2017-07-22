@@ -5,8 +5,11 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
-import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
+
+import com.learnopengles.android.renderer.Renderer;
+
+import static com.learnopengles.android.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
 
 public abstract class ActivityBase extends Activity {
     /**
@@ -30,7 +33,7 @@ public abstract class ActivityBase extends Activity {
             mGLSurfaceView.setEGLContextClientVersion(2);
 
             // Set the renderer to our demo renderer, defined below.
-            mGLSurfaceView.setRenderer(getRenderer());
+            mGLSurfaceView.setRenderer(getRendererAdapter());
         } else {
             // This is where you could create an OpenGL ES 1.x compatible
             // renderer if you wanted to support both ES 1 and ES 2.
@@ -38,6 +41,10 @@ public abstract class ActivityBase extends Activity {
         }
 
         setContentView(mGLSurfaceView);
+    }
+
+    public GLSurfaceView.Renderer getRendererAdapter() {
+        return adaptToGLSurfaceViewRenderer(getRenderer());
     }
 
     public abstract Renderer getRenderer();
