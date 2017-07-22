@@ -13,7 +13,7 @@ import static com.learnopengles.android.common.BufferHelper.allocateShortBuffer;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
 
-public class IndexBufferObject {
+class IndexBufferObject {
 
     private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
     private static final int TEXTURE_COORDINATE_DATA_SIZE_IN_ELEMENTS = 2;
@@ -106,7 +106,7 @@ public class IndexBufferObject {
         System.out.println("\t- offset: " + offsetInBytes);
     }
 
-    public void render(Program program) {
+    void render(Program program) {
         glBindBuffer(GL_ARRAY_BUFFER, vboBufferIndex);
 
         int positionAttribute = program.getHandle(POSITION);

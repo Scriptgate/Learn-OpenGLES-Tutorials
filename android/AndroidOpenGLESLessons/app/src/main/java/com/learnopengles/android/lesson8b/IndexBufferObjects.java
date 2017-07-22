@@ -9,13 +9,13 @@ import java.util.List;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.program.UniformVariable.TEXTURE;
 
-public class IndexBufferObjects {
+class IndexBufferObjects {
 
     /**
      * Used for debug logs. max 23 characters
      */
     private static final String TAG = "IndexBufferObjects";
-    public static final float OFFSET_BETWEEN_BUFFERS = 0.3f;
+    private static final float OFFSET_BETWEEN_BUFFERS = 0.3f;
 
     private List<IndexBufferObject> buffers;
 
@@ -25,7 +25,7 @@ public class IndexBufferObjects {
     private static final int NUMBER_OF_BUFFERS = 8;
     private static final int CUBES_PER_BUFFER = NUMBER_OF_CUBES / NUMBER_OF_BUFFERS;
 
-    public IndexBufferObjects(int textureHandle) {
+    IndexBufferObjects(int textureHandle) {
         this.textureHandle = textureHandle;
 
         buffers = new ArrayList<>();

@@ -22,7 +22,7 @@ import static java.util.Arrays.asList;
 import static java8.util.stream.IntStreams.range;
 import static java8.util.stream.StreamSupport.stream;
 
-public class VertexDataBufferFactory {
+class VertexDataBufferFactory {
 
     static FloatBuffer createPositionData(List<Cube> cubes) {
         Stream<Point3D> positionData = stream(cubes).map(toPosition());
