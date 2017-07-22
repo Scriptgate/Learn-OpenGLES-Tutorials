@@ -16,8 +16,9 @@ import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 
-public class CubesVertexBufferObjectPackedBuffers extends Cubes {
-    final int cubeBufferIdx;
+class CubesVertexBufferObjectPackedBuffers extends Cubes {
+
+    private final int cubeBufferIdx;
 
     CubesVertexBufferObjectPackedBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         FloatBuffer cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);

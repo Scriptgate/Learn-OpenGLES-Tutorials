@@ -7,7 +7,7 @@ import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
-public abstract class Cubes {
+abstract class Cubes {
 
     static final int POSITION_DATA_SIZE = 3;
     static final int NORMAL_DATA_SIZE = 3;

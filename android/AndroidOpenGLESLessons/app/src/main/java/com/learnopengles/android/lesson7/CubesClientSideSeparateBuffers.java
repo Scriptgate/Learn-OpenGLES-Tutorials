@@ -9,7 +9,7 @@ import static android.opengl.GLES20.glEnableVertexAttribArray;
 import static android.opengl.GLES20.glGetAttribLocation;
 import static android.opengl.GLES20.glVertexAttribPointer;
 
-public class CubesClientSideSeparateBuffers extends Cubes {
+class CubesClientSideSeparateBuffers extends Cubes {
     private FloatBuffer cubePositions;
     private FloatBuffer cubeNormals;
     private FloatBuffer cubeTextureCoordinates;

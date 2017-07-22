@@ -48,11 +48,6 @@ class VertexBufferObjectRenderer implements Renderer {
 
     private float[] lightModelMatrix = new float[16];
 
-    private int mvpMatrixHandle;
-    private int mvMatrixHandle;
-    private int lightPosHandle;
-    private int textureUniformHandle;
-
     /**
      * Additional info for cube generation.
      */
@@ -137,11 +132,6 @@ class VertexBufferObjectRenderer implements Renderer {
             try {
                 final float[] cubeNormalData = generateNormalData();
 
-                // S, T (or X, Y)
-                // Texture coordinate data.
-                // Because images have a Y axis pointing downward (values increase as you move down the image) while
-                // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
-                // What's more is that the texture coordinates are the same for every face.
                 final float[] cubeTextureCoordinateData = generateTextureData();
 
                 final float[] cubePositionData = new float[108 * requestedCubeFactor * requestedCubeFactor * requestedCubeFactor];
@@ -331,10 +321,10 @@ class VertexBufferObjectRenderer implements Renderer {
         glUseProgram(programHandle);
 
         // Set program handles for cube drawing.
-        mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
-        lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
-        textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
+        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
+        int mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
+        int lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
+        int textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
 
         // Calculate position of the light. Push into the distance.
         Matrix.setIdentityM(lightModelMatrix, 0);
