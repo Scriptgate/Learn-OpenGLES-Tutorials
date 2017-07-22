@@ -1,16 +1,18 @@
 package com.learnopengles.android.cube.data;
 
+import com.learnopengles.android.program.AttributeVariable;
+
 import java.util.Map;
 
 public class CubeDataCollection {
 
-    private final Map<CubeDataType, CubeData> cubeData;
+    private final Map<AttributeVariable, CubeData> cubeData;
 
-    CubeDataCollection(Map<CubeDataType, CubeData> cubeData) {
+    CubeDataCollection(Map<AttributeVariable, CubeData> cubeData) {
         this.cubeData = cubeData;
     }
 
-    public CubeData getCubeData(CubeDataType type) {
+    public CubeData getCubeData(AttributeVariable type) {
         return cubeData.get(type);
     }
 }

@@ -7,7 +7,6 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeData;
-import com.learnopengles.android.cube.data.CubeDataType;
 import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
@@ -15,6 +14,7 @@ import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.program.UniformVariable.*;
+import static com.learnopengles.android.program.AttributeVariable.*;
 
 class CubeRenderer {
 
@@ -54,9 +54,9 @@ class CubeRenderer {
         // Rotate the cube taking the overall rotation into account.
         modelMatrix.multiplyWithMatrixAndStore(accumulatedRotation, temporaryMatrix);
 
-        passCubeDataToAttribute(cube, CubeDataType.POSITION, AttributeVariable.POSITION);
-        passCubeDataToAttribute(cube, CubeDataType.NORMAL, AttributeVariable.NORMAL);
-        passCubeDataToAttribute(cube, CubeDataType.TEXTURE_COORDINATE, AttributeVariable.TEXTURE_COORDINATE);
+        passCubeDataToAttribute(cube, POSITION);
+        passCubeDataToAttribute(cube, NORMAL);
+        passCubeDataToAttribute(cube, TEXTURE_COORDINATE);
 
         bindTexture(cube.getTexture());
 
@@ -80,8 +80,8 @@ class CubeRenderer {
         glUniform1i(program.getHandle(TEXTURE), 0);
     }
 
-    private void passCubeDataToAttribute(Cube cube, CubeDataType cubeDataType, AttributeVariable attributeVariable) {
-        CubeData cubeData = cube.getCubeData(cubeDataType);
+    private void passCubeDataToAttribute(Cube cube, AttributeVariable attributeVariable) {
+        CubeData cubeData = cube.getCubeData(attributeVariable);
         int handle = program.getHandle(attributeVariable);
 
         FloatBuffer data = cubeData.getData();

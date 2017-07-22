@@ -1,14 +1,16 @@
 package com.learnopengles.android.cube.data;
 
 
+import com.learnopengles.android.program.AttributeVariable;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.learnopengles.android.cube.data.CubeDataType.*;
+import static com.learnopengles.android.program.AttributeVariable.*;
 
 public class CubeDataCollectionBuilder {
 
-    private Map<CubeDataType, CubeData> cubeData;
+    private Map<AttributeVariable, CubeData> cubeData;
 
     public static CubeDataCollectionBuilder cubeData() {
         return new CubeDataCollectionBuilder();
@@ -16,11 +18,6 @@ public class CubeDataCollectionBuilder {
 
     private CubeDataCollectionBuilder() {
         cubeData = new HashMap<>();
-    }
-
-    public CubeDataCollectionBuilder addData(CubeDataType type, float[] data) {
-        cubeData.put(type, new CubeData(data, type.size()));
-        return this;
     }
 
     public CubeDataCollectionBuilder positions(float[] positionData) {
@@ -37,6 +34,11 @@ public class CubeDataCollectionBuilder {
 
     public CubeDataCollectionBuilder textures(float[] textureData) {
         return addData(TEXTURE_COORDINATE, textureData);
+    }
+
+    private CubeDataCollectionBuilder addData(AttributeVariable type, float[] data) {
+        cubeData.put(type, new CubeData(data, type.getSize()));
+        return this;
     }
 
     public CubeDataCollection build() {

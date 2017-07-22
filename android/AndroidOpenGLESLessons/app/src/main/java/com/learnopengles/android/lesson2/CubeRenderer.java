@@ -7,7 +7,6 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeData;
-import com.learnopengles.android.cube.data.CubeDataType;
 import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
@@ -42,9 +41,9 @@ class CubeRenderer {
 
         cube.apply(modelMatrix);
 
-        passCubeDataToAttribute(cube, CubeDataType.POSITION, AttributeVariable.POSITION);
-        passCubeDataToAttribute(cube, CubeDataType.COLOR, AttributeVariable.COLOR);
-        passCubeDataToAttribute(cube, CubeDataType.NORMAL, AttributeVariable.NORMAL);
+        passCubeDataToAttribute(cube, AttributeVariable.POSITION);
+        passCubeDataToAttribute(cube, AttributeVariable.COLOR);
+        passCubeDataToAttribute(cube, AttributeVariable.NORMAL);
 
         mvpMatrix.multiply(modelMatrix, viewMatrix);
         mvpMatrix.passTo(program.getHandle(MV_MATRIX));
@@ -56,8 +55,8 @@ class CubeRenderer {
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 
-    private void passCubeDataToAttribute(Cube cube, CubeDataType cubeDataType, AttributeVariable attributeVariable) {
-        CubeData cubeData = cube.getCubeData(cubeDataType);
+    private void passCubeDataToAttribute(Cube cube, AttributeVariable attributeVariable) {
+        CubeData cubeData = cube.getCubeData(attributeVariable);
         int handle = program.getHandle(attributeVariable);
 
         FloatBuffer data = cubeData.getData();

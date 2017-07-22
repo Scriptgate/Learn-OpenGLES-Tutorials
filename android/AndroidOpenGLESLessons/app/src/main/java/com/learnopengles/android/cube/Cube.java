@@ -5,10 +5,7 @@ import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.cube.data.CubeData;
 import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.data.CubeDataType;
-
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glDrawArrays;
+import com.learnopengles.android.program.AttributeVariable;
 
 public class Cube {
 
@@ -60,7 +57,7 @@ public class Cube {
         this.scale = scale;
     }
 
-    public CubeData getCubeData(CubeDataType cubeDataType) {
+    public CubeData getCubeData(AttributeVariable cubeDataType) {
         return cubeData.getCubeData(cubeDataType);
     }
 
