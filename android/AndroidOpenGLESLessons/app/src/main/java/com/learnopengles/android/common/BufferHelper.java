@@ -51,12 +51,12 @@ public class BufferHelper {
         };
     }
 
-    public static void putIn(FloatBuffer buffer, Point2D point) {
+    private static void putIn(FloatBuffer buffer, Point2D point) {
         buffer.put(point.x);
         buffer.put(point.y);
     }
 
-    public static void putIn(FloatBuffer buffer, Point3D point) {
+    private static void putIn(FloatBuffer buffer, Point3D point) {
         buffer.put(point.x);
         buffer.put(point.y);
         buffer.put(point.z);

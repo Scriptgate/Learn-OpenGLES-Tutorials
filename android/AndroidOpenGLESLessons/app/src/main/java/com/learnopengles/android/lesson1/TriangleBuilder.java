@@ -2,6 +2,7 @@ package com.learnopengles.android.lesson1;
 
 
 import com.learnopengles.android.common.Color;
+import com.learnopengles.android.common.ColorPoint3D;
 import com.learnopengles.android.common.Point3D;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import static java.lang.Math.toRadians;
 
 class TriangleBuilder {
 
-    private List<ColorPoint> points;
+    private List<ColorPoint3D> points;
     private Point3D position;
     private Integer rotationY;
     private Integer rotationX;
@@ -40,7 +41,7 @@ class TriangleBuilder {
         return triangle;
     }
 
-    static float[] generateData(List<ColorPoint> points) {
+    static float[] generateData(List<ColorPoint3D> points) {
         float[] vertices = new float[21];
         for (int i = 0; i < points.size(); i++) {
             vertices[i * 7] = points.get(i).point.x;
@@ -59,13 +60,13 @@ class TriangleBuilder {
         return this;
     }
 
-    static List<ColorPoint> createEquilateralTriangle(float length, Color pointA, Color pointB, Color pointC) {
+    static List<ColorPoint3D> createEquilateralTriangle(float length, Color pointA, Color pointB, Color pointC) {
         float height = (float) sin(toRadians(60)) * length;
         float center = (float) tan(toRadians(30)) * length / 2;
-        List<ColorPoint> points = new ArrayList<>();
-        points.add(new ColorPoint(new Point3D(-length / 2, -center, 0.0f), pointA));
-        points.add(new ColorPoint(new Point3D(length / 2, -center, 0.0f), pointB));
-        points.add(new ColorPoint(new Point3D(0.0f, height - center, 0.0f), pointC));
+        List<ColorPoint3D> points = new ArrayList<>();
+        points.add(new ColorPoint3D(new Point3D(-length / 2, -center, 0.0f), pointA));
+        points.add(new ColorPoint3D(new Point3D(length / 2, -center, 0.0f), pointB));
+        points.add(new ColorPoint3D(new Point3D(0.0f, height - center, 0.0f), pointC));
         return points;
     }
 

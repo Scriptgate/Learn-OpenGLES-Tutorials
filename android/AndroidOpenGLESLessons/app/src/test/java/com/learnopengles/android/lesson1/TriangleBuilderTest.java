@@ -1,5 +1,6 @@
 package com.learnopengles.android.lesson1;
 
+import com.learnopengles.android.common.ColorPoint3D;
 import com.learnopengles.android.common.Point3D;
 
 import org.junit.Assert;
@@ -18,10 +19,10 @@ public class TriangleBuilderTest {
 
     @Test
     public void addColorPoints() throws Exception {
-        List<ColorPoint> points = new ArrayList<>();
-        points.add(new ColorPoint(new Point3D(-0.5f, -0.25f, 0.0f), RED));
-        points.add(new ColorPoint(new Point3D(0.5f, -0.25f, 0.0f), GREEN));
-        points.add(new ColorPoint(new Point3D(0.0f, 0.559016994f, 0.0f), BLUE));
+        List<ColorPoint3D> points = new ArrayList<>();
+        points.add(new ColorPoint3D(new Point3D(-0.5f, -0.25f, 0.0f), RED));
+        points.add(new ColorPoint3D(new Point3D(0.5f, -0.25f, 0.0f), GREEN));
+        points.add(new ColorPoint3D(new Point3D(0.0f, 0.559016994f, 0.0f), BLUE));
         float[] triangleVertices = generateData(points);
 
         float[] result = {
@@ -42,7 +43,7 @@ public class TriangleBuilderTest {
 
     @Test
     public void createEquilateralTriangle() throws Exception {
-        float[] triangleVertices = generateData(triangle().createEquilateralTriangle(1, RED, GREEN, BLUE));
+        float[] triangleVertices = generateData(TriangleBuilder.createEquilateralTriangle(1, RED, GREEN, BLUE));
 
         float[] result = {
                 // X, Y, Z,
