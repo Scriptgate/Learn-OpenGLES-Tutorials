@@ -4,7 +4,7 @@ import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
-import static com.learnopengles.android.lesson1.Shader.loadShader;
+import static com.learnopengles.android.program.Shader.loadShader;
 import static com.learnopengles.android.program.AttributeVariable.toStringArray;
 
 public class Program {

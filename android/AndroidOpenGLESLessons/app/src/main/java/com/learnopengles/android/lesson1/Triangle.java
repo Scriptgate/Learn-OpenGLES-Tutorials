@@ -9,12 +9,7 @@ import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glDisableVertexAttribArray;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glVertexAttribPointer;
+import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
@@ -22,7 +17,7 @@ import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 
-public class Triangle {
+class Triangle {
 
 
     /**
@@ -40,11 +35,11 @@ public class Triangle {
     private Point3D rotation = new Point3D();
     private Point3D position = new Point3D();
 
-    public Triangle(float[] verticesData) {
+    Triangle(float[] verticesData) {
         vertices = allocateBuffer(verticesData);
     }
 
-    public void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
+    void draw(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ModelMatrix modelMatrix, ProjectionMatrix projectionMatrix) {
         modelMatrix.setIdentity();
 
         modelMatrix.translate(position);
@@ -73,19 +68,19 @@ public class Triangle {
         glDisableVertexAttribArray(colorHandle);
     }
 
-    public void setPosition(Point3D position) {
+    void setPosition(Point3D position) {
         this.position = position;
     }
 
-    public void setRotationX(float rotation) {
+    void setRotationX(float rotation) {
         this.rotation.x = rotation;
     }
 
-    public void setRotationY(float rotation) {
+    void setRotationY(float rotation) {
         this.rotation.y = rotation;
     }
 
-    public void setRotationZ(float rotation) {
+    void setRotationZ(float rotation) {
         this.rotation.z = rotation;
     }
 }

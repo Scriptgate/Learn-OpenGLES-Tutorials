@@ -11,21 +11,21 @@ import static java.lang.Math.sin;
 import static java.lang.Math.tan;
 import static java.lang.Math.toRadians;
 
-public class TriangleBuilder {
+class TriangleBuilder {
 
-    List<ColorPoint> points;
+    private List<ColorPoint> points;
     private Point3D position;
     private Integer rotationY;
     private Integer rotationX;
 
-    public static TriangleBuilder triangle() {
+    static TriangleBuilder triangle() {
         return new TriangleBuilder();
     }
 
     private TriangleBuilder() {
     }
 
-    public Triangle build() {
+    Triangle build() {
         float[] vertices = generateData(points);
         Triangle triangle = new Triangle(vertices);
         if(position != null) {
@@ -40,7 +40,7 @@ public class TriangleBuilder {
         return triangle;
     }
 
-    public static float[] generateData(List<ColorPoint> points) {
+    static float[] generateData(List<ColorPoint> points) {
         float[] vertices = new float[21];
         for (int i = 0; i < points.size(); i++) {
             vertices[i * 7] = points.get(i).point.x;
@@ -54,12 +54,12 @@ public class TriangleBuilder {
         return vertices;
     }
 
-    public TriangleBuilder equilateral(float length, Color pointA, Color pointB, Color pointC) {
+    TriangleBuilder equilateral(float length, Color pointA, Color pointB, Color pointC) {
         this.points = createEquilateralTriangle(length, pointA, pointB, pointC);
         return this;
     }
 
-    public static List<ColorPoint> createEquilateralTriangle(float length, Color pointA, Color pointB, Color pointC) {
+    static List<ColorPoint> createEquilateralTriangle(float length, Color pointA, Color pointB, Color pointC) {
         float height = (float) sin(toRadians(60)) * length;
         float center = (float) tan(toRadians(30)) * length / 2;
         List<ColorPoint> points = new ArrayList<>();
@@ -69,17 +69,17 @@ public class TriangleBuilder {
         return points;
     }
 
-    public TriangleBuilder position(Point3D position) {
+    TriangleBuilder position(Point3D position) {
         this.position = position;
         return this;
     }
 
-    public TriangleBuilder rotateY(int angleInDegrees) {
+    TriangleBuilder rotateY(int angleInDegrees) {
         rotationY = angleInDegrees;
         return this;
     }
 
-    public TriangleBuilder rotateX(int angleInDegrees) {
+    TriangleBuilder rotateX(int angleInDegrees) {
         rotationX = angleInDegrees;
         return this;
     }
