@@ -2,9 +2,9 @@ package com.learnopengles.android.lesson3;
 
 import android.opengl.GLSurfaceView.Renderer;
 
-import com.learnopengles.android.activity.AbstractActivity;
+import com.learnopengles.android.activity.ActivityBase;
 
-public class LessonThreeActivity extends AbstractActivity {
+public class Activity extends ActivityBase {
 
 	@Override
 	public Renderer getRenderer() {

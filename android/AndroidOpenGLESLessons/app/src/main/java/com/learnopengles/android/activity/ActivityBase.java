@@ -8,7 +8,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
 import android.os.Bundle;
 
-public abstract class AbstractActivity extends Activity {
+public abstract class ActivityBase extends Activity {
     /**
      * Hold a reference to our GLSurfaceView
      */

@@ -25,16 +25,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".lesson1.LessonOneActivity"
+            android:name=".lesson1.Activity"
             android:label="@string/lesson_one" />
         <activity
-            android:name=".lesson2.LessonTwoActivity"
+            android:name=".lesson2.Activity"
             android:label="@string/lesson_two" />
         <activity
-            android:name=".lesson3.LessonThreeActivity"
+            android:name=".lesson3.Activity"
             android:label="@string/lesson_three" />
         <activity
-            android:name=".lesson4.LessonFourActivity"
+            android:name=".lesson4.Activity"
             android:label="@string/lesson_four" />
         <activity
             android:name=".lesson5.LessonFiveActivity"
@@ -52,16 +52,16 @@
             android:name=".lesson8.LessonEightActivity"
             android:label="@string/lesson_eight" />
         <activity
-            android:name=".lesson8b.LessonEightBActivity"
+            android:name=".lesson8b.Activity"
             android:label="@string/lesson_eight_b" />
         <activity
-            android:name=".lesson9.LessonNineActivity"
+            android:name=".lesson9.Activity"
             android:label="@string/lesson_nine" />
         <activity
-            android:name=".lesson10.LessonTenActivity"
+            android:name=".lesson10.Activity"
             android:label="@string/lesson_ten" />
         <activity
-            android:name=".lesson11.LessonElevenActivity"
+            android:name=".lesson11.Activity"
             android:label="@string/lesson_eleven" />
 
         <service

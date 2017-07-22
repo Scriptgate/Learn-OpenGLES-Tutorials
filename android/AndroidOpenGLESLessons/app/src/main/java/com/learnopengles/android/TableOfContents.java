@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,19 +14,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
 
-import com.learnopengles.android.lesson1.LessonOneActivity;
-import com.learnopengles.android.lesson10.LessonTenActivity;
-import com.learnopengles.android.lesson11.LessonElevenActivity;
-import com.learnopengles.android.lesson2.LessonTwoActivity;
-import com.learnopengles.android.lesson3.LessonThreeActivity;
-import com.learnopengles.android.lesson4.LessonFourActivity;
 import com.learnopengles.android.lesson5.LessonFiveActivity;
 import com.learnopengles.android.lesson6.LessonSixActivity;
 import com.learnopengles.android.lesson7.LessonSevenActivity;
 import com.learnopengles.android.lesson7b.LessonSevenBActivity;
 import com.learnopengles.android.lesson8.LessonEightActivity;
-import com.learnopengles.android.lesson8b.LessonEightBActivity;
-import com.learnopengles.android.lesson9.LessonNineActivity;
 
 public class TableOfContents extends ListActivity 
 {
@@ -44,7 +35,7 @@ public class TableOfContents extends ListActivity
 		
 		// Initialize data
 		final List<Map<String, Object>> data = new ArrayList<>();
-		final SparseArray<Class<? extends Activity>> activityMapping = new SparseArray<>();
+		final SparseArray<Class<? extends android.app.Activity>> activityMapping = new SparseArray<>();
 		
 		int i = 0;
 		
@@ -54,7 +45,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_one));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_one_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonOneActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson1.Activity.class);
 		}
 		
 		{
@@ -63,7 +54,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_two));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_two_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonTwoActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson2.Activity.class);
 		}
 		
 		{
@@ -72,7 +63,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_three));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_three_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonThreeActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson3.Activity.class);
 		}
 		
 		{
@@ -81,7 +72,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_four));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_four_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonFourActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson4.Activity.class);
 		}
 		
 		{
@@ -134,7 +125,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_eight_b));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eight_b_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonEightBActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson8b.Activity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();
@@ -142,7 +133,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_nine));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_nine_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonNineActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson9.Activity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();
@@ -150,7 +141,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_ten));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_ten_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonTenActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson10.Activity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();
@@ -158,7 +149,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_eleven));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eleven_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonElevenActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson11.Activity.class);
 		}
 
 		
@@ -171,7 +162,7 @@ public class TableOfContents extends ListActivity
 			 public void onItemClick(AdapterView<?> parent, View view,
 				        int position, long id) 
 			{
-				final Class<? extends Activity> activityToLaunch = activityMapping.get(position);
+				final Class<? extends android.app.Activity> activityToLaunch = activityMapping.get(position);
 				
 				if (activityToLaunch != null)
 				{

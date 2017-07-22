@@ -2,9 +2,9 @@ package com.learnopengles.android.lesson10;
 
 import android.opengl.GLSurfaceView.Renderer;
 
-import com.learnopengles.android.activity.AbstractActivity;
+import com.learnopengles.android.activity.ActivityBase;
 
-public class LessonTenActivity extends AbstractActivity {
+public class Activity extends ActivityBase {
     @Override
     public Renderer getRenderer() {
         return new AdvancedTexturingRenderer(this);
