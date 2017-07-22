@@ -8,13 +8,13 @@ import android.view.MotionEvent;
 import static com.learnopengles.android.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
 
 public class LessonSixGLSurfaceView extends GLSurfaceView {
-    private TextureFilteringRenderer mRenderer;
 
-    // Offsets for touch events
-    private float mPreviousX;
-    private float mPreviousY;
+    private TextureFilteringRenderer renderer;
 
-    private float mDensity;
+    private float previousX;
+    private float previousY;
+
+    private float density;
 
     public LessonSixGLSurfaceView(Context context) {
         super(context);
@@ -31,17 +31,17 @@ public class LessonSixGLSurfaceView extends GLSurfaceView {
             float y = event.getY();
 
             if (event.getAction() == MotionEvent.ACTION_MOVE) {
-                if (mRenderer != null) {
-                    float deltaX = (x - mPreviousX) / mDensity / 2f;
-                    float deltaY = (y - mPreviousY) / mDensity / 2f;
+                if (renderer != null) {
+                    float deltaX = (x - previousX) / density / 2f;
+                    float deltaY = (y - previousY) / density / 2f;
 
-                    mRenderer.deltaX += deltaX;
-                    mRenderer.deltaY += deltaY;
+                    renderer.deltaX += deltaX;
+                    renderer.deltaY += deltaY;
                 }
             }
 
-            mPreviousX = x;
-            mPreviousY = y;
+            previousX = x;
+            previousY = y;
 
             return true;
         } else {
@@ -50,8 +50,8 @@ public class LessonSixGLSurfaceView extends GLSurfaceView {
     }
 
     public void setRenderer(TextureFilteringRenderer renderer, float density) {
-        mRenderer = renderer;
-        mDensity = density;
+        this.renderer = renderer;
+        this.density = density;
         super.setRenderer(adaptToGLSurfaceViewRenderer(renderer));
     }
 }

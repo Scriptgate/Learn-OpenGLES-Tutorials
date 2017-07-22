@@ -16,20 +16,18 @@ import android.view.View.OnClickListener;
 import com.learnopengles.android.R;
 
 public class LessonSixActivity extends Activity {
-    /**
-     * Hold a reference to our GLSurfaceView
-     */
-    private LessonSixGLSurfaceView mGLSurfaceView;
-    private TextureFilteringRenderer mRenderer;
+
+    private LessonSixGLSurfaceView glSurfaceView;
+    private TextureFilteringRenderer renderer;
 
     private static final int MIN_DIALOG = 1;
     private static final int MAG_DIALOG = 2;
 
-    private int mMinSetting = -1;
-    private int mMagSetting = -1;
-
     private static final String MIN_SETTING = "min_setting";
     private static final String MAG_SETTING = "mag_setting";
+
+    private int minSetting = -1;
+    private int magSetting = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,27 +35,21 @@ public class LessonSixActivity extends Activity {
 
         setContentView(R.layout.lesson_six);
 
-        mGLSurfaceView = (LessonSixGLSurfaceView) findViewById(R.id.gl_surface_view);
+        glSurfaceView = (LessonSixGLSurfaceView) findViewById(R.id.gl_surface_view);
 
-        // Check if the system supports OpenGL ES 2.0.
-        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-        final boolean supportsEs2 = configurationInfo.reqGlEsVersion >= 0x20000;
 
-        if (supportsEs2) {
-            // Request an OpenGL ES 2.0 compatible context.
-            mGLSurfaceView.setEGLContextClientVersion(2);
+        if (supportsOpenGLES20()) {
+
+            glSurfaceView.setEGLContextClientVersion(2);
 
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
             // Set the renderer to our demo renderer, defined below.
-            mRenderer = new TextureFilteringRenderer(this);
-            mGLSurfaceView.setRenderer(mRenderer, displayMetrics.density);
+            renderer = new TextureFilteringRenderer(this);
+            glSurfaceView.setRenderer(renderer, displayMetrics.density);
         } else {
-            // This is where you could create an OpenGL ES 1.x compatible
-            // renderer if you wanted to support both ES 1 and ES 2.
-            return;
+            throw new UnsupportedOperationException("This activity requires OpenGL ES 2.0");
         }
 
         findViewById(R.id.button_set_min_filter).setOnClickListener(new OnClickListener() {
@@ -76,84 +68,96 @@ public class LessonSixActivity extends Activity {
 
         // Restore previous settings
         if (savedInstanceState != null) {
-            mMinSetting = savedInstanceState.getInt(MIN_SETTING, -1);
-            mMagSetting = savedInstanceState.getInt(MAG_SETTING, -1);
+            minSetting = savedInstanceState.getInt(MIN_SETTING, -1);
+            magSetting = savedInstanceState.getInt(MAG_SETTING, -1);
 
-            if (mMinSetting != -1) {
-                setMinSetting(mMinSetting);
+            if (minSetting != -1) {
+                setMinSetting(minSetting);
             }
-            if (mMagSetting != -1) {
-                setMagSetting(mMagSetting);
+            if (magSetting != -1) {
+                setMagSetting(magSetting);
             }
         }
     }
 
+    private boolean supportsOpenGLES20() {
+        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+        return configurationInfo.reqGlEsVersion >= 0x20000;
+    }
+
     @Override
     protected void onResume() {
-        // The activity must call the GL surface view's onResume() on activity
-        // onResume().
         super.onResume();
-        mGLSurfaceView.onResume();
+        glSurfaceView.onResume();
     }
 
     @Override
     protected void onPause() {
-        // The activity must call the GL surface view's onPause() on activity
-        // onPause().
         super.onPause();
-        mGLSurfaceView.onPause();
+        glSurfaceView.onPause();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(MIN_SETTING, mMinSetting);
-        outState.putInt(MAG_SETTING, mMagSetting);
+        outState.putInt(MIN_SETTING, minSetting);
+        outState.putInt(MAG_SETTING, magSetting);
     }
 
     private void setMinSetting(final int item) {
-        mMinSetting = item;
+        minSetting = item;
 
-        mGLSurfaceView.queueEvent(new Runnable() {
+        glSurfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
                 final int filter;
 
-                if (item == 0) {
-                    filter = GLES20.GL_NEAREST;
-                } else if (item == 1) {
-                    filter = GLES20.GL_LINEAR;
-                } else if (item == 2) {
-                    filter = GLES20.GL_NEAREST_MIPMAP_NEAREST;
-                } else if (item == 3) {
-                    filter = GLES20.GL_NEAREST_MIPMAP_LINEAR;
-                } else if (item == 4) {
-                    filter = GLES20.GL_LINEAR_MIPMAP_NEAREST;
-                } else // if (item == 5)
-                {
-                    filter = GLES20.GL_LINEAR_MIPMAP_LINEAR;
+                switch (item) {
+                    case 0:
+                        filter = GLES20.GL_NEAREST;
+                        break;
+                    case 1:
+                        filter = GLES20.GL_LINEAR;
+                        break;
+                    case 2:
+                        filter = GLES20.GL_NEAREST_MIPMAP_NEAREST;
+                        break;
+                    case 3:
+                        filter = GLES20.GL_NEAREST_MIPMAP_LINEAR;
+                        break;
+                    case 4:
+                        filter = GLES20.GL_LINEAR_MIPMAP_NEAREST;
+                        break;
+                    case 5:
+                    default:
+                        filter = GLES20.GL_LINEAR_MIPMAP_LINEAR;
+                        break;
                 }
 
-                mRenderer.setMinFilter(filter);
+                renderer.setMinFilter(filter);
             }
         });
     }
 
     private void setMagSetting(final int item) {
-        mMagSetting = item;
+        magSetting = item;
 
-        mGLSurfaceView.queueEvent(new Runnable() {
+        glSurfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
                 final int filter;
 
-                if (item == 0) {
-                    filter = GLES20.GL_NEAREST;
-                } else // if (item == 1)
-                {
-                    filter = GLES20.GL_LINEAR;
+                switch (item) {
+                    case 0:
+                        filter = GLES20.GL_NEAREST;
+                        break;
+                    case 1:
+                    default:
+                        filter = GLES20.GL_LINEAR;
+                        break;
                 }
 
-                mRenderer.setMagFilter(filter);
+                renderer.setMagFilter(filter);
             }
         });
     }
