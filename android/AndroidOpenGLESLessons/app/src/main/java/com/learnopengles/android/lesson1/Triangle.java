@@ -19,17 +19,16 @@ import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 class Triangle {
 
-
-    /**
-     * How many elements per vertex.
-     */
-    private static final int STRIDE_BYTES = 7 * BYTES_PER_FLOAT;
-
     private static final int POSITION_DATA_OFFSET = 0;
     private static final int POSITION_DATA_SIZE = 3;
 
     private static final int COLOR_DATA_OFFSET = 3;
     private static final int COLOR_DATA_SIZE = 4;
+
+    /**
+     * How many elements per vertex.
+     */
+    private static final int STRIDE_BYTES = (POSITION_DATA_SIZE + COLOR_DATA_SIZE) * BYTES_PER_FLOAT;
 
     private final FloatBuffer vertices;
     private Point3D rotation = new Point3D();
