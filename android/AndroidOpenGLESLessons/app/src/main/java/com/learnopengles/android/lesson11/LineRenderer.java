@@ -4,11 +4,10 @@ import com.learnopengles.android.common.Color;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import com.learnopengles.android.renderer.RendererBase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +23,10 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static java.util.Arrays.asList;
 
-class LineRenderer implements Renderer {
+class LineRenderer extends RendererBase {
 
     private ModelMatrix modelMatrix;
     private ViewMatrix viewMatrix;
-    private ProjectionMatrix projectionMatrix;
 
     private ModelViewProjectionMatrix mvpMatrix;
 
@@ -43,6 +41,7 @@ class LineRenderer implements Renderer {
     private List<Circle> circles = new ArrayList<>();
 
     LineRenderer() {
+        super(new IsometricProjectionMatrix(10.0f));
 
         modelMatrix = new ModelMatrix();
 
@@ -54,7 +53,6 @@ class LineRenderer implements Renderer {
 
         viewMatrix = new ViewMatrix(eye, look, up);
 
-        projectionMatrix = new IsometricProjectionMatrix(10.0f);
 
         mvpMatrix = new ModelViewProjectionMatrix();
 
@@ -99,11 +97,6 @@ class LineRenderer implements Renderer {
         lineRenderer = createBasicLineRenderer(lineProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
 
         circleRenderer = createCircleRenderer(lineProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
-    }
-
-    @Override
-    public void onSurfaceChanged(int width, int height) {
-        projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override

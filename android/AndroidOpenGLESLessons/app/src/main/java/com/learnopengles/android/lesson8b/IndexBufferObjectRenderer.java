@@ -6,11 +6,10 @@ import com.learnopengles.android.R;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import com.learnopengles.android.renderer.RendererBase;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
@@ -18,11 +17,10 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
-class IndexBufferObjectRenderer implements Renderer {
+class IndexBufferObjectRenderer extends RendererBase {
 
 	private final ModelMatrix modelMatrix = new ModelMatrix();
 	private final ViewMatrix viewMatrix;
-	private final ProjectionMatrix projectionMatrix = new IsometricProjectionMatrix(100.0f);
 	private final ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
 	private Program program;
@@ -32,6 +30,7 @@ class IndexBufferObjectRenderer implements Renderer {
     private Context activityContext;
 
     IndexBufferObjectRenderer(Context context) {
+        super(new IsometricProjectionMatrix(100.0f));
         this.activityContext = context;
 
         float dist = 5;
@@ -58,11 +57,6 @@ class IndexBufferObjectRenderer implements Renderer {
         viewMatrix.translate(new Point3D(0, -2, 0));
 
         program = Program.createProgram("per_pixel_vertex_shader_texture", "per_pixel_fragment_shader_texture", asList(POSITION, TEXTURE_COORDINATE));
-	}
-
-	@Override
-	public void onSurfaceChanged(int width, int height) {
-		projectionMatrix.onSurfaceChanged(width, height);
 	}
 
 	@Override

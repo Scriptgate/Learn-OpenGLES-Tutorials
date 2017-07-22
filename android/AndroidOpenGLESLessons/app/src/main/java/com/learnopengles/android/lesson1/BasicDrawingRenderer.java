@@ -5,17 +5,15 @@ import android.os.SystemClock;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import com.learnopengles.android.renderer.RendererBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewBehindOrigin;
 import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
@@ -23,11 +21,10 @@ import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static java.util.Arrays.asList;
 
-class BasicDrawingRenderer implements Renderer {
+class BasicDrawingRenderer extends RendererBase {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewBehindOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
@@ -71,11 +68,6 @@ class BasicDrawingRenderer implements Renderer {
         program = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader", asList(POSITION, COLOR));
 
         program.useForRendering();
-    }
-
-    @Override
-    public void onSurfaceChanged(int width, int height) {
-        projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override

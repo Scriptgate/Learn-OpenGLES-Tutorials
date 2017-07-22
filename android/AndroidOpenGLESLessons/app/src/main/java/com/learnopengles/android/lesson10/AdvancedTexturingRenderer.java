@@ -8,13 +8,12 @@ import com.learnopengles.android.common.Light;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import com.learnopengles.android.renderer.RendererBase;
 import com.learnopengles.android.renderer.light.LightRenderer;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import java.util.List;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateCubeTextureData;
@@ -34,7 +32,7 @@ import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
 
-class AdvancedTexturingRenderer implements Renderer {
+class AdvancedTexturingRenderer extends RendererBase {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -44,7 +42,6 @@ class AdvancedTexturingRenderer implements Renderer {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewInFrontOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
@@ -105,11 +102,6 @@ class AdvancedTexturingRenderer implements Renderer {
         Program program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
         renderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
         lightRenderer = createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
-    }
-
-    @Override
-    public void onSurfaceChanged(int width, int height) {
-        projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override

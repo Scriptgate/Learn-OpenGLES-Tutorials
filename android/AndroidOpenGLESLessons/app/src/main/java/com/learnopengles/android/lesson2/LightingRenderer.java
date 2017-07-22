@@ -6,13 +6,12 @@ import com.learnopengles.android.common.Light;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import com.learnopengles.android.renderer.RendererBase;
 import com.learnopengles.android.renderer.light.LightRenderer;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
@@ -30,7 +28,7 @@ import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
 
-public class LightingRenderer implements Renderer {
+public class LightingRenderer extends RendererBase {
     /**
      * Used for debug logs.
      */
@@ -38,7 +36,6 @@ public class LightingRenderer implements Renderer {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewInFrontOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
 
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
@@ -96,11 +93,6 @@ public class LightingRenderer implements Renderer {
         Program perVertexProgram = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL));
         renderer = new CubeRenderer(perVertexProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
         lightRenderer = createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
-    }
-
-    @Override
-    public void onSurfaceChanged(int width, int height) {
-        projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override

@@ -10,12 +10,11 @@ import com.learnopengles.android.common.Light;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import com.learnopengles.android.renderer.RendererBase;
 import com.learnopengles.android.renderer.light.LightRenderer;
 
 import java.util.ArrayList;
@@ -31,11 +30,10 @@ import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
 import static java.util.Arrays.asList;
 
-class CameraRenderer implements Renderer {
+class CameraRenderer extends RendererBase {
 
     private ModelMatrix modelMatrix;
     private ViewMatrix viewMatrix;
-    private ProjectionMatrix projectionMatrix;
 
     private ModelViewProjectionMatrix mvpMatrix;
 
@@ -50,6 +48,7 @@ class CameraRenderer implements Renderer {
     private Light light;
 
     CameraRenderer(final Context activityContext) {
+        super(new IsometricProjectionMatrix(10.0f));
         this.activityContext = activityContext;
         modelMatrix = new ModelMatrix();
 
@@ -61,7 +60,6 @@ class CameraRenderer implements Renderer {
 
         viewMatrix = new ViewMatrix(eye, look, up);
 
-        projectionMatrix = new IsometricProjectionMatrix(10.0f);
         mvpMatrix = new ModelViewProjectionMatrix();
 
         CubeDataCollection cubeData = cubeData()
@@ -108,11 +106,6 @@ class CameraRenderer implements Renderer {
         for (Cube cube : cubes) {
             cube.setTexture(textureDataHandle);
         }
-    }
-
-    @Override
-    public void onSurfaceChanged(int width, int height) {
-        projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override
