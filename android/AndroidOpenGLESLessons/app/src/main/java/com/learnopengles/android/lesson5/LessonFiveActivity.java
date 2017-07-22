@@ -1,17 +1,12 @@
 package com.learnopengles.android.lesson5;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.learnopengles.android.R;
+import com.learnopengles.android.activity.ActivityWithViewBase;
 
-public class LessonFiveActivity extends Activity {
-
-    private LessonFiveGLSurfaceView glSurfaceView;
+public class LessonFiveActivity extends ActivityWithViewBase<LessonFiveGLSurfaceView> {
 
     private static final String SHOWED_TOAST = "showed_toast";
 
@@ -37,23 +32,6 @@ public class LessonFiveActivity extends Activity {
 
     private boolean shouldShowHelpMessage(Bundle savedInstanceState) {
         return savedInstanceState == null || !savedInstanceState.getBoolean(SHOWED_TOAST, false);
-    }
-
-    private boolean supportsOpenGLES20() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        return activityManager.getDeviceConfigurationInfo().reqGlEsVersion >= 0x20000;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        glSurfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        glSurfaceView.onPause();
     }
 
     @Override

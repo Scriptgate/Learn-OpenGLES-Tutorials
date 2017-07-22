@@ -1,12 +1,8 @@
 package com.learnopengles.android.lesson6;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ConfigurationInfo;
 import android.opengl.GLES20;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -14,10 +10,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.learnopengles.android.R;
+import com.learnopengles.android.activity.ActivityWithViewBase;
 
-public class LessonSixActivity extends Activity {
+public class LessonSixActivity extends ActivityWithViewBase<LessonSixGLSurfaceView> {
 
-    private LessonSixGLSurfaceView glSurfaceView;
     private TextureFilteringRenderer renderer;
 
     private static final int MIN_DIALOG = 1;
@@ -78,24 +74,6 @@ public class LessonSixActivity extends Activity {
                 setMagSetting(magSetting);
             }
         }
-    }
-
-    private boolean supportsOpenGLES20() {
-        final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-        return configurationInfo.reqGlEsVersion >= 0x20000;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        glSurfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        glSurfaceView.onPause();
     }
 
     @Override
