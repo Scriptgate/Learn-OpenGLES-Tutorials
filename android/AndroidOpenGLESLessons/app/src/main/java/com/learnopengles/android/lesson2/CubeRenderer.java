@@ -6,17 +6,15 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.program.AttributeVariable;
+import com.learnopengles.android.cube.CubeRendererBase;
 import com.learnopengles.android.program.Program;
 
-import java.nio.FloatBuffer;
-
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 
-class CubeRenderer {
+class CubeRenderer extends CubeRendererBase {
 
-    private final Program program;
     private final ModelMatrix modelMatrix;
     private final ViewMatrix viewMatrix;
     private final ProjectionMatrix projectionMatrix;
@@ -24,7 +22,7 @@ class CubeRenderer {
     private Light light;
 
     CubeRenderer(Program program, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, ModelViewProjectionMatrix mvpMatrix, Light light) {
-        this.program = program;
+        super(program);
         this.modelMatrix = modelMatrix;
         this.viewMatrix = viewMatrix;
         this.projectionMatrix = projectionMatrix;
@@ -40,9 +38,9 @@ class CubeRenderer {
 
         cube.apply(modelMatrix);
 
-        passCubeDataToAttribute(cube, AttributeVariable.POSITION);
-        passCubeDataToAttribute(cube, AttributeVariable.COLOR);
-        passCubeDataToAttribute(cube, AttributeVariable.NORMAL);
+        passDataToAttribute(cube, POSITION);
+        passDataToAttribute(cube, COLOR);
+        passDataToAttribute(cube, NORMAL);
 
         mvpMatrix.multiply(modelMatrix, viewMatrix);
         mvpMatrix.passTo(program.getHandle(MV_MATRIX));
@@ -53,14 +51,4 @@ class CubeRenderer {
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
-
-    private void passCubeDataToAttribute(Cube cube, AttributeVariable attributeVariable) {
-        int handle = program.getHandle(attributeVariable);
-
-        FloatBuffer data = cube.getData(attributeVariable);
-        data.position(0);
-        glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, 0, data);
-        glEnableVertexAttribArray(handle);
-    }
-
 }

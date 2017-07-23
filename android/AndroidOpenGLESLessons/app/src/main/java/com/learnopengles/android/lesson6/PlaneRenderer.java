@@ -6,18 +6,15 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.program.AttributeVariable;
+import com.learnopengles.android.cube.CubeRendererBase;
 import com.learnopengles.android.program.Program;
-
-import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 import static com.learnopengles.android.program.AttributeVariable.*;
 
-class PlaneRenderer {
+class PlaneRenderer extends CubeRendererBase {
 
-    private final Program program;
     private final ModelMatrix modelMatrix;
     private final ViewMatrix viewMatrix;
     private final ProjectionMatrix projectionMatrix;
@@ -26,7 +23,7 @@ class PlaneRenderer {
     private final Light light;
 
     PlaneRenderer(Program program, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, ModelViewProjectionMatrix mvpMatrix, float[] temporaryMatrix, Light light) {
-        this.program = program;
+        super(program);
         this.modelMatrix = modelMatrix;
         this.viewMatrix = viewMatrix;
         this.projectionMatrix = projectionMatrix;
@@ -43,9 +40,9 @@ class PlaneRenderer {
 
         plane.apply(modelMatrix);
 
-        passCubeDataToAttribute(plane, POSITION);
-        passCubeDataToAttribute(plane, NORMAL);
-        passCubeDataToAttribute(plane, TEXTURE_COORDINATE);
+        passDataToAttribute(plane, POSITION);
+        passDataToAttribute(plane, NORMAL);
+        passDataToAttribute(plane, TEXTURE_COORDINATE);
 
         bindTexture(plane.getTexture());
 
@@ -67,14 +64,4 @@ class PlaneRenderer {
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         glUniform1i(program.getHandle(TEXTURE), 0);
     }
-
-    private void passCubeDataToAttribute(Cube plane, AttributeVariable attributeVariable) {
-        int handle = program.getHandle(attributeVariable);
-
-        FloatBuffer data = plane.getData(attributeVariable);
-        data.position(0);
-        glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, 0, data);
-        glEnableVertexAttribArray(handle);
-    }
-
 }
