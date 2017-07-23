@@ -1,7 +1,6 @@
-package com.learnopengles.android.cube.data;
+package com.learnopengles.android.cube;
 
 import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.cube.Cube;
 import com.learnopengles.android.program.AttributeVariable;
 
 import java.nio.FloatBuffer;
@@ -16,6 +15,6 @@ public class CubeFactory {
     }
 
     public Cube createAt(float x, float y, float z) {
-        return new Cube(data, new Point3D(x,y,z));
+        return new Cube(data, new Point3D(x, y, z));
     }
 }

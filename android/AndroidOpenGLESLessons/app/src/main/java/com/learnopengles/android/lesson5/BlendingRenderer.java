@@ -7,7 +7,7 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.data.CubeFactory;
+import com.learnopengles.android.cube.CubeFactory;
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.Renderer;
 
@@ -20,7 +20,7 @@ import static com.learnopengles.android.component.ProjectionMatrix.createProject
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionDataCentered;
-import static com.learnopengles.android.cube.data.CubeFactoryBuilder.createCubeFactory;
+import static com.learnopengles.android.cube.CubeFactoryBuilder.createCubeFactory;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.Program.createProgram;

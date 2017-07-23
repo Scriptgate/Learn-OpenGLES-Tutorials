@@ -1,4 +1,4 @@
-package com.learnopengles.android.cube.data;
+package com.learnopengles.android.cube;
 
 
 import com.learnopengles.android.program.AttributeVariable;

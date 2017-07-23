@@ -22,7 +22,7 @@ import static com.learnopengles.android.component.ProjectionMatrix.createProject
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
-import static com.learnopengles.android.cube.data.CubeFactoryBuilder.createCubeFactory;
+import static com.learnopengles.android.cube.CubeFactoryBuilder.createCubeFactory;
 import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
