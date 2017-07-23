@@ -2,14 +2,12 @@ package com.learnopengles.android.lesson5;
 
 import android.os.SystemClock;
 
-import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.CubeDataFactory;
-import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.data.CubeFactory;
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.Renderer;
 
@@ -21,7 +19,8 @@ import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.cube.CubeDataFactory.generatePositionDataCentered;
+import static com.learnopengles.android.cube.data.CubeFactoryBuilder.createCubeFactory;
 import static com.learnopengles.android.program.AttributeVariable.COLOR;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.Program.createProgram;
@@ -53,22 +52,19 @@ class BlendingRenderer implements Renderer {
 
     private CubeRenderer renderer;
 
-    /**
-     * Initialize the model data.
-     */
     BlendingRenderer() {
 
-        CubeDataCollection cubeData = cubeData()
-                .positions(CubeDataFactory.generatePositionDataCentered(1.0f, 1.0f, 1.0f))
+        CubeFactory cubeFactory = createCubeFactory()
+                .positions(generatePositionDataCentered(1.0f, 1.0f, 1.0f))
                 .colors(generateColorData(RED, MAGENTA, BLACK, BLUE, YELLOW, WHITE, GREEN, CYAN))
                 .build();
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(cubeData, new Point3D(4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point3D(-4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point3D(0.0f, 4.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point3D(0.0f, -4.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point3D(0.0f, 0.0f, -5.0f)));
+        cubes.add(cubeFactory.createAt(4.0f, 0.0f, -7.0f));
+        cubes.add(cubeFactory.createAt(-4.0f, 0.0f, -7.0f));
+        cubes.add(cubeFactory.createAt(0.0f, 4.0f, -7.0f));
+        cubes.add(cubeFactory.createAt(0.0f, -4.0f, -7.0f));
+        cubes.add(cubeFactory.createAt(0.0f, 0.0f, -5.0f));
     }
 
     void switchMode() {
@@ -82,32 +78,23 @@ class BlendingRenderer implements Renderer {
     }
 
     private void disableBlending() {
-        // Cull back faces
         glEnable(GL_CULL_FACE);
-
-        // Enable depth testing
         glEnable(GL_DEPTH_TEST);
 
-        // Disable blending
         glDisable(GL_BLEND);
     }
 
     private void enableBlending() {
-        // No culling of back faces
         glDisable(GL_CULL_FACE);
-
-        // No depth testing
         glDisable(GL_DEPTH_TEST);
 
-        // Enable blending
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
     }
 
     @Override
     public void onSurfaceCreated() {
-        // Set the background clear color to black.
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(BLACK.red, BLACK.green, BLACK.blue, 0.0f);
 
         enableBlending();
 
@@ -135,10 +122,8 @@ class BlendingRenderer implements Renderer {
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
-        // Set our program
         program.useForRendering();
 
-        // Draw some cubes.
         cubes.get(0).setRotationX(angleInDegrees);
         cubes.get(1).setRotationY(angleInDegrees);
         cubes.get(2).setRotationZ(angleInDegrees);

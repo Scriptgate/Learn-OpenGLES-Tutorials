@@ -4,19 +4,14 @@ import com.learnopengles.android.cube.CubeDataFactory;
 
 import org.junit.Test;
 
-import static com.learnopengles.android.common.Color.BLUE;
-import static com.learnopengles.android.common.Color.CYAN;
-import static com.learnopengles.android.common.Color.GREEN;
-import static com.learnopengles.android.common.Color.MAGENTA;
-import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.common.Color.YELLOW;
+import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
 import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
 import static org.junit.Assert.assertArrayEquals;
 
-public class CubeDataFactoryTest {
+public class CubeFactoryTest {
 
-    public static final float DELTA = 0.000000001f;
+    private static final float DELTA = 0.000000001f;
 
     // X, Y, Z
     // In OpenGL counter-clockwise winding is default. This means that when we look at a triangle,
@@ -77,7 +72,7 @@ public class CubeDataFactoryTest {
 
     // R, G, B, A
     //@formatter:off
-    final float[] COLOR = {
+    private static final float[] COLOR = {
             // Front face (red)
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
@@ -134,7 +129,7 @@ public class CubeDataFactoryTest {
     // orthogonal to the plane of the surface. For a cube model, the normals
     // should be orthogonal to the points of each face.
     //@formatter:off
-    final float[] NORMAL =
+    private static final float[] NORMAL =
             {
             // Front face
             0.0f, 0.0f, 1.0f,
@@ -192,7 +187,7 @@ public class CubeDataFactoryTest {
     // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
     // What's more is that the texture coordinates are the same for every face.
     //@formatter:off
-    final float[] TEXTURE = {
+    private static final float[] TEXTURE = {
             // Front face
             0.0f, 0.0f,
             0.0f, 1.0f,
@@ -246,14 +241,14 @@ public class CubeDataFactoryTest {
     @Test
     public void generatePositionData_givenPoints() throws Exception {
         //@formatter:off
-        final Point3D frontA = new Point3D(-1.0f,  1.0f,  1.0f);
-        final Point3D frontB = new Point3D( 1.0f,  1.0f,  1.0f);
-        final Point3D frontC = new Point3D(-1.0f, -1.0f,  1.0f);
-        final Point3D frontD = new Point3D( 1.0f, -1.0f,  1.0f);
-        final Point3D backA  = new Point3D(-1.0f,  1.0f, -1.0f);
-        final Point3D backB  = new Point3D( 1.0f,  1.0f, -1.0f);
-        final Point3D backC  = new Point3D(-1.0f, -1.0f, -1.0f);
-        final Point3D backD  = new Point3D( 1.0f, -1.0f, -1.0f);
+        Point3D frontA = new Point3D(-1.0f,  1.0f,  1.0f);
+        Point3D frontB = new Point3D( 1.0f,  1.0f,  1.0f);
+        Point3D frontC = new Point3D(-1.0f, -1.0f,  1.0f);
+        Point3D frontD = new Point3D( 1.0f, -1.0f,  1.0f);
+        Point3D backA  = new Point3D(-1.0f,  1.0f, -1.0f);
+        Point3D backB  = new Point3D( 1.0f,  1.0f, -1.0f);
+        Point3D backC  = new Point3D(-1.0f, -1.0f, -1.0f);
+        Point3D backD  = new Point3D( 1.0f, -1.0f, -1.0f);
         //@formatter:on
 
         float[] positionData = generatePositionData(frontA, frontB, frontC, frontD, backA, backB, backC, backD);
@@ -288,12 +283,15 @@ public class CubeDataFactoryTest {
 
     @Test
     public void generateNormalData_perFace() throws Exception {
-        Point3D front = new Point3D(0.0f, 0.0f, 1.0f);
-        Point3D right = new Point3D(1.0f, 0.0f, 0.0f);
-        Point3D back = new Point3D(0.0f, 0.0f, -1.0f);
-        Point3D left = new Point3D(-1.0f, 0.0f, 0.0f);
-        Point3D top = new Point3D(0.0f, 1.0f, 0.0f);
-        Point3D bottom = new Point3D(0.0f, -1.0f, 0.0f);
+        //@formatter:off
+        Point3D front  = new Point3D( 0.0f,  0.0f,  1.0f);
+        Point3D right  = new Point3D( 1.0f,  0.0f,  0.0f);
+        Point3D back   = new Point3D( 0.0f,  0.0f, -1.0f);
+        Point3D left   = new Point3D(-1.0f,  0.0f,  0.0f);
+        Point3D top    = new Point3D( 0.0f,  1.0f,  0.0f);
+        Point3D bottom = new Point3D( 0.0f, -1.0f,  0.0f);
+        //@formatter:on
+
 
         float[] normalData = CubeDataFactory.generateNormalData(front, right, back, left, top, bottom);
 

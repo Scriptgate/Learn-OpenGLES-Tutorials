@@ -22,7 +22,7 @@ import static com.learnopengles.android.component.ProjectionMatrix.createProject
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
-import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.cube.data.CubeFactoryBuilder.createCubeFactory;
 import static com.learnopengles.android.program.AttributeVariable.NORMAL;
 import static com.learnopengles.android.program.AttributeVariable.POSITION;
 import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
@@ -98,18 +98,18 @@ class TextureFilteringRenderer implements Renderer {
         float[] positionData = CubeDataFactory.generatePositionDataCentered(1.0f, 1.0f, 1.0f);
         float[] normalData = generateNormalData();
 
-        cube = new Cube(cubeData()
+        cube = createCubeFactory()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData())
-                .build(),
-                new Point3D(0.0f, 0.8f, -3.5f));
-        plane = new Cube(cubeData()
+                .build()
+                .createAt(0.0f, 0.8f, -3.5f);
+        plane = createCubeFactory()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData(25.0f, 25.0f))
-                .build(),
-                new Point3D(0.0f, -2.0f, -5.0f));
+                .build()
+                .createAt(0.0f, -2.0f, -5.0f);
         plane.setScale(new Point3D(25.0f, 1.0f, 25.0f));
         light = new Light();
     }

@@ -10,8 +10,7 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.CubeDataFactory;
-import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.data.CubeFactory;
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.RendererBase;
 import com.learnopengles.android.renderer.light.LightRenderer;
@@ -23,10 +22,8 @@ import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
-import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
-import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.cube.CubeDataFactory.*;
+import static com.learnopengles.android.cube.data.CubeFactoryBuilder.createCubeFactory;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
@@ -52,47 +49,35 @@ class BasicTexturingRenderer extends RendererBase {
     private CubeRenderer renderer;
     private LightRenderer lightRenderer;
 
-    /**
-     * Initialize the model data.
-     */
     BasicTexturingRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
-        CubeDataCollection cubeData = cubeData()
-                .positions(CubeDataFactory.generatePositionDataCentered(1.0f, 1.0f, 1.0f))
+        CubeFactory cubeFactory = createCubeFactory()
+                .positions(generatePositionDataCentered(1.0f, 1.0f, 1.0f))
                 .colors(generateColorData(RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA))
                 .normals(generateNormalData())
                 .textures(generateTextureData())
                 .build();
 
         cubes = new ArrayList<>();
-        cubes.add(new Cube(cubeData, new Point3D(4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point3D(-4.0f, 0.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point3D(0.0f, 4.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point3D(0.0f, -4.0f, -7.0f)));
-        cubes.add(new Cube(cubeData, new Point3D(0.0f, 0.0f, -5.0f)));
+        cubes.add(cubeFactory.createAt(4.0f, 0.0f, -7.0f));
+        cubes.add(cubeFactory.createAt(-4.0f, 0.0f, -7.0f));
+        cubes.add(cubeFactory.createAt(0.0f, 4.0f, -7.0f));
+        cubes.add(cubeFactory.createAt(0.0f, -4.0f, -7.0f));
+        cubes.add(cubeFactory.createAt(0.0f, 0.0f, -5.0f));
 
         light = new Light();
     }
 
     @Override
     public void onSurfaceCreated() {
-        // Set the background clear color to black.
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(BLACK.red, BLACK.green, BLACK.blue, 0.0f);
 
-        // Use culling to remove back faces.
         glEnable(GL_CULL_FACE);
-
-        // Enable depth testing
         glEnable(GL_DEPTH_TEST);
-
-        // The below glEnable() call is a holdover from OpenGL ES 1, and is not needed in OpenGL ES 2.
-        // Enable texture mapping
-        // glEnable(GL_TEXTURE_2D);
 
         viewMatrix.onSurfaceCreated();
 
-        // Load the texture
         int textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
         for (Cube cube : cubes) {
             cube.setTexture(textureDataHandle);
@@ -122,7 +107,6 @@ class BasicTexturingRenderer extends RendererBase {
 
         light.setView(viewMatrix);
 
-        // Draw some cubes.
         cubes.get(0).setRotationX(angleInDegrees);
         cubes.get(1).setRotationY(angleInDegrees);
         cubes.get(2).setRotationZ(angleInDegrees);
@@ -133,7 +117,6 @@ class BasicTexturingRenderer extends RendererBase {
             renderer.draw(cube);
         }
 
-        // Draw a point to indicate the light.
         lightRenderer.useForRendering();
         lightRenderer.draw(light);
     }

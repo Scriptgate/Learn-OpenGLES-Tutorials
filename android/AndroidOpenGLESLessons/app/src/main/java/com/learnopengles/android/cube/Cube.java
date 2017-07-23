@@ -3,24 +3,27 @@ package com.learnopengles.android.cube;
 
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.cube.data.CubeData;
-import com.learnopengles.android.cube.data.CubeDataCollection;
 import com.learnopengles.android.program.AttributeVariable;
+
+import java.nio.FloatBuffer;
+import java.util.Map;
 
 public class Cube {
 
-    protected final CubeDataCollection cubeData;
-    protected Point3D position = new Point3D();
-    protected Point3D rotation = new Point3D();
-    protected Point3D scale = new Point3D(1.0f, 1.0f, 1.0f);
+    private final Map<AttributeVariable, FloatBuffer> data;
+
+    private Point3D position = new Point3D();
+    private Point3D rotation = new Point3D();
+    private Point3D scale = new Point3D(1.0f, 1.0f, 1.0f);
+
     private int texture;
 
-    public Cube(CubeDataCollection cubeData) {
-        this.cubeData = cubeData;
+    public Cube(Map<AttributeVariable, FloatBuffer> data) {
+        this.data = data;
     }
 
-    public Cube(CubeDataCollection cubeData, Point3D position) {
-        this.cubeData = cubeData;
+    public Cube(Map<AttributeVariable, FloatBuffer> data, Point3D position) {
+        this.data = data;
         this.position = position;
     }
 
@@ -57,8 +60,8 @@ public class Cube {
         this.scale = scale;
     }
 
-    public CubeData getCubeData(AttributeVariable cubeDataType) {
-        return cubeData.getCubeData(cubeDataType);
+    public FloatBuffer getData(AttributeVariable cubeDataType) {
+        return data.get(cubeDataType);
     }
 
     public int getTexture() {

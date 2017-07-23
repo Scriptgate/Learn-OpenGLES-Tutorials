@@ -12,7 +12,7 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.data.CubeDataCollection;
+import com.learnopengles.android.cube.data.CubeFactory;
 import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.RendererBase;
 import com.learnopengles.android.renderer.light.LightRenderer;
@@ -24,7 +24,7 @@ import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.Color.*;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.cube.CubeDataFactory.*;
-import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
+import static com.learnopengles.android.cube.data.CubeFactoryBuilder.createCubeFactory;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.Program.createProgram;
 import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
@@ -62,7 +62,7 @@ class CameraRenderer extends RendererBase {
 
         mvpMatrix = new ModelViewProjectionMatrix();
 
-        CubeDataCollection cubeData = cubeData()
+        CubeFactory cubeFactory = createCubeFactory()
                 .positions(generatePositionDataCentered(0.1f, 0.02f, 0.1f))
                 .colors(generateColorData(WHITE))
                 .normals(generateNormalData())
@@ -73,7 +73,7 @@ class CameraRenderer extends RendererBase {
         int squareSize = 4;
         for (int j = 0; j < squareSize; j++) {
             for (int i = 0; i < squareSize; i++) {
-                cubes.add(new Cube(cubeData, new Point3D(i * 0.3f, 0.0f, j * 0.3f)));
+                cubes.add(cubeFactory.createAt(i * 0.3f, 0.0f, j * 0.3f));
             }
         }
 

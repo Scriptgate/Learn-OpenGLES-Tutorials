@@ -6,7 +6,6 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.data.CubeData;
 import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
@@ -81,12 +80,12 @@ class CubeRenderer {
     }
 
     private void passCubeDataToAttribute(Cube cube, AttributeVariable attributeVariable) {
-        CubeData cubeData = cube.getCubeData(attributeVariable);
+
         int handle = program.getHandle(attributeVariable);
 
-        FloatBuffer data = cubeData.getData();
+        FloatBuffer data = cube.getData(attributeVariable);
         data.position(0);
-        glVertexAttribPointer(handle, cubeData.getDataSize(), GL_FLOAT, false, 0, data);
+        glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, 0, data);
         glEnableVertexAttribArray(handle);
     }
 
