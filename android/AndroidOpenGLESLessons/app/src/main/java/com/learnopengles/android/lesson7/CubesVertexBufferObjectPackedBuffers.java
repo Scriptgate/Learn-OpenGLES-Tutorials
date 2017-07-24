@@ -32,26 +32,26 @@ class CubesVertexBufferObjectPackedBuffers extends Cubes {
 
     @Override
     public void render(Program program, int actualCubeFactor) {
-        int positionHandle = program.getHandle(POSITION);
-        int normalHandle = program.getHandle(NORMAL);
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
 
-        final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
+        final int stride = (POSITION.getSize() + NORMAL.getSize() + TEXTURE_COORDINATE.getSize()) * BYTES_PER_FLOAT;
 
         // Pass in the position information
         glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
+        int positionHandle = program.getHandle(POSITION);
         glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, 0);
+        glVertexAttribPointer(positionHandle, POSITION.getSize(), GL_FLOAT, false, stride, 0);
 
         // Pass in the normal information
         glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
+        int normalHandle = program.getHandle(NORMAL);
         glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, POSITION_DATA_SIZE * BYTES_PER_FLOAT);
+        glVertexAttribPointer(normalHandle, NORMAL.getSize(), GL_FLOAT, false, stride, POSITION.getSize() * BYTES_PER_FLOAT);
 
         // Pass in the texture information
         glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
         glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, (POSITION_DATA_SIZE + NORMAL_DATA_SIZE) * BYTES_PER_FLOAT);
+        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE.getSize(), GL_FLOAT, false, stride, (POSITION.getSize() + NORMAL.getSize()) * BYTES_PER_FLOAT);
 
         // Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
         glBindBuffer(GL_ARRAY_BUFFER, 0);

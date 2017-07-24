@@ -50,24 +50,24 @@ class CubesVertexBufferObjectSeparateBuffers extends Cubes {
 
     @Override
     public void render(Program program, int actualCubeFactor) {
-        int positionHandle = program.getHandle(POSITION);
-        int normalHandle = program.getHandle(NORMAL);
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
 
         // Pass in the position information
         glBindBuffer(GL_ARRAY_BUFFER, cubePositionsBufferIdx);
+        int positionHandle = program.getHandle(POSITION);
         glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, 0);
+        glVertexAttribPointer(positionHandle, POSITION.getSize(), GL_FLOAT, false, 0, 0);
 
         // Pass in the normal information
         glBindBuffer(GL_ARRAY_BUFFER, cubeNormalsBufferIdx);
+        int normalHandle = program.getHandle(NORMAL);
         glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, 0);
+        glVertexAttribPointer(normalHandle, NORMAL.getSize(), GL_FLOAT, false, 0, 0);
 
         // Pass in the texture information
         glBindBuffer(GL_ARRAY_BUFFER, cubeTexCoordsBufferIdx);
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
         glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, 0);
+        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE.getSize(), GL_FLOAT, false, 0, 0);
 
         // Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
         glBindBuffer(GL_ARRAY_BUFFER, 0);

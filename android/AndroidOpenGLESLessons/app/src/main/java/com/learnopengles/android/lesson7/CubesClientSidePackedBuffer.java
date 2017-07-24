@@ -17,26 +17,26 @@ class CubesClientSidePackedBuffer extends Cubes {
 
     @Override
     public void render(Program program, int actualCubeFactor) {
-        int positionHandle = program.getHandle(POSITION);
-        int normalHandle = program.getHandle(NORMAL);
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
 
-        final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
+        final int stride = (POSITION.getSize() + NORMAL.getSize() + TEXTURE_COORDINATE.getSize()) * BYTES_PER_FLOAT;
 
         // Pass in the position information
         cubeBuffer.position(0);
+        int positionHandle = program.getHandle(POSITION);
         glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
+        glVertexAttribPointer(positionHandle, POSITION.getSize(), GL_FLOAT, false, stride, cubeBuffer);
 
         // Pass in the normal information
-        cubeBuffer.position(POSITION_DATA_SIZE);
+        cubeBuffer.position(POSITION.getSize());
+        int normalHandle = program.getHandle(NORMAL);
         glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
+        glVertexAttribPointer(normalHandle, NORMAL.getSize(), GL_FLOAT, false, stride, cubeBuffer);
 
         // Pass in the texture information
-        cubeBuffer.position(POSITION_DATA_SIZE + NORMAL_DATA_SIZE);
+        cubeBuffer.position(POSITION.getSize() + NORMAL.getSize());
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
         glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
+        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE.getSize(), GL_FLOAT, false, stride, cubeBuffer);
 
         // Draw the cubes.
         glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);

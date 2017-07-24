@@ -6,14 +6,13 @@ import java.nio.FloatBuffer;
 
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
+import static com.learnopengles.android.program.AttributeVariable.NORMAL;
+import static com.learnopengles.android.program.AttributeVariable.POSITION;
+import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
 abstract class Cubes {
-
-    static final int POSITION_DATA_SIZE = 3;
-    static final int NORMAL_DATA_SIZE = 3;
-    static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
 
     abstract void render(Program program, int actualCubeFactor);
 
@@ -62,12 +61,12 @@ abstract class Cubes {
 
         for (int i = 0; i < generatedCubeFactor * generatedCubeFactor * generatedCubeFactor; i++) {
             for (int v = 0; v < 36; v++) {
-                cubeBuffer.put(cubePositions, cubePositionOffset, POSITION_DATA_SIZE);
-                cubePositionOffset += POSITION_DATA_SIZE;
-                cubeBuffer.put(cubeNormals, cubeNormalOffset, NORMAL_DATA_SIZE);
-                cubeNormalOffset += NORMAL_DATA_SIZE;
-                cubeBuffer.put(cubeTextureCoordinates, cubeTextureOffset, TEXTURE_COORDINATE_DATA_SIZE);
-                cubeTextureOffset += TEXTURE_COORDINATE_DATA_SIZE;
+                cubeBuffer.put(cubePositions, cubePositionOffset, POSITION.getSize());
+                cubePositionOffset += POSITION.getSize();
+                cubeBuffer.put(cubeNormals, cubeNormalOffset, NORMAL.getSize());
+                cubeNormalOffset += NORMAL.getSize();
+                cubeBuffer.put(cubeTextureCoordinates, cubeTextureOffset, TEXTURE_COORDINATE.getSize());
+                cubeTextureOffset += TEXTURE_COORDINATE.getSize();
             }
 
             // The normal and texture data is repeated for each cube.

@@ -26,17 +26,17 @@ class CubesClientSideSeparateBuffers extends Cubes {
         // Pass in the position information
         int positionHandle = program.getHandle(POSITION);
         glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
+        glVertexAttribPointer(positionHandle, POSITION.getSize(), GL_FLOAT, false, 0, cubePositions);
 
         // Pass in the normal information
         int normalHandle = program.getHandle(NORMAL);
         glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, cubeNormals);
+        glVertexAttribPointer(normalHandle, NORMAL.getSize(), GL_FLOAT, false, 0, cubeNormals);
 
         // Pass in the texture information
         int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
         glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, cubeTextureCoordinates);
+        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE.getSize(), GL_FLOAT, false, 0, cubeTextureCoordinates);
 
         // Draw the cubes.
         glDrawArrays(GL_TRIANGLES, 0,actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);
