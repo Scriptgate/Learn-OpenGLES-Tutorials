@@ -6,15 +6,15 @@ import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.CubeRendererBase;
 import com.learnopengles.android.program.Program;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.*;
 
-class CubeRenderer extends CubeRendererBase {
+class CubeRenderer {
 
+    private final Program program;
     private final ModelMatrix modelMatrix;
     private final ViewMatrix viewMatrix;
     private final ProjectionMatrix projectionMatrix;
@@ -22,7 +22,7 @@ class CubeRenderer extends CubeRendererBase {
     private final Light light;
 
     CubeRenderer(Program program, ModelMatrix modelMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, ModelViewProjectionMatrix mvpMatrix, Light light) {
-        super(program);
+        this.program = program;
         this.modelMatrix = modelMatrix;
         this.viewMatrix = viewMatrix;
         this.projectionMatrix = projectionMatrix;
@@ -37,10 +37,10 @@ class CubeRenderer extends CubeRendererBase {
     void draw(Cube cube) {
         cube.apply(modelMatrix);
 
-        passDataToAttribute(cube, POSITION);
-        passDataToAttribute(cube, COLOR);
-        passDataToAttribute(cube, NORMAL);
-        passDataToAttribute(cube, TEXTURE_COORDINATE);
+        program.pass(cube.getData(POSITION)).to(POSITION);
+        program.pass(cube.getData(COLOR)).to(COLOR);
+        program.pass(cube.getData(NORMAL)).to(NORMAL);
+        program.pass(cube.getData(TEXTURE_COORDINATE)).to(TEXTURE_COORDINATE);
 
         bindTexture(cube.getTexture());
 

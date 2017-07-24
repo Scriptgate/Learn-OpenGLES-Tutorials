@@ -1,5 +1,6 @@
 package com.learnopengles.android.program;
 
+import java.nio.FloatBuffer;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
@@ -36,5 +37,25 @@ public class Program {
     public void useForRendering() {
         // Tell OpenGL to use this program when rendering.
         glUseProgram(handle);
+    }
+
+    public ProgramAttributeData pass(FloatBuffer data) {
+        return new ProgramAttributeData(data);
+    }
+
+    public class ProgramAttributeData {
+        private final FloatBuffer data;
+
+        private ProgramAttributeData(FloatBuffer data) {
+            this.data = data;
+        }
+
+        public void to(AttributeVariable attributeVariable) {
+            int handle = getHandle(attributeVariable);
+
+            data.position(0);
+            glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, 0, data);
+            glEnableVertexAttribArray(handle);
+        }
     }
 }
