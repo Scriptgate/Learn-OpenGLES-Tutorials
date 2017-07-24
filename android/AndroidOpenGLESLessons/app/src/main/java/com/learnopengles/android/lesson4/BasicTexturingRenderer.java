@@ -82,7 +82,10 @@ class BasicTexturingRenderer extends RendererBase {
             cube.setTexture(textureDataHandle);
         }
 
-        Program program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
+        Program program = createProgram(activityContext,
+                R.raw.per_pixel_vertex_shader,
+                R.raw.per_pixel_fragment_shader,
+                asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
         renderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
         lightRenderer = LightRenderer.createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
     }

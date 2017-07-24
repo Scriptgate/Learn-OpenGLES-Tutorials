@@ -78,13 +78,9 @@ public class LightingRenderer extends RendererBase {
 
     @Override
     public void onSurfaceCreated() {
-        // Set the background clear color to black.
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(BLACK.red, BLACK.green, BLUE.blue, BLACK.alpha);
 
-        // Use culling to remove back faces.
         glEnable(GL_CULL_FACE);
-
-        // Enable depth testing
         glEnable(GL_DEPTH_TEST);
 
         viewMatrix.onSurfaceCreated();
