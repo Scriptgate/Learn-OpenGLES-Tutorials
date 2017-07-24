@@ -231,7 +231,7 @@ class VertexBufferObjectRenderer implements Renderer {
 
         // Draw a cube. Translate the cube into the screen.
         modelMatrix.setIdentity();
-        modelMatrix.translate(new Point3D(0.0f, 0.0f, -3.5f));
+        modelMatrix.translate(0.0f, 0.0f, -3.5f);
 
         mvpMatrix.multiply(modelMatrix, viewMatrix);
         mvpMatrix.passTo(glGetUniformLocation(programHandle, "u_MVMatrix"));

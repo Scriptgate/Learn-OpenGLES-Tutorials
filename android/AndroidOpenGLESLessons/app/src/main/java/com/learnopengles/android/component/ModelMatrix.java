@@ -16,8 +16,12 @@ public class ModelMatrix {
         Matrix.setIdentityM(modelMatrix, 0);
     }
 
+    public void translate(float x, float y, float z) {
+        Matrix.translateM(modelMatrix, 0, x, y, z);
+    }
+
     public void translate(Point3D point) {
-        Matrix.translateM(modelMatrix, 0, point.x, point.y, point.z);
+        translate(point.x, point.y, point.z);
     }
 
     public void rotate(Point3D rotation) {

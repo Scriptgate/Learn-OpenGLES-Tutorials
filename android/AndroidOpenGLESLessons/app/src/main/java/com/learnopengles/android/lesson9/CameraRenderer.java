@@ -117,9 +117,9 @@ class CameraRenderer extends RendererBase {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         light.setIdentity();
-        light.translate(new Point3D(0.5f, 0.2f, 0.5f));
+        light.translate(0.5f, 0.2f, 0.5f);
         light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
-        light.translate(new Point3D(0.2f, 0.0f, 0.0f));
+        light.translate(0.2f, 0.0f, 0.0f);
         light.setView(viewMatrix);
 
         cubeRenderer.useForRendering();

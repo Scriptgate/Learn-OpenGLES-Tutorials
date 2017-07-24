@@ -101,9 +101,9 @@ class BasicTexturingRenderer extends RendererBase {
 
         // Calculate position of the light. Rotate and then push into the distance.
         light.setIdentity();
-        light.translate(new Point3D(0.0f, 0.0f, -5.0f));
+        light.translate(0.0f, 0.0f, -5.0f);
         light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
-        light.translate(new Point3D(0.0f, 0.0f, 2.0f));
+        light.translate(0.0f, 0.0f, 2.0f);
 
         light.setView(viewMatrix);
 

@@ -53,8 +53,8 @@ public class Light {
         modelMatrix.setIdentity();
     }
 
-    public void translate(Point3D point) {
-        modelMatrix.translate(point);
+    public void translate(float x, float y, float z) {
+        modelMatrix.translate(x, y, z);
     }
 
     public void rotate(Point3D rotation) {
