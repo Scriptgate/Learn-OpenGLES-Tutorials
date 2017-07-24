@@ -3,17 +3,17 @@ package com.learnopengles.android.lesson8;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import net.scriptgate.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.Renderer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.BLACK;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
-import static com.learnopengles.android.program.AttributeVariable.*;
-import static com.learnopengles.android.program.UniformVariable.*;
+import static net.scriptgate.common.Color.BLACK;
+import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
+import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
 class IndexBufferObjectRenderer implements Renderer {

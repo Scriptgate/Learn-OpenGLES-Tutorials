@@ -1,9 +1,9 @@
 package com.learnopengles.android.lesson1;
 
 
-import com.learnopengles.android.common.Color;
-import com.learnopengles.android.common.ColorPoint3D;
-import com.learnopengles.android.common.Point3D;
+import net.scriptgate.common.Color;
+import net.scriptgate.common.ColorPoint3D;
+import net.scriptgate.common.Point3D;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,12 +1,14 @@
 package com.learnopengles.android.common;
 
-import com.learnopengles.android.cube.CubeDataFactory;
+import net.scriptgate.opengles.cube.CubeDataFactory;
+
+import net.scriptgate.common.Point3D;
 
 import org.junit.Test;
 
-import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.cube.CubeDataFactory.generatePositionData;
+import static net.scriptgate.common.Color.*;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generateColorData;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generatePositionData;
 import static org.junit.Assert.assertArrayEquals;
 
 public class CubeFactoryTest {

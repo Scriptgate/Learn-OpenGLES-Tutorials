@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson8b;
 
-import com.learnopengles.android.common.Point2D;
-import com.learnopengles.android.common.Point3D;
+import net.scriptgate.common.Point2D;
+import net.scriptgate.common.Point3D;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -11,8 +11,8 @@ import java8.util.function.IntFunction;
 import java8.util.stream.IntStream;
 import java8.util.stream.Stream;
 
-import static com.learnopengles.android.common.BufferHelper.putPoint2DIn;
-import static com.learnopengles.android.common.BufferHelper.putPoint3DIn;
+import static net.scriptgate.nio.BufferHelper.putPoint2DIn;
+import static net.scriptgate.nio.BufferHelper.putPoint3DIn;
 import static com.learnopengles.android.lesson8b.Cube.toColorIndex;
 import static com.learnopengles.android.lesson8b.Cube.toPosition;
 import static com.learnopengles.android.lesson8b.IndexBufferObject.allocatePositionDataBuffer;

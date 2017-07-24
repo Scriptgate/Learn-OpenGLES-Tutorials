@@ -1,12 +1,12 @@
 package com.learnopengles.android.lesson11;
 
-import com.learnopengles.android.common.Color;
-import com.learnopengles.android.common.Point3D;
+import net.scriptgate.common.Color;
+import net.scriptgate.common.Point3D;
 
 import java.nio.FloatBuffer;
 
-import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
+import static net.scriptgate.common.Color.RED;
+import static net.scriptgate.nio.BufferHelper.allocateBuffer;
 
 class Line implements Drawable {
 

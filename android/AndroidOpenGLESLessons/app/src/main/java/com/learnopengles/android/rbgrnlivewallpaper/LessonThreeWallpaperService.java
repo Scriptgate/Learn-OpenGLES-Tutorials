@@ -4,7 +4,7 @@ import android.opengl.GLSurfaceView.Renderer;
 
 import com.learnopengles.android.lesson3.PerPixelLightingRenderer;
 
-import static com.learnopengles.android.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
+import static net.scriptgate.opengles.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
 
 public class LessonThreeWallpaperService extends OpenGLES2WallpaperService {
 	@Override

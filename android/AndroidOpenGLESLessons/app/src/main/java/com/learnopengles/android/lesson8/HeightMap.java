@@ -3,17 +3,17 @@ package com.learnopengles.android.lesson8;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.learnopengles.android.program.AttributeVariable;
-import com.learnopengles.android.program.Program;
+import net.scriptgate.opengles.program.AttributeVariable;
+import net.scriptgate.opengles.program.Program;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_SHORT;
-import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
-import static com.learnopengles.android.program.AttributeVariable.*;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_SHORT;
+import static net.scriptgate.nio.BufferHelper.allocateBuffer;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
 class HeightMap {
 

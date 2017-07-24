@@ -1,12 +1,12 @@
 package com.learnopengles.android.lesson7;
 
-import com.learnopengles.android.program.Program;
+import net.scriptgate.opengles.program.Program;
 
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
-import static com.learnopengles.android.program.AttributeVariable.*;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
 class CubesVertexBufferObjectSeparateBuffers extends Cubes {
 

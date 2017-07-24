@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson10;
 
-import com.learnopengles.android.activity.ActivityBase;
-import com.learnopengles.android.renderer.Renderer;
+import net.scriptgate.opengles.activity.ActivityBase;
+import net.scriptgate.opengles.renderer.Renderer;
 
 public class Activity extends ActivityBase {
     @Override

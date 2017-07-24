@@ -1,16 +1,16 @@
 package com.learnopengles.android.lesson6;
 
-import com.learnopengles.android.common.Light;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.program.Program;
+import net.scriptgate.opengles.light.Light;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.cube.Cube;
+import net.scriptgate.opengles.program.Program;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.program.UniformVariable.*;
-import static com.learnopengles.android.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.UniformVariable.*;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
 class PlaneRenderer {
 

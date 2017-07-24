@@ -3,7 +3,7 @@ package com.learnopengles.android.lesson8;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
-import com.learnopengles.android.activity.ActivityWithViewBase;
+import net.scriptgate.opengles.activity.ActivityWithViewBase;
 
 public class Activity extends ActivityWithViewBase<LessonEightGLSurfaceView> {
 

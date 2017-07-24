@@ -3,7 +3,7 @@ package com.learnopengles.android.lesson7b;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
-import static com.learnopengles.android.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
+import static net.scriptgate.opengles.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
 
 public class LessonSevenBGLSurfaceView extends GLSurfaceView {
 

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.activity.ActivityWithViewBase;
+import net.scriptgate.opengles.activity.ActivityWithViewBase;
 
 public class Activity extends ActivityWithViewBase<LessonSixGLSurfaceView> {
 

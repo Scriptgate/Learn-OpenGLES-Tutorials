@@ -7,7 +7,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.activity.ActivityWithViewBase;
+import net.scriptgate.opengles.activity.ActivityWithViewBase;
 
 public class Activity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
 

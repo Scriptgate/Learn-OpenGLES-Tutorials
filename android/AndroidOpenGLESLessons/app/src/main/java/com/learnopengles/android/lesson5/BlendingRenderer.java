@@ -2,28 +2,28 @@ package com.learnopengles.android.lesson5;
 
 import android.os.SystemClock;
 
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.CubeFactory;
-import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.cube.Cube;
+import net.scriptgate.opengles.cube.CubeFactory;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
-import static com.learnopengles.android.cube.CubeDataFactory.generateColorData;
-import static com.learnopengles.android.cube.CubeDataFactory.generatePositionDataCentered;
-import static com.learnopengles.android.cube.CubeFactoryBuilder.createCubeFactory;
-import static com.learnopengles.android.program.AttributeVariable.COLOR;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.program.Program.createProgram;
+import static net.scriptgate.common.Color.*;
+import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
+import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generateColorData;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generatePositionDataCentered;
+import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
+import static net.scriptgate.opengles.program.AttributeVariable.COLOR;
+import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
+import static net.scriptgate.opengles.program.Program.createProgram;
 import static java.util.Arrays.asList;
 
 class BlendingRenderer implements Renderer {

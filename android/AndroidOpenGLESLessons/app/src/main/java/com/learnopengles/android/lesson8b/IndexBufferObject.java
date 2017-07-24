@@ -1,17 +1,17 @@
 package com.learnopengles.android.lesson8b;
 
-import com.learnopengles.android.program.Program;
+import net.scriptgate.opengles.program.Program;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_SHORT;
-import static com.learnopengles.android.common.BufferHelper.allocateFloatBuffer;
-import static com.learnopengles.android.common.BufferHelper.allocateShortBuffer;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_SHORT;
+import static net.scriptgate.nio.BufferHelper.allocateFloatBuffer;
+import static net.scriptgate.nio.BufferHelper.allocateShortBuffer;
+import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
+import static net.scriptgate.opengles.program.AttributeVariable.TEXTURE_COORDINATE;
 
 class IndexBufferObject {
 

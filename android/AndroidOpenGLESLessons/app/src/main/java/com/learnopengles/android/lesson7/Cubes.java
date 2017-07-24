@@ -1,14 +1,14 @@
 package com.learnopengles.android.lesson7;
 
-import com.learnopengles.android.program.Program;
+import net.scriptgate.opengles.program.Program;
 
 import java.nio.FloatBuffer;
 
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
-import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
-import static com.learnopengles.android.program.AttributeVariable.NORMAL;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
+import static net.scriptgate.nio.BufferHelper.allocateBuffer;
+import static net.scriptgate.opengles.program.AttributeVariable.NORMAL;
+import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
+import static net.scriptgate.opengles.program.AttributeVariable.TEXTURE_COORDINATE;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 

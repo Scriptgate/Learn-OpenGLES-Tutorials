@@ -4,29 +4,28 @@ import android.content.Context;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Light;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.CubeFactory;
-import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.RendererBase;
-import com.learnopengles.android.renderer.light.LightRenderer;
+import net.scriptgate.opengles.light.Light;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.cube.Cube;
+import net.scriptgate.opengles.cube.CubeFactory;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.RendererBase;
+import net.scriptgate.opengles.light.renderer.LightRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
-import static com.learnopengles.android.cube.CubeDataFactory.*;
-import static com.learnopengles.android.cube.CubeFactoryBuilder.createCubeFactory;
-import static com.learnopengles.android.program.AttributeVariable.*;
-import static com.learnopengles.android.program.Program.createProgram;
-import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
+import static net.scriptgate.common.Color.*;
+import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.opengles.cube.CubeDataFactory.*;
+import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.Program.createProgram;
 import static java.util.Arrays.asList;
 
 class AdvancedTexturingRenderer extends RendererBase {
@@ -85,7 +84,7 @@ class AdvancedTexturingRenderer extends RendererBase {
 
         Program program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
         renderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
-        lightRenderer = createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
+        lightRenderer = LightRenderer.createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
     }
 
     @Override

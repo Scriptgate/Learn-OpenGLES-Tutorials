@@ -3,18 +3,18 @@ package com.learnopengles.android.lesson8b;
 import android.content.Context;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
-import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.RendererBase;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.RendererBase;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.program.AttributeVariable.*;
-import static com.learnopengles.android.program.UniformVariable.*;
+import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
 class IndexBufferObjectRenderer extends RendererBase {

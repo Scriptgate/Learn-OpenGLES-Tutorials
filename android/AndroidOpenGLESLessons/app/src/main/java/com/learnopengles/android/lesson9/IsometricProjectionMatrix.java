@@ -3,7 +3,7 @@ package com.learnopengles.android.lesson9;
 
 import android.opengl.Matrix;
 
-import com.learnopengles.android.component.ProjectionMatrix;
+import net.scriptgate.opengles.matrix.ProjectionMatrix;
 
 import static android.opengl.GLES20.glViewport;
 

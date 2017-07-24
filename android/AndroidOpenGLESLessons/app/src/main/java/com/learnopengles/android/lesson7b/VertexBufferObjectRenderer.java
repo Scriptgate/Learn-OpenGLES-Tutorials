@@ -5,15 +5,15 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.cube.CubeDataFactory;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.cube.CubeDataFactory;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
-import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.Renderer;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +21,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.BLACK;
-import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
-import static com.learnopengles.android.program.AttributeVariable.*;
-import static com.learnopengles.android.program.UniformVariable.*;
+import static net.scriptgate.common.Color.BLACK;
+import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generateNormalData;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generateTextureData;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
 class VertexBufferObjectRenderer implements Renderer {
