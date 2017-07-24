@@ -54,7 +54,7 @@ class CubeRenderer {
         program.pass(cube.getData(NORMAL)).to(NORMAL);
         program.pass(cube.getData(TEXTURE_COORDINATE)).to(TEXTURE_COORDINATE);
 
-        bindTexture(cube.getTexture());
+        program.bindTexture(cube.getTexture());
 
         mvpMatrix.multiply(modelMatrix, viewMatrix);
         mvpMatrix.passTo(program.getHandle(MV_MATRIX));
@@ -65,14 +65,5 @@ class CubeRenderer {
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
-    }
-
-    private void bindTexture(int texture) {
-        // Set the active texture unit to texture unit 0.
-        glActiveTexture(GL_TEXTURE0);
-        // Bind the texture to this unit.
-        glBindTexture(GL_TEXTURE_2D, texture);
-        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(program.getHandle(TEXTURE), 0);
     }
 }

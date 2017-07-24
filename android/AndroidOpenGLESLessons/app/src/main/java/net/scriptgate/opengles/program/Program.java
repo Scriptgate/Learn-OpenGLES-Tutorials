@@ -12,6 +12,7 @@ import static net.scriptgate.opengles.program.ShaderHelper.compileShader;
 import static net.scriptgate.opengles.program.ShaderHelper.createAndLinkProgram;
 import static net.scriptgate.opengles.program.AttributeVariable.sizeOf;
 import static net.scriptgate.opengles.program.AttributeVariable.toStringArray;
+import static net.scriptgate.opengles.program.UniformVariable.TEXTURE;
 
 public class Program {
 
@@ -48,6 +49,15 @@ public class Program {
     public void useForRendering() {
         // Tell OpenGL to use this program when rendering.
         glUseProgram(handle);
+    }
+
+    public void bindTexture(int texture) {
+        // Set the active texture unit to texture unit 0.
+        glActiveTexture(GL_TEXTURE0);
+        // Bind the texture to this unit.
+        glBindTexture(GL_TEXTURE_2D, texture);
+        // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
+        glUniform1i(getHandle(TEXTURE), 0);
     }
 
     public PassDataToAttribute pass(FloatBuffer data) {
