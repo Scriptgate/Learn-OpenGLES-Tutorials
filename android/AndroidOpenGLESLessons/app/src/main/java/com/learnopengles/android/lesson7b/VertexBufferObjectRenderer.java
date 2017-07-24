@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.Color.BLACK;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
@@ -174,8 +175,7 @@ class VertexBufferObjectRenderer implements Renderer {
     public void onSurfaceCreated() {
         generateCubes();
 
-        // Set the background clear color to black.
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(BLACK.red, BLACK.green, BLACK.blue, 0.0f);
 
         // Use culling to remove back faces.
         glEnable(GL_CULL_FACE);

@@ -1,14 +1,14 @@
 package com.learnopengles.android.lesson7b;
 
+import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.BufferHelper.allocateFloatBuffer;
 import static com.learnopengles.android.program.AttributeVariable.*;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
 
 class CubesVertexBufferObjectPackedBuffers {
 
@@ -34,25 +34,11 @@ class CubesVertexBufferObjectPackedBuffers {
 
     void render(Program program, int numberOfCubes) {
 
-        final int stride = (POSITION.getSize() + NORMAL.getSize() + TEXTURE_COORDINATE.getSize()) * BYTES_PER_FLOAT;
+        AttributeVariable[] structure = {POSITION, NORMAL, TEXTURE_COORDINATE};
 
-        // Pass in the position information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int positionHandle = program.getHandle(POSITION);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION.getSize(), GL_FLOAT, false, stride, 0);
-
-        // Pass in the normal information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int normalHandle = program.getHandle(NORMAL);
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL.getSize(), GL_FLOAT, false, stride, POSITION.getSize() * BYTES_PER_FLOAT);
-
-        // Pass in the texture information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE.getSize(), GL_FLOAT, false, stride, (POSITION.getSize() + NORMAL.getSize()) * BYTES_PER_FLOAT);
+        program.bind(cubeBufferIdx, structure).at(0).to(POSITION);
+        program.bind(cubeBufferIdx, structure).after(POSITION).to(NORMAL);
+        program.bind(cubeBufferIdx, structure).after(POSITION, NORMAL).to(TEXTURE_COORDINATE);
 
         // Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -75,7 +61,7 @@ class CubesVertexBufferObjectPackedBuffers {
         int cubeNormalOffset = 0;
         int cubeTextureOffset = 0;
 
-        final FloatBuffer cubeBuffer = allocateDirect(cubeDataLength * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
+        final FloatBuffer cubeBuffer = allocateFloatBuffer(cubeDataLength);
 
         for (int i = 0; i < numberOfCubes; i++) {
             for (int v = 0; v < 36; v++) {
