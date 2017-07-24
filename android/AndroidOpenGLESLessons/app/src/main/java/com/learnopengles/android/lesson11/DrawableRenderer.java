@@ -4,25 +4,16 @@ import com.learnopengles.android.component.ModelMatrix;
 import com.learnopengles.android.component.ModelViewProjectionMatrix;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_LINES;
-import static android.opengl.GLES20.GL_TRIANGLE_FAN;
-import static android.opengl.GLES20.glDisableVertexAttribArray;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glVertexAttrib4fv;
-import static android.opengl.GLES20.glVertexAttribPointer;
+import static android.opengl.GLES20.*;
 import static com.learnopengles.android.lesson11.Circle.NUMBER_OF_POINTS;
+import static com.learnopengles.android.program.AttributeVariable.*;
 import static com.learnopengles.android.program.UniformVariable.MVP_MATRIX;
 
 abstract class DrawableRenderer {
-
-    private static final int VERTEX_DATA_SIZE = 3;
 
     private Program program;
     private final ModelMatrix modelMatrix;
@@ -41,16 +32,13 @@ abstract class DrawableRenderer {
     void draw(Drawable drawable) {
         modelMatrix.setIdentity();
 
-        int positionHandle = program.getHandle(AttributeVariable.POSITION);
         FloatBuffer data = drawable.getPositionData();
         data.position(0);
-        glVertexAttribPointer(positionHandle, VERTEX_DATA_SIZE, GL_FLOAT, false, 0, data);
-        glEnableVertexAttribArray(positionHandle);
+        program.pass(data).to(POSITION);
 
-        int colorHandle = program.getHandle(AttributeVariable.COLOR);
+        int colorHandle = program.getHandle(COLOR);
         glDisableVertexAttribArray(colorHandle);
         glVertexAttrib4fv(colorHandle, drawable.getColor(), 0);
-
 
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));

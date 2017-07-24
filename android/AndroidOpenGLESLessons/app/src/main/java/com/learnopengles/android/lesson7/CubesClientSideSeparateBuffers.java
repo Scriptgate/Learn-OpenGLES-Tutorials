@@ -22,24 +22,12 @@ class CubesClientSideSeparateBuffers extends Cubes {
 
     @Override
     public void render(Program program, int actualCubeFactor) {
-
-        // Pass in the position information
-        int positionHandle = program.getHandle(POSITION);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION.getSize(), GL_FLOAT, false, 0, cubePositions);
-
-        // Pass in the normal information
-        int normalHandle = program.getHandle(NORMAL);
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL.getSize(), GL_FLOAT, false, 0, cubeNormals);
-
-        // Pass in the texture information
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE.getSize(), GL_FLOAT, false, 0, cubeTextureCoordinates);
+        program.pass(cubePositions).to(POSITION);
+        program.pass(cubeNormals).to(NORMAL);
+        program.pass(cubeTextureCoordinates).to(TEXTURE_COORDINATE);
 
         // Draw the cubes.
-        glDrawArrays(GL_TRIANGLES, 0,actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);
+        glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);
     }
 
     @Override

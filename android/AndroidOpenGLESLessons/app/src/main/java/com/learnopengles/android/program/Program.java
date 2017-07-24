@@ -61,7 +61,6 @@ public class Program {
 
         public void to(AttributeVariable attributeVariable) {
             int handle = getHandle(attributeVariable);
-
             glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, 0, data);
             glEnableVertexAttribArray(handle);
         }
