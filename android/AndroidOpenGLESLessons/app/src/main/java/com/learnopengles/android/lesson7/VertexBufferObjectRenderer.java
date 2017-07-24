@@ -8,6 +8,7 @@ import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.common.Point3D;
 import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.Renderer;
 
 import java.util.concurrent.ExecutorService;
@@ -16,12 +17,13 @@ import java.util.concurrent.Executors;
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
-import static com.learnopengles.android.common.ShaderHelper.compileShader;
-import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
+import static com.learnopengles.android.program.AttributeVariable.*;
+import static com.learnopengles.android.program.Program.createProgram;
+import static com.learnopengles.android.program.UniformVariable.*;
+import static java.util.Arrays.asList;
 
 class VertexBufferObjectRenderer implements Renderer {
     /**
@@ -80,10 +82,7 @@ class VertexBufferObjectRenderer implements Renderer {
      */
     private final float[] lightPosInEyeSpace = new float[4];
 
-    /**
-     * This is a handle to our cube shading program.
-     */
-    private int programHandle;
+    private Program program;
 
     /**
      * These are handles to our texture data.
@@ -286,13 +285,7 @@ class VertexBufferObjectRenderer implements Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        final String vertexShader = readTextFileFromRawResource(lessonSevenActivity, R.raw.lesson_seven_vertex_shader);
-        final String fragmentShader = readTextFileFromRawResource(lessonSevenActivity, R.raw.lesson_seven_fragment_shader);
-
-        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
+        program = createProgram(lessonSevenActivity, R.raw.lesson_seven_vertex_shader, R.raw.lesson_seven_fragment_shader, asList(POSITION, NORMAL, TEXTURE_COORDINATE));
 
         // Load the texture
         androidDataHandle = loadTexture(lessonSevenActivity, R.drawable.usb_android);
@@ -318,13 +311,13 @@ class VertexBufferObjectRenderer implements Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Set our per-vertex lighting program.
-        glUseProgram(programHandle);
+        program.useForRendering();
 
         // Set program handles for cube drawing.
-        int mvpMatrixHandle = glGetUniformLocation(programHandle, "u_MVPMatrix");
-        int mvMatrixHandle = glGetUniformLocation(programHandle, "u_MVMatrix");
-        int lightPosHandle = glGetUniformLocation(programHandle, "u_LightPos");
-        int textureUniformHandle = glGetUniformLocation(programHandle, "u_Texture");
+        int mvpMatrixHandle = program.getHandle(MVP_MATRIX);
+        int mvMatrixHandle = program.getHandle(MV_MATRIX);
+        int lightPosHandle = program.getHandle(LIGHT_POSITION);
+        int textureUniformHandle = program.getHandle(TEXTURE);
 
         // Calculate position of the light. Push into the distance.
         Matrix.setIdentityM(lightModelMatrix, 0);
@@ -385,7 +378,7 @@ class VertexBufferObjectRenderer implements Renderer {
         glUniform1i(textureUniformHandle, 0);
 
         if (cubes != null) {
-            cubes.render(programHandle, actualCubeFactor);
+            cubes.render(program, actualCubeFactor);
         }
     }
 }

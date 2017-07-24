@@ -1,13 +1,11 @@
 package com.learnopengles.android.lesson7;
 
+import com.learnopengles.android.program.Program;
+
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glVertexAttribPointer;
+import static android.opengl.GLES20.*;
+import static com.learnopengles.android.program.AttributeVariable.*;
 
 class CubesClientSideSeparateBuffers extends Cubes {
     private FloatBuffer cubePositions;
@@ -23,20 +21,20 @@ class CubesClientSideSeparateBuffers extends Cubes {
     }
 
     @Override
-    public void render(int programHandle, int actualCubeFactor) {
+    public void render(Program program, int actualCubeFactor) {
 
         // Pass in the position information
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
+        int positionHandle = program.getHandle(POSITION);
         glEnableVertexAttribArray(positionHandle);
         glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
 
         // Pass in the normal information
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
+        int normalHandle = program.getHandle(NORMAL);
         glEnableVertexAttribArray(normalHandle);
         glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, cubeNormals);
 
         // Pass in the texture information
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
         glEnableVertexAttribArray(textureCoordinateHandle);
         glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, cubeTextureCoordinates);
 

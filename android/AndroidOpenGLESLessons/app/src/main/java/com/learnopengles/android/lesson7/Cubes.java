@@ -1,5 +1,7 @@
 package com.learnopengles.android.lesson7;
 
+import com.learnopengles.android.program.Program;
+
 import java.nio.FloatBuffer;
 
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
@@ -13,7 +15,7 @@ abstract class Cubes {
     static final int NORMAL_DATA_SIZE = 3;
     static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
 
-    abstract void render(int programHandle, int actualCubeFactor);
+    abstract void render(Program program, int actualCubeFactor);
 
     abstract void release();
 

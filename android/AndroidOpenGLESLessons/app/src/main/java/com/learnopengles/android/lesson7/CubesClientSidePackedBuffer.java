@@ -1,14 +1,12 @@
 package com.learnopengles.android.lesson7;
 
+import com.learnopengles.android.program.Program;
+
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glVertexAttribPointer;
+import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
+import static com.learnopengles.android.program.AttributeVariable.*;
 
 class CubesClientSidePackedBuffer extends Cubes {
     private FloatBuffer cubeBuffer;
@@ -18,10 +16,10 @@ class CubesClientSidePackedBuffer extends Cubes {
     }
 
     @Override
-    public void render(int programHandle, int actualCubeFactor) {
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+    public void render(Program program, int actualCubeFactor) {
+        int positionHandle = program.getHandle(POSITION);
+        int normalHandle = program.getHandle(NORMAL);
+        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
 
         final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
 

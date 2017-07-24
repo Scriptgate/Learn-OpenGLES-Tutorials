@@ -1,5 +1,7 @@
 package com.learnopengles.android.program;
 
+import android.content.Context;
+
 import java.nio.FloatBuffer;
 import java.util.List;
 
@@ -16,12 +18,18 @@ public class Program {
         this.handle = programHandle;
     }
 
-    public static Program createProgram(String vertexShaderResource, String fragmentShaderResource, List<AttributeVariable> attributes) {
+    public static Program createProgram(Context context, int vertexShaderResource, int fragmentShaderResource, List<AttributeVariable> attributes) {
+        int vertexShaderHandle = loadShader(GL_VERTEX_SHADER, context, vertexShaderResource);
+        int fragmentShaderHandle = loadShader(GL_FRAGMENT_SHADER, context, fragmentShaderResource);
 
+        int programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, toStringArray(attributes));
+        return new Program(programHandle);
+    }
+
+    public static Program createProgram(String vertexShaderResource, String fragmentShaderResource, List<AttributeVariable> attributes) {
         int vertexShaderHandle = loadShader(GL_VERTEX_SHADER, vertexShaderResource);
         int fragmentShaderHandle = loadShader(GL_FRAGMENT_SHADER, fragmentShaderResource);
 
-        // Create a program object and store the handle to it.
         int programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, toStringArray(attributes));
         return new Program(programHandle);
     }
