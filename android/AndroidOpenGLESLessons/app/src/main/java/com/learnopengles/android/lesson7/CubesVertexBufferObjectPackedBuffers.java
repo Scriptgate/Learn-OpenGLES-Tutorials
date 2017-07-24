@@ -1,5 +1,6 @@
 package com.learnopengles.android.lesson7;
 
+import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
@@ -10,7 +11,7 @@ import static com.learnopengles.android.program.AttributeVariable.*;
 
 class CubesVertexBufferObjectPackedBuffers extends Cubes {
 
-    private final int cubeBufferIdx;
+    private final int bufferIndex;
 
     CubesVertexBufferObjectPackedBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         FloatBuffer cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
@@ -24,7 +25,7 @@ class CubesVertexBufferObjectPackedBuffers extends Cubes {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        cubeBufferIdx = buffers[0];
+        bufferIndex = buffers[0];
 
         cubeBuffer.limit(0);
         cubeBuffer = null;
@@ -33,25 +34,11 @@ class CubesVertexBufferObjectPackedBuffers extends Cubes {
     @Override
     public void render(Program program, int actualCubeFactor) {
 
-        final int stride = (POSITION.getSize() + NORMAL.getSize() + TEXTURE_COORDINATE.getSize()) * BYTES_PER_FLOAT;
+        AttributeVariable[] structure = {POSITION, NORMAL, TEXTURE_COORDINATE};
 
-        // Pass in the position information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int positionHandle = program.getHandle(POSITION);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION.getSize(), GL_FLOAT, false, stride, 0);
-
-        // Pass in the normal information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int normalHandle = program.getHandle(NORMAL);
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL.getSize(), GL_FLOAT, false, stride, POSITION.getSize() * BYTES_PER_FLOAT);
-
-        // Pass in the texture information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE.getSize(), GL_FLOAT, false, stride, (POSITION.getSize() + NORMAL.getSize()) * BYTES_PER_FLOAT);
+        program.bind(bufferIndex, structure).at(0).to(POSITION);
+        program.bind(bufferIndex, structure).after(POSITION).to(NORMAL);
+        program.bind(bufferIndex, structure).after(POSITION, NORMAL).to(TEXTURE_COORDINATE);
 
         // Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -63,7 +50,7 @@ class CubesVertexBufferObjectPackedBuffers extends Cubes {
     @Override
     public void release() {
         // Delete buffers from OpenGL's memory
-        final int[] buffersToDelete = new int[] {cubeBufferIdx};
+        final int[] buffersToDelete = new int[]{bufferIndex};
         glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
     }
 }

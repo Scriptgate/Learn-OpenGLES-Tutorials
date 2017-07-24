@@ -49,34 +49,73 @@ public class Program {
         glUseProgram(handle);
     }
 
-    public ProgramAttributeData pass(FloatBuffer data) {
-        return new ProgramAttributeData(data);
+    public PassDataToAttribute pass(FloatBuffer data) {
+        return new PassDataToAttribute(data);
     }
 
-    public ProgramAttributeData pass(FloatBuffer data, AttributeVariable... structure) {
-        return new ProgramAttributeData(data).withStructure(structure);
+    public PassDataToAttribute pass(FloatBuffer data, AttributeVariable... structure) {
+        return pass(data).withStructure(structure);
     }
 
-    @SuppressWarnings("WeakerAccess")
-// I don't know where Android Studio gets the idea that this class can be private.
-    public class ProgramAttributeData {
+    public BindBufferToAttribute bind(int bufferIndex) {
+        return new BindBufferToAttribute(bufferIndex);
+    }
+
+    public BindBufferToAttribute bind(int bufferIndex, AttributeVariable... structure) {
+        return bind(bufferIndex).withStructure(structure);
+    }
+
+    public class BindBufferToAttribute {
+
+        private final int bufferIndex;
+        private int stride = 0;
+        private int position = 0;
+
+        private BindBufferToAttribute(int bufferIndex) {
+            this.bufferIndex = bufferIndex;
+        }
+
+        public BindBufferToAttribute withStructure(AttributeVariable... attributeVariables) {
+            this.stride = sizeOf(attributeVariables) * BYTES_PER_FLOAT;
+            return this;
+        }
+
+        public BindBufferToAttribute at(int position) {
+            this.position = position;
+            return this;
+        }
+
+        public BindBufferToAttribute after(AttributeVariable... attributeVariables) {
+            return at(sizeOf(attributeVariables) * BYTES_PER_FLOAT);
+        }
+
+        public void to(AttributeVariable attributeVariable) {
+            glBindBuffer(GL_ARRAY_BUFFER, bufferIndex);
+
+            int handle = getHandle(attributeVariable);
+            glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, stride, position);
+            glEnableVertexAttribArray(handle);
+        }
+    }
+
+    public class PassDataToAttribute {
         private final FloatBuffer data;
         private int stride = 0;
 
-        private ProgramAttributeData(FloatBuffer data) {
+        private PassDataToAttribute(FloatBuffer data) {
             this.data = data;
         }
 
-        public ProgramAttributeData at(int position) {
+        public PassDataToAttribute at(int position) {
             data.position(position);
             return this;
         }
 
-        public ProgramAttributeData after(AttributeVariable... attributeVariables) {
+        public PassDataToAttribute after(AttributeVariable... attributeVariables) {
             return at(sizeOf(attributeVariables));
         }
 
-        public ProgramAttributeData withStructure(AttributeVariable... attributeVariables) {
+        public PassDataToAttribute withStructure(AttributeVariable... attributeVariables) {
             this.stride = sizeOf(attributeVariables) * BYTES_PER_FLOAT;
             return this;
         }
