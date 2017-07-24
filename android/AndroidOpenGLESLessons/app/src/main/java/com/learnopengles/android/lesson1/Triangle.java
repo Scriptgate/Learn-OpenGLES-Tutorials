@@ -18,13 +18,6 @@ import static net.scriptgate.opengles.program.UniformVariable.MVP_MATRIX;
 
 
 class Triangle {
-    private static final int POSITION_DATA_OFFSET = 0;
-    private static final int POSITION_DATA_SIZE = 3;
-
-    private static final int COLOR_DATA_OFFSET = 3;
-    private static final int COLOR_DATA_SIZE = 4;
-
-    private static final int STRIDE_BYTES = (POSITION_DATA_SIZE + COLOR_DATA_SIZE) * BYTES_PER_FLOAT;
 
     private final FloatBuffer vertices;
     private Point3D rotation = new Point3D();
@@ -40,23 +33,16 @@ class Triangle {
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
 
-        int positionHandle = program.getHandle(POSITION);
-        vertices.position(POSITION_DATA_OFFSET);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
-
-        int colorHandle = program.getHandle(COLOR);
-        vertices.position(COLOR_DATA_OFFSET);
-        glEnableVertexAttribArray(colorHandle);
-        glVertexAttribPointer(colorHandle, COLOR_DATA_SIZE, GL_FLOAT, false, STRIDE_BYTES, vertices);
+        program.pass(vertices).withStructure(POSITION, COLOR).at(0).to(POSITION);
+        program.pass(vertices).withStructure(POSITION, COLOR).after(POSITION).to(COLOR);
 
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
-        glDisableVertexAttribArray(positionHandle);
-        glDisableVertexAttribArray(colorHandle);
+        glDisableVertexAttribArray(program.getHandle(POSITION));
+        glDisableVertexAttribArray(program.getHandle(COLOR));
     }
 
     void setPosition(Point3D position) {

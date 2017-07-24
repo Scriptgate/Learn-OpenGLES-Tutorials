@@ -40,22 +40,21 @@ class BasicDrawingRenderer extends RendererBase {
         // Draw one translated a bit down and rotated to be flat on the ground.
         triangles.add(triangle()
                 .equilateral(1, YELLOW, CYAN, MAGENTA)
-                .position(new Point3D(0.0f, -1.0f, 0.0f))
+                .position(0.0f, -1.0f, 0.0f)
                 .rotateX(90)
                 .build());
 
         // Draw one translated a bit to the right and rotated to be facing to the left.
         triangles.add(triangle()
                 .equilateral(1, WHITE, GREY, BLACK)
-                .position(new Point3D(1.0f, 0.0f, 0.0f))
+                .position(1.0f, 0.0f, 0.0f)
                 .rotateY(90)
                 .build());
     }
 
     @Override
     public void onSurfaceCreated() {
-        // Set the background clear color to gray.
-        glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
+        glClearColor(GREY.red, GREY.green, GREY.blue, GREY.alpha);
 
         viewMatrix.onSurfaceCreated();
 

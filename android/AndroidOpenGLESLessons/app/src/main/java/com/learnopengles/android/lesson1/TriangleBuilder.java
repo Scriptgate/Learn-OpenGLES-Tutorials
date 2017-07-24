@@ -29,13 +29,13 @@ class TriangleBuilder {
     Triangle build() {
         float[] vertices = generateData(points);
         Triangle triangle = new Triangle(vertices);
-        if(position != null) {
+        if (position != null) {
             triangle.setPosition(position);
         }
-        if(rotationX != null) {
+        if (rotationX != null) {
             triangle.setRotationX(rotationX);
         }
-        if(rotationY != null) {
+        if (rotationY != null) {
             triangle.setRotationY(rotationY);
         }
         return triangle;
@@ -70,8 +70,8 @@ class TriangleBuilder {
         return points;
     }
 
-    TriangleBuilder position(Point3D position) {
-        this.position = position;
+    TriangleBuilder position(float x, float y, float z) {
+        this.position = new Point3D(x, y, z);
         return this;
     }
 
