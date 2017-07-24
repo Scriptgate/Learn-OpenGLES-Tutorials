@@ -1,7 +1,11 @@
 package com.learnopengles.android.program;
 
-
 import java.util.List;
+
+import java8.util.function.ToIntFunction;
+
+import static java.util.Arrays.asList;
+import static java8.util.stream.StreamSupport.stream;
 
 public enum AttributeVariable {
 
@@ -34,5 +38,20 @@ public enum AttributeVariable {
             programAttributes[i] = attributes.get(i).getName();
         }
         return programAttributes;
+    }
+
+    public static int sizeOf(AttributeVariable... attributeVariables) {
+        return stream(asList(attributeVariables))
+                .mapToInt(toSize())
+                .sum();
+    }
+
+    private static ToIntFunction<AttributeVariable> toSize() {
+        return new ToIntFunction<AttributeVariable>() {
+            @Override
+            public int applyAsInt(AttributeVariable value) {
+                return value.getSize();
+            }
+        };
     }
 }

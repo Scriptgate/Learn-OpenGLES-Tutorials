@@ -1,11 +1,11 @@
 package com.learnopengles.android.lesson7;
 
+import com.learnopengles.android.program.AttributeVariable;
 import com.learnopengles.android.program.Program;
 
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.program.AttributeVariable.*;
 
 class CubesClientSidePackedBuffer extends Cubes {
@@ -18,25 +18,11 @@ class CubesClientSidePackedBuffer extends Cubes {
     @Override
     public void render(Program program, int actualCubeFactor) {
 
-        final int stride = (POSITION.getSize() + NORMAL.getSize() + TEXTURE_COORDINATE.getSize()) * BYTES_PER_FLOAT;
+        AttributeVariable[] structure = {POSITION, NORMAL, TEXTURE_COORDINATE};
 
-        // Pass in the position information
-        cubeBuffer.position(0);
-        int positionHandle = program.getHandle(POSITION);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION.getSize(), GL_FLOAT, false, stride, cubeBuffer);
-
-        // Pass in the normal information
-        cubeBuffer.position(POSITION.getSize());
-        int normalHandle = program.getHandle(NORMAL);
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL.getSize(), GL_FLOAT, false, stride, cubeBuffer);
-
-        // Pass in the texture information
-        cubeBuffer.position(POSITION.getSize() + NORMAL.getSize());
-        int textureCoordinateHandle = program.getHandle(TEXTURE_COORDINATE);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE.getSize(), GL_FLOAT, false, stride, cubeBuffer);
+        program.pass(cubeBuffer, structure).at(0).to(POSITION);
+        program.pass(cubeBuffer, structure).after(POSITION).to(NORMAL);
+        program.pass(cubeBuffer, structure).after(POSITION, NORMAL).to(TEXTURE_COORDINATE);
 
         // Draw the cubes.
         glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);

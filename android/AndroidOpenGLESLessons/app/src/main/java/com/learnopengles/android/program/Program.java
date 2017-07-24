@@ -6,7 +6,9 @@ import java.nio.FloatBuffer;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
+import static com.learnopengles.android.program.AttributeVariable.sizeOf;
 import static com.learnopengles.android.program.Shader.loadShader;
 import static com.learnopengles.android.program.AttributeVariable.toStringArray;
 
@@ -51,17 +53,37 @@ public class Program {
         return new ProgramAttributeData(data);
     }
 
-    @SuppressWarnings("WeakerAccess")// I don't know where Android Studio gets the idea that this class can be private.
+    public ProgramAttributeData pass(FloatBuffer data, AttributeVariable... structure) {
+        return new ProgramAttributeData(data).withStructure(structure);
+    }
+
+    @SuppressWarnings("WeakerAccess")
+// I don't know where Android Studio gets the idea that this class can be private.
     public class ProgramAttributeData {
         private final FloatBuffer data;
+        private int stride = 0;
 
         private ProgramAttributeData(FloatBuffer data) {
             this.data = data;
         }
 
+        public ProgramAttributeData at(int position) {
+            data.position(position);
+            return this;
+        }
+
+        public ProgramAttributeData after(AttributeVariable... attributeVariables) {
+            return at(sizeOf(attributeVariables));
+        }
+
+        public ProgramAttributeData withStructure(AttributeVariable... attributeVariables) {
+            this.stride = sizeOf(attributeVariables) * BYTES_PER_FLOAT;
+            return this;
+        }
+
         public void to(AttributeVariable attributeVariable) {
             int handle = getHandle(attributeVariable);
-            glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, 0, data);
+            glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, stride, data);
             glEnableVertexAttribArray(handle);
         }
     }
