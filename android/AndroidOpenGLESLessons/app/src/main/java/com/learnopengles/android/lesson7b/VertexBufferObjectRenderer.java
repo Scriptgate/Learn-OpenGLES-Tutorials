@@ -12,6 +12,7 @@ import com.learnopengles.android.component.ProjectionMatrix;
 import com.learnopengles.android.component.ViewMatrix;
 import com.learnopengles.android.cube.CubeDataFactory;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
+import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.Renderer;
 
 import java.util.ArrayList;
@@ -20,12 +21,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
-import static com.learnopengles.android.common.ShaderHelper.compileShader;
-import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static com.learnopengles.android.common.TextureHelper.loadTexture;
 import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
 import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
+import static com.learnopengles.android.program.AttributeVariable.*;
+import static com.learnopengles.android.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
 class VertexBufferObjectRenderer implements Renderer {
@@ -66,10 +66,7 @@ class VertexBufferObjectRenderer implements Renderer {
      */
     private final float[] lightPosInEyeSpace = new float[4];
 
-    /**
-     * This is a handle to our cube shading program.
-     */
-    private int programHandle;
+    private Program program;
 
     /**
      * These are handles to our texture data.
@@ -189,14 +186,7 @@ class VertexBufferObjectRenderer implements Renderer {
         viewMatrix.onSurfaceCreated();
         viewMatrix.translate(new Point3D(-1.75f, 0.0f, 1.75f));
 
-        final String vertexShader = readTextFileFromRawResource(activityContext, R.raw.lesson_seven_vertex_shader);
-        final String fragmentShader = readTextFileFromRawResource(activityContext, R.raw.lesson_seven_fragment_shader);
-
-        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
+        program = Program.createProgram(activityContext, R.raw.lesson_seven_vertex_shader, R.raw.lesson_seven_fragment_shader, asList(POSITION, NORMAL, TEXTURE_COORDINATE));
         // Load the texture
         androidDataHandle = loadTexture(activityContext, R.drawable.usb_android);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -226,7 +216,7 @@ class VertexBufferObjectRenderer implements Renderer {
         viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
 
         // Set our per-vertex lighting program.
-        glUseProgram(programHandle);
+        program.useForRendering();
 
 
         // Draw a cube. Translate the cube into the screen.
@@ -234,24 +224,24 @@ class VertexBufferObjectRenderer implements Renderer {
         modelMatrix.translate(0.0f, 0.0f, -3.5f);
 
         mvpMatrix.multiply(modelMatrix, viewMatrix);
-        mvpMatrix.passTo(glGetUniformLocation(programHandle, "u_MVMatrix"));
+        mvpMatrix.passTo(program.getHandle(MV_MATRIX));
 
         mvpMatrix.multiply(projectionMatrix);
 
         // Pass in the combined matrix.
-        mvpMatrix.passTo(glGetUniformLocation(programHandle, "u_MVPMatrix"));
+        mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
         passLightingData();
         passTextureData();
 
         if (cubes != null) {
-            cubes.render(programHandle, cubePositions.size());
+            cubes.render(program, cubePositions.size());
         }
     }
 
     private void passLightingData() {
         // Pass in the light position in eye space.
-        glUniform3f(glGetUniformLocation(programHandle, "u_LightPos"), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+        glUniform3f(program.getHandle(LIGHT_POSITION), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
     }
 
     private void passTextureData() {
@@ -261,6 +251,6 @@ class VertexBufferObjectRenderer implements Renderer {
         // Bind the texture to this unit.
         glBindTexture(GL_TEXTURE_2D, androidDataHandle);
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(glGetUniformLocation(programHandle, "u_Texture"), 0);
+        glUniform1i(program.getHandle(TEXTURE), 0);
     }
 }
