@@ -4,20 +4,22 @@ import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
 import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.common.ShaderHelper;
 import com.learnopengles.android.component.ViewMatrix;
+import com.learnopengles.android.program.Program;
 import com.learnopengles.android.renderer.Renderer;
 
 import static android.opengl.GLES20.*;
+import static com.learnopengles.android.common.Color.BLACK;
 import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
 import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static com.learnopengles.android.program.AttributeVariable.*;
+import static com.learnopengles.android.program.UniformVariable.*;
+import static java.util.Arrays.asList;
 
 class IndexBufferObjectRenderer implements Renderer {
 
 	/** References to other main objects. */
 	private final Activity lessonEightActivity;
-
 
 	/**
 	 * Store the model matrix. This matrix is used to move models from object
@@ -41,22 +43,6 @@ class IndexBufferObjectRenderer implements Renderer {
 	private final float[] lightModelMatrix = new float[16];
 	private final float[] temporaryMatrix = new float[16];
 
-	/** OpenGL handles to our program uniforms. */
-	private int mvpMatrixUniform;
-	private int mvMatrixUniform;
-	private int lightPosUniform;
-
-	/** Identifiers for our uniforms and attributes inside the shaders. */
-	private static final String MVP_MATRIX_UNIFORM = "u_MVPMatrix";
-	private static final String MV_MATRIX_UNIFORM = "u_MVMatrix";
-	private static final String LIGHT_POSITION_UNIFORM = "u_LightPos";
-
-	//TODO: These fields are used in both program and heightmap, find where they belong
-	static final String POSITION_ATTRIBUTE = "a_Position";
-	static final String NORMAL_ATTRIBUTE = "a_Normal";
-	static final String COLOR_ATTRIBUTE = "a_Color";
-
-
 	/**
 	 * Used to hold a light centered on the origin in model space. We need a 4th
 	 * coordinate so we can get translations to work when we multiply this by
@@ -76,8 +62,7 @@ class IndexBufferObjectRenderer implements Renderer {
 	 */
 	private final float[] lightPosInEyeSpace = new float[4];
 
-	/** This is a handle to our cube shading program. */
-	private int program;
+	private Program program;
 
 	/** Retain the most recent delta for touch events. */
 	// These still work without volatile, but refreshes are not guaranteed to
@@ -100,21 +85,16 @@ class IndexBufferObjectRenderer implements Renderer {
 	public void onSurfaceCreated() {
 		heightMap.initialize();
 
-		// Set the background clear color to black.
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(BLACK.red, BLACK.green, BLACK.blue, 0.0f);
 
-		// Enable depth testing
 		glEnable(GL_DEPTH_TEST);
 
 		viewMatrix.onSurfaceCreated();
 
-		final String vertexShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_vertex_shader_no_tex);
-		final String fragmentShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_fragment_shader_no_tex);
-
-		final int vertexShaderHandle = ShaderHelper.compileShader(GL_VERTEX_SHADER, vertexShader);
-		final int fragmentShaderHandle = ShaderHelper.compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-		program = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[] {POSITION_ATTRIBUTE, NORMAL_ATTRIBUTE, COLOR_ATTRIBUTE });
+		program = Program.createProgram(lessonEightActivity,
+                R.raw.per_pixel_vertex_shader_no_tex,
+                R.raw.per_pixel_fragment_shader_no_tex,
+                asList(POSITION, NORMAL, COLOR));
 
 		// Initialize the accumulated rotation matrix
 		Matrix.setIdentityM(accumulatedRotation, 0);
@@ -130,12 +110,11 @@ class IndexBufferObjectRenderer implements Renderer {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Set our per-vertex lighting program.
-		glUseProgram(program);
+        program.useForRendering();
 
-		// Set program handles for cube drawing.
-		mvpMatrixUniform = glGetUniformLocation(program, MVP_MATRIX_UNIFORM);
-		mvMatrixUniform = glGetUniformLocation(program, MV_MATRIX_UNIFORM);
-		lightPosUniform = glGetUniformLocation(program, LIGHT_POSITION_UNIFORM);
+        int mvpMatrixUniform = program.getHandle(MVP_MATRIX);
+        int mvMatrixUniform = program.getHandle(MV_MATRIX);
+        int lightPosUniform = program.getHandle(LIGHT_POSITION);
 
 
 		// Calculate position of the light. Push into the distance.

@@ -3,26 +3,13 @@ package com.learnopengles.android.lesson8;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import com.learnopengles.android.program.Program;
+
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import static android.opengl.GLES20.GL_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_STATIC_DRAW;
-import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
-import static android.opengl.GLES20.glBindBuffer;
-import static android.opengl.GLES20.glBufferData;
-import static android.opengl.GLES20.glDeleteBuffers;
-import static android.opengl.GLES20.glDrawElements;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGenBuffers;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.COLOR_ATTRIBUTE;
-import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.NORMAL_ATTRIBUTE;
-import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.POSITION_ATTRIBUTE;
+import static android.opengl.GLES20.*;
+import static com.learnopengles.android.program.AttributeVariable.*;
 import static java.nio.ByteBuffer.allocateDirect;
 import static java.nio.ByteOrder.nativeOrder;
 
@@ -44,11 +31,6 @@ public class HeightMap {
     static final int SIZE_PER_SIDE = 32;
     static final float MIN_POSITION = -5f;
     static final float POSITION_RANGE = 10f;
-
-    /** OpenGL handles to our program attributes. */
-    private int positionAttribute;
-    private int normalAttribute;
-    private int colorAttribute;
 
     private final ErrorHandler errorHandler;
 
@@ -173,12 +155,12 @@ public class HeightMap {
         }
     }
 
-    void render(int program) {
+    void render(Program program) {
         if (vbo[0] > 0 && ibo[0] > 0) {
 
-            positionAttribute = glGetAttribLocation(program, POSITION_ATTRIBUTE);
-            normalAttribute = glGetAttribLocation(program, NORMAL_ATTRIBUTE);
-            colorAttribute = glGetAttribLocation(program, COLOR_ATTRIBUTE);
+            int positionAttribute = program.getHandle(POSITION);
+            int normalAttribute = program.getHandle(NORMAL);
+            int colorAttribute = program.getHandle(COLOR);
 
             glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 
