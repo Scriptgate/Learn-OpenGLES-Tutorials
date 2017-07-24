@@ -24,19 +24,19 @@ class CubesClientSideSeparateBuffers extends Cubes {
 
     @Override
     public void render(int programHandle, int actualCubeFactor) {
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
 
         // Pass in the position information
+        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
         glEnableVertexAttribArray(positionHandle);
         glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, cubePositions);
 
         // Pass in the normal information
+        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
         glEnableVertexAttribArray(normalHandle);
         glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, cubeNormals);
 
         // Pass in the texture information
+        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
         glEnableVertexAttribArray(textureCoordinateHandle);
         glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, cubeTextureCoordinates);
 

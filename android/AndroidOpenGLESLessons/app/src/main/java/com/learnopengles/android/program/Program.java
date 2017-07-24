@@ -43,6 +43,7 @@ public class Program {
         return new ProgramAttributeData(data);
     }
 
+    @SuppressWarnings("WeakerAccess")// I don't know where Android Studio gets the idea that this class can be private.
     public class ProgramAttributeData {
         private final FloatBuffer data;
 

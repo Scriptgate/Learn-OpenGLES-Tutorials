@@ -23,24 +23,27 @@ abstract class Cubes {
         final FloatBuffer cubeNormalsBuffer;
         final FloatBuffer cubeTextureCoordinatesBuffer;
 
-        cubePositionsBuffer = allocateBuffer(cubePositions);
+        {
+            cubePositionsBuffer = allocateBuffer(cubePositions);
+            cubePositionsBuffer.position(0);
+        }
 
         int generatedCubeFactorToPowerThree = generatedCubeFactor * generatedCubeFactor * generatedCubeFactor;
-        cubeNormalsBuffer = allocateDirect(cubeNormals.length * BYTES_PER_FLOAT * generatedCubeFactorToPowerThree).order(nativeOrder()).asFloatBuffer();
-
-        for (int i = 0; i < generatedCubeFactorToPowerThree; i++) {
-            cubeNormalsBuffer.put(cubeNormals);
+        {
+            cubeNormalsBuffer = allocateDirect(cubeNormals.length * BYTES_PER_FLOAT * generatedCubeFactorToPowerThree).order(nativeOrder()).asFloatBuffer();
+            for (int i = 0; i < generatedCubeFactorToPowerThree; i++) {
+                cubeNormalsBuffer.put(cubeNormals);
+            }
+            cubeNormalsBuffer.position(0);
         }
 
-        cubeNormalsBuffer.position(0);
-
-        cubeTextureCoordinatesBuffer = allocateDirect(cubeTextureCoordinates.length * BYTES_PER_FLOAT * generatedCubeFactorToPowerThree).order(nativeOrder()).asFloatBuffer();
-
-        for (int i = 0; i < generatedCubeFactorToPowerThree; i++) {
-            cubeTextureCoordinatesBuffer.put(cubeTextureCoordinates);
+        {
+            cubeTextureCoordinatesBuffer = allocateDirect(cubeTextureCoordinates.length * BYTES_PER_FLOAT * generatedCubeFactorToPowerThree).order(nativeOrder()).asFloatBuffer();
+            for (int i = 0; i < generatedCubeFactorToPowerThree; i++) {
+                cubeTextureCoordinatesBuffer.put(cubeTextureCoordinates);
+            }
+            cubeTextureCoordinatesBuffer.position(0);
         }
-
-        cubeTextureCoordinatesBuffer.position(0);
 
         return new FloatBuffer[]{cubePositionsBuffer, cubeNormalsBuffer, cubeTextureCoordinatesBuffer};
     }
