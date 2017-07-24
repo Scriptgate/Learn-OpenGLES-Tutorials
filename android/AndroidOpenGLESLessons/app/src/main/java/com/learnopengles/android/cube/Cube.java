@@ -61,7 +61,10 @@ public class Cube {
     }
 
     public FloatBuffer getData(AttributeVariable cubeDataType) {
-        return data.get(cubeDataType);
+        //TODO: because the position method returns a Buffer, we can't simply return data.get(cubeDataType).position(0). Perhaps the type should be Buffer instead?
+        FloatBuffer floatBuffer = data.get(cubeDataType);
+        floatBuffer.position(0);
+        return floatBuffer;
     }
 
     public int getTexture() {

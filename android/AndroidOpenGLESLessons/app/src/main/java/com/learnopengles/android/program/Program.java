@@ -62,9 +62,6 @@ public class Program {
         public void to(AttributeVariable attributeVariable) {
             int handle = getHandle(attributeVariable);
 
-            //FIXME: setting data to position 0 does not seem like the responsibility of Program. It also limits this method to be only used with FloatBuffers that contain only the data necessary
-            data.position(0);
-
             glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, 0, data);
             glEnableVertexAttribArray(handle);
         }
