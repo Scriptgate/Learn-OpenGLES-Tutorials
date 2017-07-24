@@ -112,12 +112,7 @@ class IndexBufferObjectRenderer implements Renderer {
 		// Set our per-vertex lighting program.
         program.useForRendering();
 
-        int mvpMatrixUniform = program.getHandle(MVP_MATRIX);
-        int mvMatrixUniform = program.getHandle(MV_MATRIX);
-        int lightPosUniform = program.getHandle(LIGHT_POSITION);
-
-
-		// Calculate position of the light. Push into the distance.
+        // Calculate position of the light. Push into the distance.
 		Matrix.setIdentityM(lightModelMatrix, 0);
 		Matrix.translateM(lightModelMatrix, 0, 0.0f, 7.5f, -8.0f);
 
@@ -151,7 +146,7 @@ class IndexBufferObjectRenderer implements Renderer {
         viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
 
 		// Pass in the modelview matrix.
-		glUniformMatrix4fv(mvMatrixUniform, 1, false, mvpMatrix, 0);
+		glUniformMatrix4fv(program.getHandle(MV_MATRIX), 1, false, mvpMatrix, 0);
 
 		// This multiplies the modelview matrix by the projection matrix,
 		// and stores the result in the MVP matrix
@@ -160,10 +155,10 @@ class IndexBufferObjectRenderer implements Renderer {
 		System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
 
 		// Pass in the combined matrix.
-		glUniformMatrix4fv(mvpMatrixUniform, 1, false, mvpMatrix, 0);
+		glUniformMatrix4fv(program.getHandle(MVP_MATRIX), 1, false, mvpMatrix, 0);
 
 		// Pass in the light position in eye space.
-		glUniform3f(lightPosUniform, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+		glUniform3f(program.getHandle(LIGHT_POSITION), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 
 		// Render the heightmap.
 		heightMap.render(program);

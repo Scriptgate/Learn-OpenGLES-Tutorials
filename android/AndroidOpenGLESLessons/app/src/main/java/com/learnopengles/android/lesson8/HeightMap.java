@@ -158,19 +158,17 @@ public class HeightMap {
     void render(Program program) {
         if (vbo[0] > 0 && ibo[0] > 0) {
 
-            int positionAttribute = program.getHandle(POSITION);
-            int normalAttribute = program.getHandle(NORMAL);
-            int colorAttribute = program.getHandle(COLOR);
-
             glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 
-            // Bind Attributes
+            int positionAttribute = program.getHandle(POSITION);
             glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
             glEnableVertexAttribArray(positionAttribute);
 
+            int normalAttribute = program.getHandle(NORMAL);
             glVertexAttribPointer(normalAttribute, NORMAL_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
             glEnableVertexAttribArray(normalAttribute);
 
+            int colorAttribute = program.getHandle(COLOR);
             glVertexAttribPointer(colorAttribute, COLOR_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, (POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT);
             glEnableVertexAttribArray(colorAttribute);
 
