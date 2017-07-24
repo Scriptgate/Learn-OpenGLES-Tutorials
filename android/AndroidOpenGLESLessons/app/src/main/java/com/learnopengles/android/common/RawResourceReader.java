@@ -9,44 +9,27 @@ import java.io.InputStreamReader;
 
 public class RawResourceReader {
 
-    public static String readShaderFileFromResource(String resourceName) {
-        final InputStream inputStream = RawResourceReader.class.getClassLoader().getResourceAsStream("res/raw/" + resourceName + ".glsl");
-        final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+    public static String readTextFromResource(String resourceName) {
+        return readText(RawResourceReader.class.getClassLoader().getResourceAsStream("res/raw/" + resourceName + ".glsl"));
+    }
+
+    public static String readTextFromResource(final Context context, final int resourceId) {
+        return readText(context.getResources().openRawResource(resourceId));
+    }
+
+    private static String readText(InputStream inputStream) {
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         String nextLine;
-        final StringBuilder body = new StringBuilder();
-
         try {
+            StringBuilder text = new StringBuilder();
             while ((nextLine = bufferedReader.readLine()) != null) {
-                body.append(nextLine);
-                body.append('\n');
+                text.append(nextLine).append('\n');
             }
+            return text.toString();
         } catch (IOException e) {
             System.err.println(e.getMessage());
             return null;
         }
-
-        return body.toString();
-    }
-
-    public static String readTextFileFromRawResource(final Context context, final int resourceId) {
-        final InputStream inputStream = context.getResources().openRawResource(resourceId);
-        final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-
-        String nextLine;
-        final StringBuilder body = new StringBuilder();
-
-        try {
-            while ((nextLine = bufferedReader.readLine()) != null) {
-                body.append(nextLine);
-                body.append('\n');
-            }
-        } catch (IOException e) {
-            return null;
-        }
-
-        return body.toString();
     }
 }

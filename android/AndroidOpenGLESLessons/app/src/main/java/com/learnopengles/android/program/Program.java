@@ -7,9 +7,10 @@ import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
+import static com.learnopengles.android.common.RawResourceReader.readTextFromResource;
+import static com.learnopengles.android.common.ShaderHelper.compileShader;
 import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
 import static com.learnopengles.android.program.AttributeVariable.sizeOf;
-import static com.learnopengles.android.program.Shader.loadShader;
 import static com.learnopengles.android.program.AttributeVariable.toStringArray;
 
 public class Program {
@@ -21,16 +22,16 @@ public class Program {
     }
 
     public static Program createProgram(Context context, int vertexShaderResource, int fragmentShaderResource, List<AttributeVariable> attributes) {
-        int vertexShaderHandle = loadShader(GL_VERTEX_SHADER, context, vertexShaderResource);
-        int fragmentShaderHandle = loadShader(GL_FRAGMENT_SHADER, context, fragmentShaderResource);
+        int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, readTextFromResource(context, vertexShaderResource));
+        int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, readTextFromResource(context, fragmentShaderResource));
 
         int programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, toStringArray(attributes));
         return new Program(programHandle);
     }
 
     public static Program createProgram(String vertexShaderResource, String fragmentShaderResource, List<AttributeVariable> attributes) {
-        int vertexShaderHandle = loadShader(GL_VERTEX_SHADER, vertexShaderResource);
-        int fragmentShaderHandle = loadShader(GL_FRAGMENT_SHADER, fragmentShaderResource);
+        int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, readTextFromResource(vertexShaderResource));
+        int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, readTextFromResource(fragmentShaderResource));
 
         int programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, toStringArray(attributes));
         return new Program(programHandle);
