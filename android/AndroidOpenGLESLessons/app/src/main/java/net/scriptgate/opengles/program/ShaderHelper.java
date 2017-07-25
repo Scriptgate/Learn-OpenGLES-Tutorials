@@ -35,44 +35,4 @@ class ShaderHelper {
 
         return shaderHandle;
     }
-
-    static int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes) {
-        int programHandle = glCreateProgram();
-
-        if (programHandle != 0) {
-            // Bind the vertex shader to the program.
-            glAttachShader(programHandle, vertexShaderHandle);
-
-            // Bind the fragment shader to the program.
-            glAttachShader(programHandle, fragmentShaderHandle);
-
-            // Bind attributes
-            if (attributes != null) {
-                final int size = attributes.length;
-                for (int i = 0; i < size; i++) {
-                    glBindAttribLocation(programHandle, i, attributes[i]);
-                }
-            }
-
-            // Link the two shaders together into a program.
-            glLinkProgram(programHandle);
-
-            // Get the link status.
-            final int[] linkStatus = new int[1];
-            glGetProgramiv(programHandle, GL_LINK_STATUS, linkStatus, 0);
-
-            // If the link failed, delete the program.
-            if (linkStatus[0] == 0) {
-                Log.e(TAG, "Error compiling program: " + glGetProgramInfoLog(programHandle));
-                glDeleteProgram(programHandle);
-                programHandle = 0;
-            }
-        }
-
-        if (programHandle == 0) {
-            throw new RuntimeException("Error creating program.");
-        }
-
-        return programHandle;
-    }
 }
