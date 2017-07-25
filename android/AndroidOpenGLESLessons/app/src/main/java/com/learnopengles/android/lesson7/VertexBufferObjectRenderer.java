@@ -17,13 +17,12 @@ import java.util.concurrent.Executors;
 import static android.opengl.GLES20.*;
 import static net.scriptgate.opengles.cube.CubeDataFactory.generateNormalData;
 import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
 import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
 import static net.scriptgate.opengles.cube.CubeDataFactory.generateTextureData;
 import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.Program.createProgram;
 import static net.scriptgate.opengles.program.UniformVariable.*;
-import static java.util.Arrays.asList;
 
 class VertexBufferObjectRenderer implements Renderer {
     /**
@@ -285,7 +284,11 @@ class VertexBufferObjectRenderer implements Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram(lessonSevenActivity, R.raw.lesson_seven_vertex_shader, R.raw.lesson_seven_fragment_shader, asList(POSITION, NORMAL, TEXTURE_COORDINATE));
+        program = program()
+                .withVertexShader(lessonSevenActivity, R.raw.lesson_seven_vertex_shader)
+                .withFragmentShader(lessonSevenActivity, R.raw.lesson_seven_fragment_shader)
+                .withAttributes(POSITION, NORMAL, TEXTURE_COORDINATE)
+                .build();
 
         // Load the texture
         androidDataHandle = loadTexture(lessonSevenActivity, R.drawable.usb_android);

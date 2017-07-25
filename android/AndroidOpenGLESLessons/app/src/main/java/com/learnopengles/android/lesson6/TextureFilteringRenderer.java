@@ -17,6 +17,7 @@ import net.scriptgate.opengles.program.Program;
 import net.scriptgate.opengles.renderer.Renderer;
 
 import static android.opengl.GLES20.*;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
 import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
 import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
@@ -26,9 +27,6 @@ import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
 import static net.scriptgate.opengles.program.AttributeVariable.NORMAL;
 import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
 import static net.scriptgate.opengles.program.AttributeVariable.TEXTURE_COORDINATE;
-import static net.scriptgate.opengles.program.Program.createProgram;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 
 class TextureFilteringRenderer implements Renderer {
     /**
@@ -129,7 +127,11 @@ class TextureFilteringRenderer implements Renderer {
 
 
         // Define a simple shader program for our point.
-        pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
+        pointProgram = program()
+                .withVertexShader("point_vertex_shader")
+                .withFragmentShader("point_fragment_shader")
+                .withAttributes(POSITION)
+                .build();
 
         // Load the texture
         brickDataHandle = loadTexture(activityContext, R.drawable.stone_wall_public_domain);
@@ -151,7 +153,11 @@ class TextureFilteringRenderer implements Renderer {
         // Initialize the accumulated rotation matrix
         Matrix.setIdentityM(accumulatedRotation, 0);
 
-        Program program = createProgram("per_pixel_vertex_shader_tex_and_light", "per_pixel_fragment_shader_tex_and_light", asList(POSITION, NORMAL, TEXTURE_COORDINATE));
+        Program program = program()
+                .withVertexShader("per_pixel_vertex_shader_tex_and_light")
+                .withFragmentShader("per_pixel_fragment_shader_tex_and_light")
+                .withAttributes(POSITION, NORMAL, TEXTURE_COORDINATE)
+                .build();
         cubeRenderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, accumulatedRotation, currentRotation, temporaryMatrix, light);
         planeRenderer = new PlaneRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, temporaryMatrix, light);
     }

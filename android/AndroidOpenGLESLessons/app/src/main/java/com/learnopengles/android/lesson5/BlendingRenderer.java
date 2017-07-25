@@ -23,8 +23,7 @@ import static net.scriptgate.opengles.cube.CubeDataFactory.generatePositionDataC
 import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
 import static net.scriptgate.opengles.program.AttributeVariable.COLOR;
 import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
-import static net.scriptgate.opengles.program.Program.createProgram;
-import static java.util.Arrays.asList;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 
 class BlendingRenderer implements Renderer {
     /**
@@ -100,7 +99,11 @@ class BlendingRenderer implements Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
+        program = program()
+                .withVertexShader("color_vertex_shader")
+                .withFragmentShader("color_fragment_shader")
+                .withAttributes(POSITION, COLOR)
+                .build();
 
         renderer = new CubeRenderer(program,modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
     }

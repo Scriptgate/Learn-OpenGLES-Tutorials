@@ -13,8 +13,8 @@ import static net.scriptgate.common.Color.BLACK;
 import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
 import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
 import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 import static net.scriptgate.opengles.program.UniformVariable.*;
-import static java.util.Arrays.asList;
 
 class IndexBufferObjectRenderer implements Renderer {
 
@@ -91,10 +91,11 @@ class IndexBufferObjectRenderer implements Renderer {
 
 		viewMatrix.onSurfaceCreated();
 
-		program = Program.createProgram(lessonEightActivity,
-                R.raw.per_pixel_vertex_shader_no_tex,
-                R.raw.per_pixel_fragment_shader_no_tex,
-                asList(POSITION, NORMAL, COLOR));
+		program = program()
+				.withVertexShader(lessonEightActivity, R.raw.per_pixel_vertex_shader_no_tex)
+				.withFragmentShader(lessonEightActivity, R.raw.per_pixel_fragment_shader_no_tex)
+				.withAttributes(POSITION, NORMAL, COLOR)
+				.build();
 
 		// Initialize the accumulated rotation matrix
 		Matrix.setIdentityM(accumulatedRotation, 0);

@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
+import static java.util.Arrays.asList;
 import static net.scriptgate.opengles.program.ShaderHelper.compileFromResource;
 
 public class ProgramBuilder {
@@ -56,8 +57,8 @@ public class ProgramBuilder {
         return this;
     }
 
-    public ProgramBuilder withAttributes(List<AttributeVariable> attributes) {
-        this.attributes = attributes;
+    public ProgramBuilder withAttributes(AttributeVariable... attributes) {
+        this.attributes = asList(attributes);
         return this;
     }
 

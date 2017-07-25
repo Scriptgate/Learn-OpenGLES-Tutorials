@@ -6,6 +6,7 @@ import net.scriptgate.opengles.matrix.ModelMatrix;
 import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
 import net.scriptgate.opengles.matrix.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
+
 import net.scriptgate.opengles.program.Program;
 import net.scriptgate.opengles.renderer.RendererBase;
 
@@ -20,8 +21,7 @@ import static com.learnopengles.android.lesson11.Circle.createCircleInZPlane;
 import static com.learnopengles.android.lesson11.DrawableRenderer.createBasicLineRenderer;
 import static com.learnopengles.android.lesson11.DrawableRenderer.createCircleRenderer;
 import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.Program.createProgram;
-import static java.util.Arrays.asList;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 
 class LineRenderer extends RendererBase {
 
@@ -92,7 +92,11 @@ class LineRenderer extends RendererBase {
 
         viewMatrix.onSurfaceCreated();
 
-        lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
+        lineProgram = program()
+                .withVertexShader("color_vertex_shader")
+                .withFragmentShader("color_fragment_shader")
+                .withAttributes(POSITION, COLOR)
+                .build();
 
         lineRenderer = createBasicLineRenderer(lineProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
 

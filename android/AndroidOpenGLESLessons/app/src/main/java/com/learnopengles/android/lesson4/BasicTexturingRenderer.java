@@ -20,13 +20,12 @@ import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static net.scriptgate.common.Color.*;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
 import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
 import static net.scriptgate.opengles.cube.CubeDataFactory.*;
 import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
 import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.Program.createProgram;
-import static java.util.Arrays.asList;
 
 class BasicTexturingRenderer extends RendererBase {
     /**
@@ -82,10 +81,11 @@ class BasicTexturingRenderer extends RendererBase {
             cube.setTexture(textureDataHandle);
         }
 
-        Program program = createProgram(activityContext,
-                R.raw.per_pixel_vertex_shader,
-                R.raw.per_pixel_fragment_shader,
-                asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
+        Program program = program()
+                .withVertexShader(activityContext, R.raw.per_pixel_vertex_shader)
+                .withFragmentShader(activityContext, R.raw.per_pixel_fragment_shader)
+                .withAttributes(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE)
+                .build();
         renderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
         lightRenderer = LightRenderer.createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
     }

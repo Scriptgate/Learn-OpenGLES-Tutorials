@@ -10,6 +10,7 @@ import net.scriptgate.opengles.matrix.ViewMatrix;
 import net.scriptgate.opengles.cube.Cube;
 import net.scriptgate.opengles.cube.CubeFactory;
 import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.program.ProgramBuilder;
 import net.scriptgate.opengles.renderer.RendererBase;
 import net.scriptgate.opengles.light.renderer.LightRenderer;
 
@@ -24,8 +25,7 @@ import static net.scriptgate.opengles.cube.CubeDataFactory.generateNormalData;
 import static net.scriptgate.opengles.cube.CubeDataFactory.generatePositionDataCentered;
 import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
 import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.Program.createProgram;
-import static java.util.Arrays.asList;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 
 public class LightingRenderer extends RendererBase {
     /**
@@ -85,7 +85,11 @@ public class LightingRenderer extends RendererBase {
 
         viewMatrix.onSurfaceCreated();
 
-        Program perVertexProgram = createProgram(getVertexShader(), getFragmentShader(), asList(POSITION, COLOR, NORMAL));
+        Program perVertexProgram = program()
+                .withVertexShader(getVertexShader())
+                .withFragmentShader(getFragmentShader())
+                .withAttributes(POSITION, COLOR, NORMAL)
+                .build();
         renderer = new CubeRenderer(perVertexProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
         lightRenderer = LightRenderer.createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
     }

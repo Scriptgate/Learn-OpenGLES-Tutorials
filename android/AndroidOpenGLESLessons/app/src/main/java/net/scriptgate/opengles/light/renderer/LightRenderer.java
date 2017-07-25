@@ -5,11 +5,10 @@ import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
 import net.scriptgate.opengles.matrix.ProjectionMatrix;
 import net.scriptgate.opengles.matrix.ViewMatrix;
 import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.program.ProgramBuilder;
 
 import static android.opengl.GLES20.*;
-import static java.util.Collections.singletonList;
 import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
-import static net.scriptgate.opengles.program.Program.createProgram;
 import static net.scriptgate.opengles.program.UniformVariable.MVP_MATRIX;
 
 public class LightRenderer {
@@ -41,7 +40,11 @@ public class LightRenderer {
     }
 
     public static LightRenderer createLightRenderer(ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix) {
-        Program pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
+        Program pointProgram = ProgramBuilder.program()
+                .withVertexShader("point_vertex_shader")
+                .withFragmentShader("point_fragment_shader")
+                .withAttributes(POSITION)
+                .build();
         return new LightRenderer(pointProgram, viewMatrix, projectionMatrix, mvpMatrix);
     }
 }

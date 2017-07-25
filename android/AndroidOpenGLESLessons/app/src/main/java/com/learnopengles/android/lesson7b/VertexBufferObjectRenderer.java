@@ -12,6 +12,7 @@ import net.scriptgate.opengles.matrix.ProjectionMatrix;
 import net.scriptgate.opengles.matrix.ViewMatrix;
 import net.scriptgate.opengles.cube.CubeDataFactory;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
+
 import net.scriptgate.opengles.program.Program;
 import net.scriptgate.opengles.renderer.Renderer;
 
@@ -22,6 +23,7 @@ import java.util.concurrent.Executors;
 
 import static android.opengl.GLES20.*;
 import static net.scriptgate.common.Color.BLACK;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
 import static net.scriptgate.opengles.cube.CubeDataFactory.generateNormalData;
 import static net.scriptgate.opengles.cube.CubeDataFactory.generateTextureData;
@@ -186,7 +188,11 @@ class VertexBufferObjectRenderer implements Renderer {
         viewMatrix.onSurfaceCreated();
         viewMatrix.translate(new Point3D(-1.75f, 0.0f, 1.75f));
 
-        program = Program.createProgram(activityContext, R.raw.lesson_seven_vertex_shader, R.raw.lesson_seven_fragment_shader, asList(POSITION, NORMAL, TEXTURE_COORDINATE));
+        program = program()
+                .withVertexShader(activityContext, R.raw.lesson_seven_vertex_shader)
+                .withFragmentShader(activityContext, R.raw.lesson_seven_fragment_shader)
+                .withAttributes(POSITION, NORMAL, TEXTURE_COORDINATE)
+                .build();
         // Load the texture
         androidDataHandle = loadTexture(activityContext, R.drawable.usb_android);
         glGenerateMipmap(GL_TEXTURE_2D);

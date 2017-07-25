@@ -22,12 +22,11 @@ import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static net.scriptgate.common.Color.*;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
 import static net.scriptgate.opengles.cube.CubeDataFactory.*;
 import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
 import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.Program.createProgram;
-import static java.util.Arrays.asList;
 
 class CameraRenderer extends RendererBase {
 
@@ -96,7 +95,11 @@ class CameraRenderer extends RendererBase {
         //Instead of moving the cubes up (centering the origin), we're simply manipulating the viewMatrix
         viewMatrix.translate(new Point3D(-0.3f, 0.0f, -0.3f));
 
-        Program program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
+        Program program = program()
+                .withVertexShader("per_pixel_vertex_shader")
+                .withFragmentShader("per_pixel_fragment_shader")
+                .withAttributes(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE)
+                .build();
         cubeRenderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
         lightRenderer = LightRenderer.createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
 

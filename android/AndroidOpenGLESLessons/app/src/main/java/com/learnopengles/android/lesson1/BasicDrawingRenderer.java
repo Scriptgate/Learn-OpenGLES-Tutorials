@@ -2,7 +2,6 @@ package com.learnopengles.android.lesson1;
 
 import android.os.SystemClock;
 
-import net.scriptgate.common.Point3D;
 import net.scriptgate.opengles.matrix.ModelMatrix;
 import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
 import net.scriptgate.opengles.matrix.ViewMatrix;
@@ -15,11 +14,10 @@ import java.util.List;
 import static android.opengl.GLES20.*;
 import static net.scriptgate.common.Color.*;
 import static net.scriptgate.opengles.matrix.ViewMatrix.createViewBehindOrigin;
-import static net.scriptgate.opengles.program.Program.createProgram;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
 import static net.scriptgate.opengles.program.AttributeVariable.COLOR;
 import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
-import static java.util.Arrays.asList;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 
 class BasicDrawingRenderer extends RendererBase {
 
@@ -58,7 +56,11 @@ class BasicDrawingRenderer extends RendererBase {
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader", asList(POSITION, COLOR));
+        program = program()
+                .withVertexShader("lesson_one_vertex_shader")
+                .withFragmentShader("lesson_one_fragment_shader")
+                .withAttributes(POSITION, COLOR)
+                .build();
 
         program.useForRendering();
     }

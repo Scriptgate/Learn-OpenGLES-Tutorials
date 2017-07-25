@@ -8,14 +8,15 @@ import net.scriptgate.opengles.matrix.ModelMatrix;
 import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
 import net.scriptgate.opengles.matrix.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
+
 import net.scriptgate.opengles.program.Program;
 import net.scriptgate.opengles.renderer.RendererBase;
 
 import static android.opengl.GLES20.*;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
 import static net.scriptgate.opengles.program.AttributeVariable.*;
 import static net.scriptgate.opengles.program.UniformVariable.*;
-import static java.util.Arrays.asList;
 
 class IndexBufferObjectRenderer extends RendererBase {
 
@@ -56,7 +57,11 @@ class IndexBufferObjectRenderer extends RendererBase {
 		viewMatrix.onSurfaceCreated();
         viewMatrix.translate(new Point3D(0, -2, 0));
 
-        program = Program.createProgram("per_pixel_vertex_shader_texture", "per_pixel_fragment_shader_texture", asList(POSITION, TEXTURE_COORDINATE));
+        program = program()
+                .withVertexShader("per_pixel_vertex_shader_texture")
+                .withFragmentShader("per_pixel_fragment_shader_texture")
+                .withAttributes(POSITION, TEXTURE_COORDINATE)
+                .build();
 	}
 
 	@Override

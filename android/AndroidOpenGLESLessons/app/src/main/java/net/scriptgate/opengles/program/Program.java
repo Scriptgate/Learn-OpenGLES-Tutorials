@@ -1,9 +1,6 @@
 package net.scriptgate.opengles.program;
 
-import android.content.Context;
-
 import java.nio.FloatBuffer;
-import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
@@ -16,22 +13,6 @@ public class Program {
 
     Program(int programHandle) {
         this.handle = programHandle;
-    }
-
-    public static Program createProgram(Context context, int vertexShaderResource, int fragmentShaderResource, List<AttributeVariable> attributes) {
-        return ProgramBuilder.program()
-                .withVertexShader(context, vertexShaderResource)
-                .withFragmentShader(context, fragmentShaderResource)
-                .withAttributes(attributes)
-                .build();
-    }
-
-    public static Program createProgram(String vertexShaderResource, String fragmentShaderResource, List<AttributeVariable> attributes) {
-        return ProgramBuilder.program()
-                .withVertexShader(vertexShaderResource)
-                .withFragmentShader(fragmentShaderResource)
-                .withAttributes(attributes)
-                .build();
     }
 
     public int getHandle(AttributeVariable attribute) {
