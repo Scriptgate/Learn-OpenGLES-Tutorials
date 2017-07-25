@@ -1,11 +1,21 @@
 package net.scriptgate.opengles.program;
 
 import static android.opengl.GLES20.*;
+import static net.scriptgate.io.RawResourceReader.readTextFromResource;
 
+import android.content.Context;
 import android.util.Log;
 
 class ShaderHelper {
     private static final String TAG = "ShaderHelper";
+
+    static int compileFromResource(int shaderType, Context context, int shaderResource) {
+        return compileShader(shaderType, readTextFromResource(context, shaderResource));
+    }
+
+    static int compileFromResource(int shaderType, String shaderResource) {
+        return compileShader(shaderType, readTextFromResource(shaderResource));
+    }
 
     static int compileShader(final int shaderType, final String shaderSource) {
         int shaderHandle = glCreateShader(shaderType);

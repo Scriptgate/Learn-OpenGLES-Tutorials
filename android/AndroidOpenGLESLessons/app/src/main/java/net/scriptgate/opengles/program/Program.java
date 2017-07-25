@@ -1,83 +1,37 @@
 package net.scriptgate.opengles.program;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.nio.FloatBuffer;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
 import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
-import static net.scriptgate.io.RawResourceReader.readTextFromResource;
-import static net.scriptgate.opengles.program.ShaderHelper.compileShader;
 import static net.scriptgate.opengles.program.AttributeVariable.sizeOf;
-import static net.scriptgate.opengles.program.AttributeVariable.toStringArray;
 import static net.scriptgate.opengles.program.UniformVariable.TEXTURE;
 
 public class Program {
 
-    private static final String TAG = "PROGRAM";
-
     private int handle;
 
-    private Program(int programHandle) {
+    Program(int programHandle) {
         this.handle = programHandle;
     }
 
     public static Program createProgram(Context context, int vertexShaderResource, int fragmentShaderResource, List<AttributeVariable> attributes) {
-        int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, readTextFromResource(context, vertexShaderResource));
-        int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, readTextFromResource(context, fragmentShaderResource));
-
-        int programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, toStringArray(attributes));
-        return new Program(programHandle);
+        return ProgramBuilder.program()
+                .withVertexShader(context, vertexShaderResource)
+                .withFragmentShader(context, fragmentShaderResource)
+                .withAttributes(attributes)
+                .build();
     }
 
     public static Program createProgram(String vertexShaderResource, String fragmentShaderResource, List<AttributeVariable> attributes) {
-        int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, readTextFromResource(vertexShaderResource));
-        int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, readTextFromResource(fragmentShaderResource));
-
-        int programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, toStringArray(attributes));
-        return new Program(programHandle);
-    }
-
-    private static  int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes) {
-        int programHandle = glCreateProgram();
-
-        if (programHandle != 0) {
-            // Bind the vertex shader to the program.
-            glAttachShader(programHandle, vertexShaderHandle);
-
-            // Bind the fragment shader to the program.
-            glAttachShader(programHandle, fragmentShaderHandle);
-
-            // Bind attributes
-            if (attributes != null) {
-                final int size = attributes.length;
-                for (int i = 0; i < size; i++) {
-                    glBindAttribLocation(programHandle, i, attributes[i]);
-                }
-            }
-
-            // Link the two shaders together into a program.
-            glLinkProgram(programHandle);
-
-            // Get the link status.
-            final int[] linkStatus = new int[1];
-            glGetProgramiv(programHandle, GL_LINK_STATUS, linkStatus, 0);
-
-            // If the link failed, delete the program.
-            if (linkStatus[0] == 0) {
-                Log.e(TAG, "Error compiling program: " + glGetProgramInfoLog(programHandle));
-                glDeleteProgram(programHandle);
-                programHandle = 0;
-            }
-        }
-
-        if (programHandle == 0) {
-            throw new RuntimeException("Error creating program.");
-        }
-
-        return programHandle;
+        return ProgramBuilder.program()
+                .withVertexShader(vertexShaderResource)
+                .withFragmentShader(fragmentShaderResource)
+                .withAttributes(attributes)
+                .build();
     }
 
     public int getHandle(AttributeVariable attribute) {
