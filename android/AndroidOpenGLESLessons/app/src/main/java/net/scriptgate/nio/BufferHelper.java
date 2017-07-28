@@ -60,9 +60,9 @@ public class BufferHelper {
     }
 
     private static void putIn(FloatBuffer buffer, Point3D point) {
-        buffer.put(point.x);
-        buffer.put(point.y);
-        buffer.put(point.z);
+        buffer.put(point.x());
+        buffer.put(point.y());
+        buffer.put(point.z());
     }
 
 }

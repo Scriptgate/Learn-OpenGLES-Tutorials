@@ -34,9 +34,9 @@ class Circle implements Drawable {
         float increment = 360.0f / NUMBER_OF_POINTS;
         for (float angle = 0; angle < 360; angle += increment) {
             float degInRad = angle * DEG2RAD;
-            vertices[index++] = center.x;
-            vertices[index++] = (float) (center.y + radius * cos(degInRad));
-            vertices[index++] = (float) (center.z + radius * sin(degInRad));
+            vertices[index++] = center.x();
+            vertices[index++] = (float) (center.y() + radius * cos(degInRad));
+            vertices[index++] = (float) (center.z() + radius * sin(degInRad));
         }
         return new Circle(color, vertices);
     }
@@ -48,9 +48,9 @@ class Circle implements Drawable {
         float increment = 360.0f / NUMBER_OF_POINTS;
         for (float angle = 0; angle < 360; angle += increment) {
             float degInRad = angle * DEG2RAD;
-            vertices[index++] = (float) (center.x + radius * sin(degInRad));
-            vertices[index++] = center.y;
-            vertices[index++] = (float) (center.z + radius * cos(degInRad));
+            vertices[index++] = (float) (center.x() + radius * sin(degInRad));
+            vertices[index++] = center.y();
+            vertices[index++] = (float) (center.z() + radius * cos(degInRad));
         }
         return new Circle(color, vertices);
     }
@@ -62,9 +62,9 @@ class Circle implements Drawable {
         float increment = 360.0f / NUMBER_OF_POINTS;
         for (float angle = 0; angle < 360; angle += increment) {
             float degInRad = angle * DEG2RAD;
-            vertices[index++] = (float) (center.x + radius * cos(degInRad));
-            vertices[index++] = (float) (center.y + radius * sin(degInRad));
-            vertices[index++] = center.z;
+            vertices[index++] = (float) (center.x() + radius * cos(degInRad));
+            vertices[index++] = (float) (center.y() + radius * sin(degInRad));
+            vertices[index++] = center.z();
         }
         return new Circle(color, vertices);
     }

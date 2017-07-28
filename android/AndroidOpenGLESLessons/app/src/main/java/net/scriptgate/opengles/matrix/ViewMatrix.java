@@ -48,7 +48,7 @@ public class ViewMatrix {
         // Set the view matrix. This matrix can be said to represent the camera position.
         // NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination of a model and
         // view matrix. In OpenGL 2, we can keep track of these matrices separately if we choose.
-        Matrix.setLookAtM(viewMatrix, 0, eye.x, eye.y, eye.z, look.x, look.y, look.z, up.x, up.y, up.z);
+        Matrix.setLookAtM(viewMatrix, 0, eye.x(), eye.y(), eye.z(), look.x(), look.y(), look.z(), up.x(), up.y(), up.z());
     }
 
     public void multiplyWithMatrixAndStore(float[] matrix, float[] resultMatrix) {
@@ -60,6 +60,6 @@ public class ViewMatrix {
     }
 
     public void translate(Point3D point) {
-        Matrix.translateM(viewMatrix, 0, point.x, point.y, point.z);
+        Matrix.translateM(viewMatrix, 0, point.x(), point.y(), point.z());
     }
 }

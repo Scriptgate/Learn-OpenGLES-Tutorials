@@ -27,15 +27,15 @@ public class Cube {
     }
 
     public void setRotationX(float rotation) {
-        this.rotation.x = rotation;
+        this.rotation = this.rotation.x(rotation);
     }
 
     public void setRotationY(float rotation) {
-        this.rotation.y = rotation;
+        this.rotation = this.rotation.y(rotation);
     }
 
     public void setRotationZ(float rotation) {
-        this.rotation.z = rotation;
+        this.rotation = this.rotation.z(rotation);
     }
 
     public void setPosition(Point3D position) {

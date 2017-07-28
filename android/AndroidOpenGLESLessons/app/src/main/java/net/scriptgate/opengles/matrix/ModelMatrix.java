@@ -21,13 +21,13 @@ public class ModelMatrix {
     }
 
     public void translate(Point3D point) {
-        translate(point.x, point.y, point.z);
+        translate(point.x(), point.y(), point.z());
     }
 
     public void rotate(Point3D rotation) {
-        Matrix.rotateM(modelMatrix, 0, rotation.x, 1.0f, 0.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, rotation.y, 0.0f, 1.0f, 0.0f);
-        Matrix.rotateM(modelMatrix, 0, rotation.z, 0.0f, 0.0f, 1.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.x(), 1.0f, 0.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.y(), 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(modelMatrix, 0, rotation.z(), 0.0f, 0.0f, 1.0f);
     }
 
     public void multiplyWithMatrixAndStore(float[] matrix, float[] temporaryMatrix, float[] resultMatrix) {
@@ -49,6 +49,6 @@ public class ModelMatrix {
     }
 
     public void scale(Point3D scale) {
-        Matrix.scaleM(modelMatrix, 0, scale.x, scale.y, scale.z);
+        Matrix.scaleM(modelMatrix, 0, scale.x(), scale.y(), scale.z());
     }
 }

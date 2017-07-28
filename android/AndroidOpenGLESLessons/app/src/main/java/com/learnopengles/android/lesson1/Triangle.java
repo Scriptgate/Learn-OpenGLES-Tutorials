@@ -10,7 +10,6 @@ import net.scriptgate.opengles.program.Program;
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
 import static net.scriptgate.nio.BufferHelper.allocateBuffer;
 import static net.scriptgate.opengles.program.AttributeVariable.COLOR;
 import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
@@ -50,14 +49,14 @@ class Triangle {
     }
 
     void setRotationX(float rotation) {
-        this.rotation.x = rotation;
+        this.rotation = this.rotation.x(rotation);
     }
 
     void setRotationY(float rotation) {
-        this.rotation.y = rotation;
+        this.rotation = this.rotation.y(rotation);
     }
 
     void setRotationZ(float rotation) {
-        this.rotation.z = rotation;
+        this.rotation = this.rotation.z(rotation);
     }
 }

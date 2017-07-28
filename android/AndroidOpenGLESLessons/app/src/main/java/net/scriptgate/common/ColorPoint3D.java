@@ -11,15 +11,15 @@ public class ColorPoint3D {
     }
 
     public float x() {
-        return point.x;
+        return point.x();
     }
 
     public float y() {
-        return point.y;
+        return point.y();
     }
 
     public float z() {
-        return point.z;
+        return point.z();
     }
 
     public float red() {

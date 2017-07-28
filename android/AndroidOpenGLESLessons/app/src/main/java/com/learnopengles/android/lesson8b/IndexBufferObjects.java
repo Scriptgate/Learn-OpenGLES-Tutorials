@@ -50,16 +50,16 @@ class IndexBufferObjects {
 
         List<Cube> cubes = new ArrayList<>();
 
-        Point3D offset = new Point3D();
+        float heightOffset = 0;
         int indexOffset = 0;
 
         for (int i = 0; i < NUMBER_OF_CUBES; i++) {
 
             if (i % CUBES_PER_BUFFER == 0) {
-                offset.y += OFFSET_BETWEEN_BUFFERS;
+                heightOffset += OFFSET_BETWEEN_BUFFERS;
             }
-            cubes.add(new Cube(new Point3D(offset.x, offset.y, offset.z), indexOffset));
-            offset.y += 0.2f;
+            cubes.add(new Cube(new Point3D(0, heightOffset, 0), indexOffset));
+            heightOffset += 0.2f;
             indexOffset++;
         }
         return cubes;

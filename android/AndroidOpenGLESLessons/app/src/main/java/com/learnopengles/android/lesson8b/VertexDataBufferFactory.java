@@ -35,7 +35,7 @@ class VertexDataBufferFactory {
                 .mapToObj(new IntFunction<Point3D>() {
                     @Override
                     public Point3D apply(int value) {
-                        return new Point3D(offset.x, offset.y + value * 0.2f, offset.z);
+                        return new Point3D(offset.x(), offset.y() + value * 0.2f, offset.z());
                     }
                 });
 
@@ -60,13 +60,13 @@ class VertexDataBufferFactory {
             @Override
             public Stream<Point3D> apply(Point3D position) {
                 //@formatter:off
-                final Point3D frontA = new Point3D(position.x,         position.y + height, position.z + depth);
-                final Point3D frontB = new Point3D(position.x + width, position.y + height, position.z + depth);
-                final Point3D frontC = new Point3D(position.x,         position.y,          position.z + depth);
-                final Point3D frontD = new Point3D(position.x + width, position.y,          position.z + depth);
-                final Point3D backA  = new Point3D(position.x,         position.y + height, position.z);
-                final Point3D backB  = new Point3D(position.x + width, position.y + height, position.z);
-                final Point3D backD  = new Point3D(position.x + width, position.y,          position.z);
+                final Point3D frontA = new Point3D(position.x(),         position.y() + height, position.z() + depth);
+                final Point3D frontB = new Point3D(position.x() + width, position.y() + height, position.z() + depth);
+                final Point3D frontC = new Point3D(position.x(),         position.y(),          position.z() + depth);
+                final Point3D frontD = new Point3D(position.x() + width, position.y(),          position.z() + depth);
+                final Point3D backA  = new Point3D(position.x(),         position.y() + height, position.z());
+                final Point3D backB  = new Point3D(position.x() + width, position.y() + height, position.z());
+                final Point3D backD  = new Point3D(position.x() + width, position.y(),          position.z());
                 //@formatter:on
 
                 return stream(asList(frontA, frontB, frontC, frontD, backA, backB, backD));

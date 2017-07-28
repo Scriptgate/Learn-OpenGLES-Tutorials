@@ -20,7 +20,7 @@ class Line implements Drawable {
     }
 
     private void setPoints(Point3D from, Point3D to) {
-        vertexBuffer = allocateBuffer(new float[]{from.x, from.y, from.z, to.x, to.y, to.z});
+        vertexBuffer = allocateBuffer(new float[]{from.x(), from.y(), from.z(), to.x(), to.y(), to.z()});
     }
 
     public void setColor(Color color) {
