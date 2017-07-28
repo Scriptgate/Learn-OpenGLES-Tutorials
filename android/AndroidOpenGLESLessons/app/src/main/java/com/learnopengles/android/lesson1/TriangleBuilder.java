@@ -44,13 +44,13 @@ class TriangleBuilder {
     static float[] generateData(List<ColorPoint3D> points) {
         float[] vertices = new float[21];
         for (int i = 0; i < points.size(); i++) {
-            vertices[i * 7] = points.get(i).point.x;
-            vertices[i * 7 + 1] = points.get(i).point.y;
-            vertices[i * 7 + 2] = points.get(i).point.z;
-            vertices[i * 7 + 3] = points.get(i).color.red();
-            vertices[i * 7 + 4] = points.get(i).color.green();
-            vertices[i * 7 + 5] = points.get(i).color.blue();
-            vertices[i * 7 + 6] = points.get(i).color.alpha();
+            vertices[i * 7] = points.get(i).x();
+            vertices[i * 7 + 1] = points.get(i).y();
+            vertices[i * 7 + 2] = points.get(i).z();
+            vertices[i * 7 + 3] = points.get(i).red();
+            vertices[i * 7 + 4] = points.get(i).green();
+            vertices[i * 7 + 5] = points.get(i).blue();
+            vertices[i * 7 + 6] = points.get(i).alpha();
         }
         return vertices;
     }
