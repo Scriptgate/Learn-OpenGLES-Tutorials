@@ -52,7 +52,7 @@ class BasicDrawingRenderer extends RendererBase {
 
     @Override
     public void onSurfaceCreated() {
-        glClearColor(GREY.red, GREY.green, GREY.blue, GREY.alpha);
+        glClearColor(GREY.red(), GREY.green(), GREY.blue(), GREY.alpha());
 
         viewMatrix.onSurfaceCreated();
 

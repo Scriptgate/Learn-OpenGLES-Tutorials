@@ -47,10 +47,10 @@ class TriangleBuilder {
             vertices[i * 7] = points.get(i).point.x;
             vertices[i * 7 + 1] = points.get(i).point.y;
             vertices[i * 7 + 2] = points.get(i).point.z;
-            vertices[i * 7 + 3] = points.get(i).color.red;
-            vertices[i * 7 + 4] = points.get(i).color.green;
-            vertices[i * 7 + 5] = points.get(i).color.blue;
-            vertices[i * 7 + 6] = points.get(i).color.alpha;
+            vertices[i * 7 + 3] = points.get(i).color.red();
+            vertices[i * 7 + 4] = points.get(i).color.green();
+            vertices[i * 7 + 5] = points.get(i).color.blue();
+            vertices[i * 7 + 6] = points.get(i).color.alpha();
         }
         return vertices;
     }

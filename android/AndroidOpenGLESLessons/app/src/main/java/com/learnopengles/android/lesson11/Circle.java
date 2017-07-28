@@ -75,7 +75,7 @@ class Circle implements Drawable {
 
     @Override
     public float[] getColor() {
-        return color.toArray();
+        return color.toFloatArray();
     }
 
     @Override

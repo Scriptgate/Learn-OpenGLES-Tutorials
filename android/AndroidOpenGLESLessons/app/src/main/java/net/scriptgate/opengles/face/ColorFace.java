@@ -17,11 +17,11 @@ public class ColorFace extends Face<Color> {
     }
 
     @Override
-    public void addToArray(Color element, float[] data, int offset) {
-        data[offset] = element.red;
-        data[offset + 1] = element.green;
-        data[offset + 2] = element.blue;
-        data[offset + 3] = element.alpha;
+    public void addToArray(Color color, float[] data, int offset) {
+        data[offset] = color.red();
+        data[offset + 1] = color.green();
+        data[offset + 2] = color.blue();
+        data[offset + 3] = color.alpha();
     }
 
 

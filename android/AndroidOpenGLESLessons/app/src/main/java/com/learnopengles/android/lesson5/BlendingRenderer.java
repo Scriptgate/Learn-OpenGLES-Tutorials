@@ -93,7 +93,7 @@ class BlendingRenderer implements Renderer {
 
     @Override
     public void onSurfaceCreated() {
-        glClearColor(BLACK.red, BLACK.green, BLACK.blue, 0.0f);
+        glClearColor(BLACK.red(), BLACK.green(), BLACK.blue(), BLACK.alpha());
 
         enableBlending();
 

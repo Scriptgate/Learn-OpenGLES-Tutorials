@@ -69,7 +69,7 @@ class BasicTexturingRenderer extends RendererBase {
 
     @Override
     public void onSurfaceCreated() {
-        glClearColor(BLACK.red, BLACK.green, BLACK.blue, 0.0f);
+        glClearColor(BLACK.red(), BLACK.green(), BLACK.blue(), BLACK.alpha());
 
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);

@@ -80,7 +80,7 @@ class CameraRenderer extends RendererBase {
 
     @Override
     public void onSurfaceCreated() {
-        glClearColor(BACKGROUND_COLOR.red, BACKGROUND_COLOR.green, BACKGROUND_COLOR.blue, BACKGROUND_COLOR.alpha);
+        glClearColor(BACKGROUND_COLOR.red(), BACKGROUND_COLOR.green(), BACKGROUND_COLOR.blue(), BACKGROUND_COLOR.alpha());
 
         // Use culling to remove back faces.
         glEnable(GL_CULL_FACE);

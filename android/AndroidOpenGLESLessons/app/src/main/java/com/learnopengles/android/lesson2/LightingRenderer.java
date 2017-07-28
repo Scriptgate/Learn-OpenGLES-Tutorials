@@ -78,7 +78,7 @@ public class LightingRenderer extends RendererBase {
 
     @Override
     public void onSurfaceCreated() {
-        glClearColor(BLACK.red, BLACK.green, BLUE.blue, BLACK.alpha);
+        glClearColor(BLACK.red(), BLACK.green(), BLACK.blue(), BLACK.alpha());
 
         glEnable(GL_CULL_FACE);
         glEnable(GL_DEPTH_TEST);

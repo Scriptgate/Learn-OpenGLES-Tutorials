@@ -14,10 +14,10 @@ public class Color {
     public static final Color CYAN    = new Color(0.0f, 1.0f, 1.0f, 1.0f);
     //@formatter:on
 
-    public final float red;
-    public final float green;
-    public final float blue;
-    public final float alpha;
+    private final float red;
+    private final float green;
+    private final float blue;
+    private final float alpha;
 
 
     public Color(float red, float green, float blue, float alpha) {
@@ -26,8 +26,24 @@ public class Color {
         this.blue = blue;
         this.alpha = alpha;
     }
+    
+    public float red() {
+        return red;
+    }
 
-    public float[] toArray() {
+    public float green() {
+        return green;
+    }
+
+    public float blue() {
+        return this.blue;
+    }
+
+    public float alpha() {
+        return this.alpha;
+    }
+
+    public float[] toFloatArray() {
         return new float[]{red, green, blue, alpha};
     }
 }

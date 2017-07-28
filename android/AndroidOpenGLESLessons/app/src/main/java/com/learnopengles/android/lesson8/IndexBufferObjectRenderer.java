@@ -85,7 +85,7 @@ class IndexBufferObjectRenderer implements Renderer {
 	public void onSurfaceCreated() {
 		heightMap.initialize();
 
-		glClearColor(BLACK.red, BLACK.green, BLACK.blue, 0.0f);
+		glClearColor(BLACK.red(), BLACK.green(), BLACK.blue(), BLACK.alpha());
 
 		glEnable(GL_DEPTH_TEST);
 
