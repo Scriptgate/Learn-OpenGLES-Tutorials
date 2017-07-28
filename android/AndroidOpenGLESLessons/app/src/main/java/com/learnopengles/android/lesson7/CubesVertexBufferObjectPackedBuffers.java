@@ -36,6 +36,7 @@ class CubesVertexBufferObjectPackedBuffers extends Cubes {
 
         AttributeVariable[] structure = {POSITION, NORMAL, TEXTURE_COORDINATE};
 
+        //FIXME: We can't move structure to program in this example because other implementations of Cubes use the same program
         program.bind(bufferIndex, structure).at(0).to(POSITION);
         program.bind(bufferIndex, structure).after(POSITION).to(NORMAL);
         program.bind(bufferIndex, structure).after(POSITION, NORMAL).to(TEXTURE_COORDINATE);
