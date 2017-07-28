@@ -36,7 +36,7 @@ public abstract class Face<T> {
 
     public abstract int getNumberOfElements();
 
-    public abstract void addToArray(T element, float[] data, int offset);
+    abstract void addToArray(T element, float[] data, int offset);
 }
 
 
