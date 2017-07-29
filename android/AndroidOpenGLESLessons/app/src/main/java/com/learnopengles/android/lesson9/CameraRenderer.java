@@ -2,54 +2,41 @@ package com.learnopengles.android.lesson9;
 
 
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Color;
-import com.learnopengles.android.common.Light;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.data.CubeDataCollection;
-import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
-import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
-import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.mvp.ModelViewCubeRenderer;
-import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.Renderer;
+import net.scriptgate.common.Color;
+import net.scriptgate.opengles.light.Light;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.cube.Cube;
+import net.scriptgate.opengles.cube.CubeFactory;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.RendererBase;
+import net.scriptgate.opengles.light.renderer.LightRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.cube.CubeDataFactory.*;
-import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.*;
-import static com.learnopengles.android.program.AttributeVariable.*;
-import static com.learnopengles.android.program.Program.createProgram;
-import static com.learnopengles.android.renderer.light.LightRendererFactory.createLightRenderer;
-import static java.util.Arrays.asList;
+import static net.scriptgate.common.Color.*;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.opengles.cube.CubeDataFactory.*;
+import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
-public class CameraRenderer implements GLSurfaceView.Renderer {
+class CameraRenderer extends RendererBase {
 
     private ModelMatrix modelMatrix;
     private ViewMatrix viewMatrix;
-    private ProjectionMatrix projectionMatrix;
 
     private ModelViewProjectionMatrix mvpMatrix;
 
-    private Renderer<Cube> cubeRenderer;
-    private Renderer<Light> lightRenderer;
+    private CubeRenderer cubeRenderer;
+    private LightRenderer lightRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
@@ -58,7 +45,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     private List<Cube> cubes;
     private Light light;
 
-    public CameraRenderer(final Context activityContext) {
+    CameraRenderer(final Context activityContext) {
+        super(new IsometricProjectionMatrix(10.0f));
         this.activityContext = activityContext;
         modelMatrix = new ModelMatrix();
 
@@ -70,10 +58,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix = new ViewMatrix(eye, look, up);
 
-        projectionMatrix = new IsometricProjectionMatrix(10.0f);
         mvpMatrix = new ModelViewProjectionMatrix();
 
-        CubeDataCollection cubeData = cubeData()
+        CubeFactory cubeFactory = createCubeFactory()
                 .positions(generatePositionDataCentered(0.1f, 0.02f, 0.1f))
                 .colors(generateColorData(WHITE))
                 .normals(generateNormalData())
@@ -84,7 +71,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         int squareSize = 4;
         for (int j = 0; j < squareSize; j++) {
             for (int i = 0; i < squareSize; i++) {
-                cubes.add(new Cube(cubeData, new Point3D(i * 0.3f, 0.0f, j * 0.3f)));
+                cubes.add(cubeFactory.createAt(i * 0.3f, 0.0f, j * 0.3f));
             }
         }
 
@@ -92,8 +79,8 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        glClearColor(BACKGROUND_COLOR.red, BACKGROUND_COLOR.green, BACKGROUND_COLOR.blue, BACKGROUND_COLOR.alpha);
+    public void onSurfaceCreated() {
+        glClearColor(BACKGROUND_COLOR.red(), BACKGROUND_COLOR.green(), BACKGROUND_COLOR.blue(), BACKGROUND_COLOR.alpha());
 
         // Use culling to remove back faces.
         glEnable(GL_CULL_FACE);
@@ -108,25 +95,13 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         //Instead of moving the cubes up (centering the origin), we're simply manipulating the viewMatrix
         viewMatrix.translate(new Point3D(-0.3f, 0.0f, -0.3f));
 
-        Program program = createProgram("per_pixel_vertex_shader", "per_pixel_fragment_shader", asList(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE));
-        cubeRenderer = new Renderer<>(program,
-                asList(
-                        new ModelMatrixCubeRenderer(modelMatrix),
-
-                        positionCubeRenderer(),
-                        colorCubeRenderer(),
-                        normalCubeRenderer(),
-                        new TextureCubeRenderer(),
-                        textureCoordinateCubeRenderer(),
-
-                        new ModelViewCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix),
-
-                        new LightPositionInEyeSpaceRenderer<Cube>(light),
-                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
-                )
-        );
-
-        lightRenderer = createLightRenderer(light, mvpMatrix, viewMatrix, projectionMatrix);
+        Program program = program()
+                .withVertexShader("per_pixel_vertex_shader")
+                .withFragmentShader("per_pixel_fragment_shader")
+                .withAttributes(POSITION, COLOR, NORMAL, TEXTURE_COORDINATE)
+                .build();
+        cubeRenderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, light);
+        lightRenderer = LightRenderer.createLightRenderer(mvpMatrix, viewMatrix, projectionMatrix);
 
         // Load the texture
         int textureDataHandle = loadTexture(activityContext, R.drawable.bumpy_bricks_public_domain);
@@ -136,12 +111,7 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        projectionMatrix.onSurfaceChanged(width, height);
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl) {
+    public void onDrawFrame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Do a complete rotation every 10 seconds.
@@ -149,9 +119,9 @@ public class CameraRenderer implements GLSurfaceView.Renderer {
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
         light.setIdentity();
-        light.translate(new Point3D(0.5f, 0.2f, 0.5f));
+        light.translate(0.5f, 0.2f, 0.5f);
         light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
-        light.translate(new Point3D(0.2f, 0.0f, 0.0f));
+        light.translate(0.2f, 0.0f, 0.0f);
         light.setView(viewMatrix);
 
         cubeRenderer.useForRendering();

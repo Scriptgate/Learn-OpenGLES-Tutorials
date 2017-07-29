@@ -5,37 +5,33 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.cube.CubeDataFactory;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.cube.CubeDataFactory;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
+
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
-import static com.learnopengles.android.common.ShaderHelper.compileShader;
-import static com.learnopengles.android.common.ShaderHelper.createAndLinkProgram;
-import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
+import static net.scriptgate.common.Color.BLACK;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generateNormalData;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generateTextureData;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
-/**
- * This class implements our custom renderer. Note that the GL10 parameter
- * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
- * used instead.
- */
-public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class VertexBufferObjectRenderer implements Renderer {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -73,10 +69,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
      */
     private final float[] lightPosInEyeSpace = new float[4];
 
-    /**
-     * This is a handle to our cube shading program.
-     */
-    private int programHandle;
+    private Program program;
 
     /**
      * These are handles to our texture data.
@@ -98,7 +91,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     /**
      * Initialize the model data.
      */
-    public VertexBufferObjectRenderer(final Context activityContext, final GLSurfaceView glSurfaceView) {
+    VertexBufferObjectRenderer(final Context activityContext, final GLSurfaceView glSurfaceView) {
         this.activityContext = activityContext;
         this.glSurfaceView = glSurfaceView;
 
@@ -126,7 +119,7 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
         private List<Point3D> cubePositions;
 
-        public GenDataRunnable(List<Point3D> cubePositions) {
+        GenDataRunnable(List<Point3D> cubePositions) {
             this.cubePositions = cubePositions;
         }
 
@@ -181,11 +174,10 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+    public void onSurfaceCreated() {
         generateCubes();
 
-        // Set the background clear color to black.
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(BLACK.red(), BLACK.green(), BLACK.blue(), BLACK.alpha());
 
         // Use culling to remove back faces.
         glEnable(GL_CULL_FACE);
@@ -196,14 +188,11 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         viewMatrix.onSurfaceCreated();
         viewMatrix.translate(new Point3D(-1.75f, 0.0f, 1.75f));
 
-        final String vertexShader = readTextFileFromRawResource(activityContext, R.raw.lesson_seven_vertex_shader);
-        final String fragmentShader = readTextFileFromRawResource(activityContext, R.raw.lesson_seven_fragment_shader);
-
-        final int vertexShaderHandle = compileShader(GL_VERTEX_SHADER, vertexShader);
-        final int fragmentShaderHandle = compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-
-        programHandle = createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[]{"a_Position", "a_Normal", "a_TexCoordinate"});
+        program = program()
+                .withVertexShader(activityContext, R.raw.lesson_seven_vertex_shader)
+                .withFragmentShader(activityContext, R.raw.lesson_seven_fragment_shader)
+                .withAttributes(POSITION, NORMAL, TEXTURE_COORDINATE)
+                .build();
         // Load the texture
         androidDataHandle = loadTexture(activityContext, R.drawable.usb_android);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -216,12 +205,12 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+    public void onSurfaceChanged(int width, int height) {
         projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override
-    public void onDrawFrame(GL10 glUnused) {
+    public void onDrawFrame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -233,32 +222,32 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         viewMatrix.multiplyWithVectorAndStore(lightPosInWorldSpace, lightPosInEyeSpace);
 
         // Set our per-vertex lighting program.
-        glUseProgram(programHandle);
+        program.useForRendering();
 
 
         // Draw a cube. Translate the cube into the screen.
         modelMatrix.setIdentity();
-        modelMatrix.translate(new Point3D(0.0f, 0.0f, -3.5f));
+        modelMatrix.translate(0.0f, 0.0f, -3.5f);
 
         mvpMatrix.multiply(modelMatrix, viewMatrix);
-        mvpMatrix.passTo(glGetUniformLocation(programHandle, "u_MVMatrix"));
+        mvpMatrix.passTo(program.getHandle(MV_MATRIX));
 
         mvpMatrix.multiply(projectionMatrix);
 
         // Pass in the combined matrix.
-        mvpMatrix.passTo(glGetUniformLocation(programHandle, "u_MVPMatrix"));
+        mvpMatrix.passTo(program.getHandle(MVP_MATRIX));
 
         passLightingData();
         passTextureData();
 
         if (cubes != null) {
-            cubes.render(programHandle, cubePositions.size());
+            cubes.render(program, cubePositions.size());
         }
     }
 
     private void passLightingData() {
         // Pass in the light position in eye space.
-        glUniform3f(glGetUniformLocation(programHandle, "u_LightPos"), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+        glUniform3f(program.getHandle(LIGHT_POSITION), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
     }
 
     private void passTextureData() {
@@ -268,6 +257,6 @@ public class VertexBufferObjectRenderer implements GLSurfaceView.Renderer {
         // Bind the texture to this unit.
         glBindTexture(GL_TEXTURE_2D, androidDataHandle);
         // Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        glUniform1i(glGetUniformLocation(programHandle, "u_Texture"), 0);
+        glUniform1i(program.getHandle(TEXTURE), 0);
     }
 }

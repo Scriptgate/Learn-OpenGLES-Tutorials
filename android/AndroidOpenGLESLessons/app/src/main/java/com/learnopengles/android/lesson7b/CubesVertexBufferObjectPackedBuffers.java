@@ -1,17 +1,16 @@
 package com.learnopengles.android.lesson7b;
 
+import net.scriptgate.opengles.program.AttributeVariable;
+import net.scriptgate.opengles.program.Program;
+
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
+import static net.scriptgate.nio.BufferHelper.allocateFloatBuffer;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
-public class CubesVertexBufferObjectPackedBuffers {
-
-    private static final int POSITION_DATA_SIZE = 3;
-    private static final int NORMAL_DATA_SIZE = 3;
-    private static final int TEXTURE_COORDINATE_DATA_SIZE = 2;
+class CubesVertexBufferObjectPackedBuffers {
 
     private final int cubeBufferIdx;
 
@@ -33,27 +32,13 @@ public class CubesVertexBufferObjectPackedBuffers {
         cubeBuffer = null;
     }
 
-    public void render(int programHandle, int numberOfCubes) {
+    void render(Program program, int numberOfCubes) {
 
-        final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
+        AttributeVariable[] structure = {POSITION, NORMAL, TEXTURE_COORDINATE};
 
-        // Pass in the position information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, 0);
-
-        // Pass in the normal information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, POSITION_DATA_SIZE * BYTES_PER_FLOAT);
-
-        // Pass in the texture information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, (POSITION_DATA_SIZE + NORMAL_DATA_SIZE) * BYTES_PER_FLOAT);
+        program.bind(cubeBufferIdx, structure).at(0).to(POSITION);
+        program.bind(cubeBufferIdx, structure).after(POSITION).to(NORMAL);
+        program.bind(cubeBufferIdx, structure).after(POSITION, NORMAL).to(TEXTURE_COORDINATE);
 
         // Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -62,13 +47,13 @@ public class CubesVertexBufferObjectPackedBuffers {
         glDrawArrays(GL_TRIANGLES, 0, numberOfCubes * 36);
     }
 
-    public void release() {
+    void release() {
         // Delete buffers from OpenGL's memory
         final int[] buffersToDelete = new int[] {cubeBufferIdx};
         glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
     }
 
-    FloatBuffer getInterleavedBuffer(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int numberOfCubes) {
+    private FloatBuffer getInterleavedBuffer(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int numberOfCubes) {
         final int cubeDataLength = cubePositions.length
                 + (cubeNormals.length * numberOfCubes)
                 + (cubeTextureCoordinates.length * numberOfCubes);
@@ -76,16 +61,16 @@ public class CubesVertexBufferObjectPackedBuffers {
         int cubeNormalOffset = 0;
         int cubeTextureOffset = 0;
 
-        final FloatBuffer cubeBuffer = allocateDirect(cubeDataLength * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
+        final FloatBuffer cubeBuffer = allocateFloatBuffer(cubeDataLength);
 
         for (int i = 0; i < numberOfCubes; i++) {
             for (int v = 0; v < 36; v++) {
-                cubeBuffer.put(cubePositions, cubePositionOffset, POSITION_DATA_SIZE);
-                cubePositionOffset += POSITION_DATA_SIZE;
-                cubeBuffer.put(cubeNormals, cubeNormalOffset, NORMAL_DATA_SIZE);
-                cubeNormalOffset += NORMAL_DATA_SIZE;
-                cubeBuffer.put(cubeTextureCoordinates, cubeTextureOffset, TEXTURE_COORDINATE_DATA_SIZE);
-                cubeTextureOffset += TEXTURE_COORDINATE_DATA_SIZE;
+                cubeBuffer.put(cubePositions, cubePositionOffset, POSITION.getSize());
+                cubePositionOffset += POSITION.getSize();
+                cubeBuffer.put(cubeNormals, cubeNormalOffset, NORMAL.getSize());
+                cubeNormalOffset += NORMAL.getSize();
+                cubeBuffer.put(cubeTextureCoordinates, cubeTextureOffset, TEXTURE_COORDINATE.getSize());
+                cubeTextureOffset += TEXTURE_COORDINATE.getSize();
             }
 
             // The normal and texture data is repeated for each cube.

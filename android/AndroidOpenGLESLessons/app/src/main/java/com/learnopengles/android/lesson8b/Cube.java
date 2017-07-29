@@ -1,17 +1,17 @@
 package com.learnopengles.android.lesson8b;
 
 
-import com.learnopengles.android.common.Point3D;
+import net.scriptgate.common.Point3D;
 
 import java8.util.function.Function;
 import java8.util.function.ToIntFunction;
 
-public class Cube {
+class Cube {
 
-    public final Point3D position;
-    public final int colorIndex;
+    private final Point3D position;
+    private final int colorIndex;
 
-    public Cube(Point3D position, int colorIndex) {
+    Cube(Point3D position, int colorIndex) {
         this.position = position;
         this.colorIndex = colorIndex;
     }

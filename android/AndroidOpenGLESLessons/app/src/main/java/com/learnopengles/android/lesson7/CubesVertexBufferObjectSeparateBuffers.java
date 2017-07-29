@@ -1,25 +1,18 @@
 package com.learnopengles.android.lesson7;
 
+import net.scriptgate.opengles.program.Program;
+
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_STATIC_DRAW;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glBindBuffer;
-import static android.opengl.GLES20.glBufferData;
-import static android.opengl.GLES20.glDeleteBuffers;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGenBuffers;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
+import static android.opengl.GLES20.*;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
-public class CubesVertexBufferObjectSeparateBuffers extends Cubes {
-    final int cubePositionsBufferIdx;
-    final int cubeNormalsBufferIdx;
-    final int cubeTexCoordsBufferIdx;
+class CubesVertexBufferObjectSeparateBuffers extends Cubes {
+
+    private final int positionsBufferIndex;
+    private final int normalsBufferIndex;
+    private final int TextureCoordinatesBufferIndex;
 
     CubesVertexBufferObjectSeparateBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         FloatBuffer[] floatBuffers = getBuffers(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
@@ -43,9 +36,9 @@ public class CubesVertexBufferObjectSeparateBuffers extends Cubes {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        cubePositionsBufferIdx = buffers[0];
-        cubeNormalsBufferIdx = buffers[1];
-        cubeTexCoordsBufferIdx = buffers[2];
+        positionsBufferIndex = buffers[0];
+        normalsBufferIndex = buffers[1];
+        TextureCoordinatesBufferIndex = buffers[2];
 
         cubePositionsBuffer.limit(0);
         cubePositionsBuffer = null;
@@ -56,25 +49,10 @@ public class CubesVertexBufferObjectSeparateBuffers extends Cubes {
     }
 
     @Override
-    public void render(int programHandle, int actualCubeFactor) {
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
-
-        // Pass in the position information
-        glBindBuffer(GL_ARRAY_BUFFER, cubePositionsBufferIdx);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, 0, 0);
-
-        // Pass in the normal information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeNormalsBufferIdx);
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, 0, 0);
-
-        // Pass in the texture information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeTexCoordsBufferIdx);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, 0, 0);
+    public void render(Program program, int actualCubeFactor) {
+        program.bind(positionsBufferIndex).to(POSITION);
+        program.bind(normalsBufferIndex).to(NORMAL);
+        program.bind(TextureCoordinatesBufferIndex).to(TEXTURE_COORDINATE);
 
         // Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -86,7 +64,7 @@ public class CubesVertexBufferObjectSeparateBuffers extends Cubes {
     @Override
     public void release() {
         // Delete buffers from OpenGL's memory
-        final int[] buffersToDelete = new int[] {cubePositionsBufferIdx, cubeNormalsBufferIdx, cubeTexCoordsBufferIdx};
+        final int[] buffersToDelete = new int[] {positionsBufferIndex, normalsBufferIndex, TextureCoordinatesBufferIndex};
         glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
     }
 }

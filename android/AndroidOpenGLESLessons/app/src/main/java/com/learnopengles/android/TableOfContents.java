@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,8 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SimpleAdapter;
-
-import com.learnopengles.android.activity.*;
 
 public class TableOfContents extends ListActivity 
 {
@@ -32,7 +29,7 @@ public class TableOfContents extends ListActivity
 		
 		// Initialize data
 		final List<Map<String, Object>> data = new ArrayList<>();
-		final SparseArray<Class<? extends Activity>> activityMapping = new SparseArray<>();
+		final SparseArray<Class<? extends android.app.Activity>> activityMapping = new SparseArray<>();
 		
 		int i = 0;
 		
@@ -42,7 +39,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_one));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_one_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonOneActivity.class);			
+			activityMapping.put(i++, com.learnopengles.android.lesson1.Activity.class);
 		}
 		
 		{
@@ -51,7 +48,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_two));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_two_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonTwoActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson2.Activity.class);
 		}
 		
 		{
@@ -60,7 +57,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_three));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_three_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonThreeActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson3.Activity.class);
 		}
 		
 		{
@@ -69,7 +66,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_four));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_four_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonFourActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson4.Activity.class);
 		}
 		
 		{
@@ -78,7 +75,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_five));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_five_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonFiveActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson5.Activity.class);
 		}
 		
 		{
@@ -87,7 +84,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_six));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_six_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonSixActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson6.Activity.class);
 		}
 		
 		{
@@ -96,7 +93,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_seven));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_seven_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonSevenActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson7.Activity.class);
 		}
 
 		{
@@ -105,7 +102,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_seven_b));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_seven_b_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonSevenBActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson7b.Activity.class);
 		}
 		
 		{
@@ -114,7 +111,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_eight));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eight_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonEightActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson8.Activity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();
@@ -122,7 +119,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_eight_b));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eight_b_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonEightBActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson8b.Activity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();
@@ -130,7 +127,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_nine));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_nine_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonNineActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson9.Activity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();
@@ -138,7 +135,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_ten));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_ten_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonTenActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson10.Activity.class);
 		}
 		{
 			final Map<String, Object> item = new HashMap<>();
@@ -146,7 +143,7 @@ public class TableOfContents extends ListActivity
 			item.put(ITEM_TITLE, getText(R.string.lesson_eleven));
 			item.put(ITEM_SUBTITLE, getText(R.string.lesson_eleven_subtitle));
 			data.add(item);
-			activityMapping.put(i++, LessonElevenActivity.class);
+			activityMapping.put(i++, com.learnopengles.android.lesson11.Activity.class);
 		}
 
 		
@@ -159,7 +156,7 @@ public class TableOfContents extends ListActivity
 			 public void onItemClick(AdapterView<?> parent, View view,
 				        int position, long id) 
 			{
-				final Class<? extends Activity> activityToLaunch = activityMapping.get(position);
+				final Class<? extends android.app.Activity> activityToLaunch = activityMapping.get(position);
 				
 				if (activityToLaunch != null)
 				{

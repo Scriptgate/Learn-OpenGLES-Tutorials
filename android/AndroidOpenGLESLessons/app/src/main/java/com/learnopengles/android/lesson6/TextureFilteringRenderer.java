@@ -1,53 +1,34 @@
 package com.learnopengles.android.lesson6;
 
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Light;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.cube.Cube;
-import com.learnopengles.android.cube.CubeDataFactory;
-import com.learnopengles.android.cube.renderer.AccumulatedRotationCubeRenderer;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.Renderer;
-import com.learnopengles.android.renderer.light.LightPositionInEyeSpaceRenderer;
-import com.learnopengles.android.cube.renderer.ModelMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.mvp.ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer;
-import com.learnopengles.android.cube.renderer.TextureCubeRenderer;
-import com.learnopengles.android.program.Program;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import net.scriptgate.opengles.light.Light;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.cube.Cube;
+import net.scriptgate.opengles.cube.CubeDataFactory;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.Renderer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
-import static com.learnopengles.android.cube.CubeDataFactory.generateNormalData;
-import static com.learnopengles.android.cube.CubeDataFactory.generateTextureData;
-import static com.learnopengles.android.cube.data.CubeDataCollectionBuilder.cubeData;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.normalCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.positionCubeRenderer;
-import static com.learnopengles.android.cube.renderer.data.CubeDataRendererFactory.textureCoordinateCubeRenderer;
-import static com.learnopengles.android.program.AttributeVariable.NORMAL;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static com.learnopengles.android.program.AttributeVariable.TEXTURE_COORDINATE;
-import static com.learnopengles.android.program.Program.createProgram;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
+import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generateNormalData;
+import static net.scriptgate.opengles.cube.CubeDataFactory.generateTextureData;
+import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
+import static net.scriptgate.opengles.program.AttributeVariable.NORMAL;
+import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
+import static net.scriptgate.opengles.program.AttributeVariable.TEXTURE_COORDINATE;
 
-/**
- * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
- * renderers -- the static class GLES20 is used instead.
- */
-public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
+class TextureFilteringRenderer implements Renderer {
     /**
      * Used for debug logs. max 23 characters
      */
@@ -94,45 +75,45 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
     private int queuedMagFilter;
 
     // These still work without volatile, but refreshes are not guaranteed to happen.
-    public volatile float deltaX;
-    public volatile float deltaY;
+    volatile float deltaX;
+    volatile float deltaY;
 
     private Cube cube;
     private Cube plane;
 
     private Light light;
 
-    private Renderer<Cube> cubeRenderer;
-    private Renderer<Cube> planeRenderer;
+    private CubeRenderer cubeRenderer;
+    private PlaneRenderer planeRenderer;
 
     /**
      * Initialize the model data.
      */
-    public TextureFilteringRenderer(final Context activityContext) {
+    TextureFilteringRenderer(final Context activityContext) {
         this.activityContext = activityContext;
 
         // Initialize the buffers.
         float[] positionData = CubeDataFactory.generatePositionDataCentered(1.0f, 1.0f, 1.0f);
         float[] normalData = generateNormalData();
 
-        cube = new Cube(cubeData()
+        cube = createCubeFactory()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData())
-                .build(),
-                new Point3D(0.0f, 0.8f, -3.5f));
-        plane = new Cube(cubeData()
+                .build()
+                .createAt(0.0f, 0.8f, -3.5f);
+        plane = createCubeFactory()
                 .positions(positionData)
                 .normals(normalData)
                 .textures(generateTextureData(25.0f, 25.0f))
-                .build(),
-                new Point3D(0.0f, -2.0f, -5.0f));
+                .build()
+                .createAt(0.0f, -2.0f, -5.0f);
         plane.setScale(new Point3D(25.0f, 1.0f, 25.0f));
         light = new Light();
     }
 
     @Override
-    public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+    public void onSurfaceCreated() {
         // Set the background clear color to black.
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -146,7 +127,11 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
 
         // Define a simple shader program for our point.
-        pointProgram = createProgram("point_vertex_shader", "point_fragment_shader", singletonList(POSITION));
+        pointProgram = program()
+                .withVertexShader("point_vertex_shader")
+                .withFragmentShader("point_fragment_shader")
+                .withAttributes(POSITION)
+                .build();
 
         // Load the texture
         brickDataHandle = loadTexture(activityContext, R.drawable.stone_wall_public_domain);
@@ -168,50 +153,22 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         // Initialize the accumulated rotation matrix
         Matrix.setIdentityM(accumulatedRotation, 0);
 
-        Program program = createProgram("per_pixel_vertex_shader_tex_and_light", "per_pixel_fragment_shader_tex_and_light", asList(POSITION, NORMAL, TEXTURE_COORDINATE));
-        cubeRenderer = new Renderer<>(program,
-                asList(
-                        new ModelMatrixCubeRenderer(modelMatrix),
-
-                        new AccumulatedRotationCubeRenderer(accumulatedRotation, currentRotation, temporaryMatrix, modelMatrix),
-
-                        positionCubeRenderer(),
-                        normalCubeRenderer(),
-                        new TextureCubeRenderer(),
-                        textureCoordinateCubeRenderer(),
-
-                        new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix),
-
-                        new LightPositionInEyeSpaceRenderer<Cube>(light),
-                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
-                )
-        );
-
-        planeRenderer = new Renderer<>(program,
-                asList(
-                        new ModelMatrixCubeRenderer(modelMatrix),
-
-                        positionCubeRenderer(),
-                        normalCubeRenderer(),
-                        new TextureCubeRenderer(),
-                        textureCoordinateCubeRenderer(),
-
-
-                        new ModelViewWithProjectionThroughTemporaryMatrixCubeRenderer(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix, temporaryMatrix),
-
-                        new LightPositionInEyeSpaceRenderer<Cube>(light),
-                        new DrawArraysRenderer<Cube>(GL_TRIANGLES, 36)
-                )
-        );
+        Program program = program()
+                .withVertexShader("per_pixel_vertex_shader_tex_and_light")
+                .withFragmentShader("per_pixel_fragment_shader_tex_and_light")
+                .withAttributes(POSITION, NORMAL, TEXTURE_COORDINATE)
+                .build();
+        cubeRenderer = new CubeRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, accumulatedRotation, currentRotation, temporaryMatrix, light);
+        planeRenderer = new PlaneRenderer(program, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix, temporaryMatrix, light);
     }
 
     @Override
-    public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+    public void onSurfaceChanged(int width, int height) {
         projectionMatrix.onSurfaceChanged(width, height);
     }
 
     @Override
-    public void onDrawFrame(GL10 glUnused) {
+    public void onDrawFrame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Do a complete rotation every 10 seconds.
@@ -223,9 +180,9 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
 
         // Calculate position of the light. Rotate and then push into the distance.
         light.setIdentity();
-        light.translate(new Point3D(0.0f, 0.0f, -2.0f));
+        light.translate(0.0f, 0.0f, -2.0f);
         light.rotate(new Point3D(0.0f, angleInDegrees, 0.0f));
-        light.translate(new Point3D(0.0f, 0.0f, 3.5f));
+        light.translate(0.0f, 0.0f, 3.5f);
 
         light.setView(viewMatrix);
 
@@ -249,7 +206,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         light.drawLight(pointProgram, mvpMatrix, viewMatrix, projectionMatrix, temporaryMatrix);
     }
 
-    public void setMinFilter(final int filter) {
+    void setMinFilter(final int filter) {
         if (brickDataHandle != 0 && grassDataHandle != 0) {
             glBindTexture(GL_TEXTURE_2D, brickDataHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
@@ -260,7 +217,7 @@ public class TextureFilteringRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void setMagFilter(final int filter) {
+    void setMagFilter(final int filter) {
         if (brickDataHandle != 0 && grassDataHandle != 0) {
             glBindTexture(GL_TEXTURE_2D, brickDataHandle);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);

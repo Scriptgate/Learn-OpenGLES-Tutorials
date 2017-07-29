@@ -3,67 +3,43 @@ package com.learnopengles.android.lesson8;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import net.scriptgate.opengles.program.AttributeVariable;
+import net.scriptgate.opengles.program.Program;
+
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import static android.opengl.GLES20.GL_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_STATIC_DRAW;
-import static android.opengl.GLES20.GL_TRIANGLE_STRIP;
-import static android.opengl.GLES20.GL_UNSIGNED_SHORT;
-import static android.opengl.GLES20.glBindBuffer;
-import static android.opengl.GLES20.glBufferData;
-import static android.opengl.GLES20.glDeleteBuffers;
-import static android.opengl.GLES20.glDrawElements;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGenBuffers;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.COLOR_ATTRIBUTE;
-import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.NORMAL_ATTRIBUTE;
-import static com.learnopengles.android.lesson8.IndexBufferObjectRenderer.POSITION_ATTRIBUTE;
-import static java.nio.ByteBuffer.allocateDirect;
-import static java.nio.ByteOrder.nativeOrder;
+import static android.opengl.GLES20.*;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_SHORT;
+import static net.scriptgate.nio.BufferHelper.allocateBuffer;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
-public class HeightMap {
+class HeightMap {
 
-    /** Used for debug logs. max 23 characters*/
+    /**
+     * Used for debug logs. max 23 characters
+     */
     private static final String TAG = "HeightMap";
 
-    /** Additional constants. */
-    private static final int POSITION_DATA_SIZE_IN_ELEMENTS = 3;
-    private static final int NORMAL_DATA_SIZE_IN_ELEMENTS = 3;
-    private static final int COLOR_DATA_SIZE_IN_ELEMENTS = 4;
-
-    private static final int BYTES_PER_FLOAT = 4;
-    private static final int BYTES_PER_SHORT = 2;
-
-    private static final int STRIDE = (POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT;
-
-    static final int SIZE_PER_SIDE = 32;
-    static final float MIN_POSITION = -5f;
-    static final float POSITION_RANGE = 10f;
-
-    /** OpenGL handles to our program attributes. */
-    private int positionAttribute;
-    private int normalAttribute;
-    private int colorAttribute;
+    private static final int SIZE_PER_SIDE = 32;
+    private static final float MIN_POSITION = -5f;
+    private static final float POSITION_RANGE = 10f;
 
     private final ErrorHandler errorHandler;
 
-    final int[] vbo = new int[1];
-    final int[] ibo = new int[1];
+    private final int[] vbo = new int[1];
+    private final int[] ibo = new int[1];
 
-    int indexCount;
+    private int indexCount;
 
     HeightMap(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
 
-    public void initialize() {
+    void initialize() {
         try {
-            final int floatsPerVertex = POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS + COLOR_DATA_SIZE_IN_ELEMENTS;
+            final int floatsPerVertex = POSITION.getSize() + NORMAL.getSize() + COLOR.getSize();
             final int xLength = SIZE_PER_SIDE;
             final int yLength = SIZE_PER_SIDE;
 
@@ -146,11 +122,8 @@ public class HeightMap {
 
             indexCount = heightMapIndexData.length;
 
-            final FloatBuffer heightMapVertexDataBuffer = allocateDirect(heightMapVertexData.length * BYTES_PER_FLOAT).order(nativeOrder()).asFloatBuffer();
-            heightMapVertexDataBuffer.put(heightMapVertexData).position(0);
-
-            final ShortBuffer heightMapIndexDataBuffer = allocateDirect(heightMapIndexData.length * BYTES_PER_SHORT).order(nativeOrder()).asShortBuffer();
-            heightMapIndexDataBuffer.put(heightMapIndexData).position(0);
+            final FloatBuffer heightMapVertexDataBuffer = allocateBuffer(heightMapVertexData);
+            final ShortBuffer heightMapIndexDataBuffer = allocateBuffer(heightMapIndexData);
 
             glGenBuffers(1, vbo, 0);
             glGenBuffers(1, ibo, 0);
@@ -173,24 +146,14 @@ public class HeightMap {
         }
     }
 
-    void render(int program) {
+    void render(Program program) {
         if (vbo[0] > 0 && ibo[0] > 0) {
 
-            positionAttribute = glGetAttribLocation(program, POSITION_ATTRIBUTE);
-            normalAttribute = glGetAttribLocation(program, NORMAL_ATTRIBUTE);
-            colorAttribute = glGetAttribLocation(program, COLOR_ATTRIBUTE);
+            AttributeVariable[] structure = {POSITION, NORMAL, COLOR};
 
-            glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-
-            // Bind Attributes
-            glVertexAttribPointer(positionAttribute, POSITION_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, 0);
-            glEnableVertexAttribArray(positionAttribute);
-
-            glVertexAttribPointer(normalAttribute, NORMAL_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, POSITION_DATA_SIZE_IN_ELEMENTS * BYTES_PER_FLOAT);
-            glEnableVertexAttribArray(normalAttribute);
-
-            glVertexAttribPointer(colorAttribute, COLOR_DATA_SIZE_IN_ELEMENTS, GL_FLOAT, false, STRIDE, (POSITION_DATA_SIZE_IN_ELEMENTS + NORMAL_DATA_SIZE_IN_ELEMENTS) * BYTES_PER_FLOAT);
-            glEnableVertexAttribArray(colorAttribute);
+            program.bind(vbo[0], structure).at(0).to(POSITION);
+            program.bind(vbo[0], structure).after(POSITION).to(NORMAL);
+            program.bind(vbo[0], structure).after(POSITION, NORMAL).to(COLOR);
 
             // Draw
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo[0]);

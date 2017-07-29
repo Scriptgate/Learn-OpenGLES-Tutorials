@@ -7,7 +7,7 @@ import java.util.List;
 import static com.learnopengles.android.lesson8b.IndexBufferObject.allocateIndexBuffer;
 import static java.util.Arrays.asList;
 
-public class IndexDataBufferFactory {
+class IndexDataBufferFactory {
 
     static ShortBuffer createIndexData(List<Cube> cubes, short indexOffset) {
         int numberOfCubes = cubes.size();

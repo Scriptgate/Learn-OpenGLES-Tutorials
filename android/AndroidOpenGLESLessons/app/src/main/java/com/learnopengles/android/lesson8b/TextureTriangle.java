@@ -1,6 +1,6 @@
 package com.learnopengles.android.lesson8b;
 
-import com.learnopengles.android.common.Point2D;
+import net.scriptgate.common.Point2D;
 
 import java8.util.function.IntFunction;
 
@@ -10,7 +10,7 @@ class TextureTriangle {
     Point2D p2;
     Point2D p3;
 
-    TextureTriangle(int colorIndex) {
+    private TextureTriangle(int colorIndex) {
         float offsetX = 0.25f * (colorIndex % 4);
         float offsetY = 0.25f * (colorIndex / 4);
 

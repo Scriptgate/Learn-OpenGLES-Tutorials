@@ -12,14 +12,14 @@ import static com.learnopengles.android.lesson8b.IndexDataBufferFactory.createIn
 import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.createPositionData;
 import static com.learnopengles.android.lesson8b.VertexDataBufferFactory.createTextureData;
 
-public class IndexBufferObjectCreator {
+class IndexBufferObjectCreator {
 
     private final Supplier<FloatBuffer> positionDataBufferSupplier;
     private final Supplier<FloatBuffer> textureDataBufferSupplier;
     private final Function<Short, ShortBuffer> indexBufferSupplier;
-    public final int numberOfCubes;
+    private final int numberOfCubes;
 
-    public IndexBufferObjectCreator(final List<Cube> cubes) {
+    IndexBufferObjectCreator(final List<Cube> cubes) {
         positionDataBufferSupplier = new Supplier<FloatBuffer>() {
             @Override
             public FloatBuffer get() {return createPositionData(cubes);
@@ -38,7 +38,7 @@ public class IndexBufferObjectCreator {
         this.numberOfCubes = cubes.size();
     }
 
-    public IndexBufferObjectData createData(short indexOffset) {
+    IndexBufferObjectData createData(short indexOffset) {
         FloatBuffer positionDataBuffer = positionDataBufferSupplier.get();
         FloatBuffer textureDataBuffer = textureDataBufferSupplier.get();
         ShortBuffer indexBuffer = indexBufferSupplier.apply(indexOffset);

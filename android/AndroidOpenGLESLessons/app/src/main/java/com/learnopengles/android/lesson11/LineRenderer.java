@@ -1,59 +1,47 @@
 package com.learnopengles.android.lesson11;
 
-import android.opengl.GLSurfaceView;
-import android.os.SystemClock;
-
-import com.learnopengles.android.common.Color;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
+import net.scriptgate.common.Color;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
-import com.learnopengles.android.program.Program;
-import com.learnopengles.android.renderer.DrawArraysRenderer;
-import com.learnopengles.android.renderer.IdentityModelMatrixRenderer;
-import com.learnopengles.android.renderer.MVPRenderer;
-import com.learnopengles.android.renderer.Renderer;
-import com.learnopengles.android.renderer.drawable.Drawable;
-import com.learnopengles.android.renderer.drawable.DrawableColorRenderer;
-import com.learnopengles.android.renderer.drawable.DrawablePositionRenderer;
+
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.RendererBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.Color.*;
+import static net.scriptgate.common.Color.*;
 import static com.learnopengles.android.lesson11.Circle.createCircleInXPlane;
 import static com.learnopengles.android.lesson11.Circle.createCircleInYPlane;
 import static com.learnopengles.android.lesson11.Circle.createCircleInZPlane;
-import static com.learnopengles.android.program.AttributeVariable.*;
-import static com.learnopengles.android.program.Program.createProgram;
-import static com.learnopengles.android.renderer.circle.DrawCircleRendererFactory.fillCircleRenderer;
-import static java.util.Arrays.asList;
+import static com.learnopengles.android.lesson11.DrawableRenderer.createBasicLineRenderer;
+import static com.learnopengles.android.lesson11.DrawableRenderer.createCircleRenderer;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 
-public class LineRenderer implements GLSurfaceView.Renderer {
+class LineRenderer extends RendererBase {
 
     private ModelMatrix modelMatrix;
     private ViewMatrix viewMatrix;
-    private ProjectionMatrix projectionMatrix;
 
     private ModelViewProjectionMatrix mvpMatrix;
 
     private Program lineProgram;
 
-    private Renderer<Line> lineRenderer;
-    private Renderer<Circle> circleRenderer;
+    private DrawableRenderer lineRenderer;
+    private DrawableRenderer circleRenderer;
 
     private static final Color BACKGROUND_COLOR = BLACK;
 
     private List<Line> lines = new ArrayList<>();
     private List<Circle> circles = new ArrayList<>();
 
-    public LineRenderer() {
+    LineRenderer() {
+        super(new IsometricProjectionMatrix(10.0f));
 
         modelMatrix = new ModelMatrix();
 
@@ -65,7 +53,6 @@ public class LineRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix = new ViewMatrix(eye, look, up);
 
-        projectionMatrix = new IsometricProjectionMatrix(10.0f);
 
         mvpMatrix = new ModelViewProjectionMatrix();
 
@@ -91,8 +78,8 @@ public class LineRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        glClearColor(BACKGROUND_COLOR.red, BACKGROUND_COLOR.green, BACKGROUND_COLOR.blue, BACKGROUND_COLOR.alpha);
+    public void onSurfaceCreated() {
+        glClearColor(BACKGROUND_COLOR.red(), BACKGROUND_COLOR.green(), BACKGROUND_COLOR.blue(), BACKGROUND_COLOR.alpha());
 
         // Use culling to remove back faces.
         glEnable(GL_CULL_FACE);
@@ -105,28 +92,19 @@ public class LineRenderer implements GLSurfaceView.Renderer {
 
         viewMatrix.onSurfaceCreated();
 
-        lineProgram = createProgram("color_vertex_shader", "color_fragment_shader", asList(POSITION, COLOR));
+        lineProgram = program()
+                .withVertexShader("color_vertex_shader")
+                .withFragmentShader("color_fragment_shader")
+                .withAttributes(POSITION, COLOR)
+                .build();
 
-        Renderer<Drawable> drawableRenderer = new Renderer<>(lineProgram,
-                asList(
-                        new IdentityModelMatrixRenderer<Drawable>(modelMatrix),
-                        new DrawablePositionRenderer<>(),
-                        new DrawableColorRenderer<>(),
-                        new MVPRenderer<Drawable>(mvpMatrix, modelMatrix, viewMatrix, projectionMatrix)
-                )
-        );
+        lineRenderer = createBasicLineRenderer(lineProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
 
-        lineRenderer = drawableRenderer.andThen(new DrawArraysRenderer<Line>(GL_LINES, 2));
-        circleRenderer = drawableRenderer.andThen(fillCircleRenderer());
+        circleRenderer = createCircleRenderer(lineProgram, modelMatrix, viewMatrix, projectionMatrix, mvpMatrix);
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
-        projectionMatrix.onSurfaceChanged(width, height);
-    }
-
-    @Override
-    public void onDrawFrame(GL10 gl) {
+    public void onDrawFrame() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //TODO: same program in lineRenderer as circleRenderer

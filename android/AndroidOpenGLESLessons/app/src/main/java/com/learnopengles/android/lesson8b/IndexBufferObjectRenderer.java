@@ -1,31 +1,27 @@
 package com.learnopengles.android.lesson8b;
 
 import android.content.Context;
-import android.opengl.GLSurfaceView;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
-import com.learnopengles.android.program.Program;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.RendererBase;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.common.TextureHelper.loadTexture;
-import static com.learnopengles.android.program.AttributeVariable.*;
-import static com.learnopengles.android.program.UniformVariable.*;
-import static java.util.Arrays.asList;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.UniformVariable.*;
 
-public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class IndexBufferObjectRenderer extends RendererBase {
 
 	private final ModelMatrix modelMatrix = new ModelMatrix();
 	private final ViewMatrix viewMatrix;
-	private final ProjectionMatrix projectionMatrix = new IsometricProjectionMatrix(100.0f);
 	private final ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
 	private Program program;
@@ -34,7 +30,8 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 
     private Context activityContext;
 
-    public IndexBufferObjectRenderer(Context context) {
+    IndexBufferObjectRenderer(Context context) {
+        super(new IsometricProjectionMatrix(100.0f));
         this.activityContext = context;
 
         float dist = 5;
@@ -47,7 +44,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
     }
 
     @Override
-	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+	public void onSurfaceCreated() {
         int textureHandle = loadTexture(activityContext, R.drawable.colormap);
 		ibo = new IndexBufferObjects(textureHandle);
 
@@ -60,16 +57,15 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		viewMatrix.onSurfaceCreated();
         viewMatrix.translate(new Point3D(0, -2, 0));
 
-        program = Program.createProgram("per_pixel_vertex_shader_texture", "per_pixel_fragment_shader_texture", asList(POSITION, TEXTURE_COORDINATE));
+        program = program()
+                .withVertexShader("per_pixel_vertex_shader_texture")
+                .withFragmentShader("per_pixel_fragment_shader_texture")
+                .withAttributes(POSITION, TEXTURE_COORDINATE)
+                .build();
 	}
 
 	@Override
-	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-		projectionMatrix.onSurfaceChanged(width, height);
-	}
-
-	@Override
-	public void onDrawFrame(GL10 glUnused) {
+	public void onDrawFrame() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         program.useForRendering();

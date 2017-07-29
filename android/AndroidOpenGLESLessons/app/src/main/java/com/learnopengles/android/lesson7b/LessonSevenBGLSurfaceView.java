@@ -2,7 +2,8 @@ package com.learnopengles.android.lesson7b;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.view.MotionEvent;
+
+import static net.scriptgate.opengles.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
 
 public class LessonSevenBGLSurfaceView extends GLSurfaceView {
 
@@ -11,6 +12,6 @@ public class LessonSevenBGLSurfaceView extends GLSurfaceView {
     }
 
     public void setRenderer(VertexBufferObjectRenderer renderer) {
-        super.setRenderer(renderer);
+        super.setRenderer(adaptToGLSurfaceViewRenderer(renderer));
     }
 }

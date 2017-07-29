@@ -1,21 +1,21 @@
 package com.learnopengles.android.lesson8b;
 
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.program.Program;
+import net.scriptgate.common.Point3D;
+import net.scriptgate.opengles.program.Program;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.program.UniformVariable.TEXTURE;
+import static net.scriptgate.opengles.program.UniformVariable.TEXTURE;
 
-public class IndexBufferObjects {
+class IndexBufferObjects {
 
     /**
      * Used for debug logs. max 23 characters
      */
     private static final String TAG = "IndexBufferObjects";
-    public static final float OFFSET_BETWEEN_BUFFERS = 0.3f;
+    private static final float OFFSET_BETWEEN_BUFFERS = 0.3f;
 
     private List<IndexBufferObject> buffers;
 
@@ -25,7 +25,7 @@ public class IndexBufferObjects {
     private static final int NUMBER_OF_BUFFERS = 8;
     private static final int CUBES_PER_BUFFER = NUMBER_OF_CUBES / NUMBER_OF_BUFFERS;
 
-    public IndexBufferObjects(int textureHandle) {
+    IndexBufferObjects(int textureHandle) {
         this.textureHandle = textureHandle;
 
         buffers = new ArrayList<>();
@@ -50,16 +50,16 @@ public class IndexBufferObjects {
 
         List<Cube> cubes = new ArrayList<>();
 
-        Point3D offset = new Point3D();
+        float heightOffset = 0;
         int indexOffset = 0;
 
         for (int i = 0; i < NUMBER_OF_CUBES; i++) {
 
             if (i % CUBES_PER_BUFFER == 0) {
-                offset.y += OFFSET_BETWEEN_BUFFERS;
+                heightOffset += OFFSET_BETWEEN_BUFFERS;
             }
-            cubes.add(new Cube(new Point3D(offset.x, offset.y, offset.z), indexOffset));
-            offset.y += 0.2f;
+            cubes.add(new Cube(new Point3D(0, heightOffset, 0), indexOffset));
+            heightOffset += 0.2f;
             indexOffset++;
         }
         return cubes;

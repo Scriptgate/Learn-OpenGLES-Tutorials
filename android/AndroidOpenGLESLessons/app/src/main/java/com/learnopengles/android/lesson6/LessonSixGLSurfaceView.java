@@ -5,62 +5,53 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-public class LessonSixGLSurfaceView extends GLSurfaceView 
-{	
-	private TextureFilteringRenderer mRenderer;
-	
-	// Offsets for touch events	 
-    private float mPreviousX;
-    private float mPreviousY;
-    
-    private float mDensity;
-        	
-	public LessonSixGLSurfaceView(Context context) 
-	{
-		super(context);		
-	}
-	
-	public LessonSixGLSurfaceView(Context context, AttributeSet attrs) 
-	{
-		super(context, attrs);		
-	}
+import static net.scriptgate.opengles.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) 
-	{
-		if (event != null)
-		{			
-			float x = event.getX();
-			float y = event.getY();
-			
-			if (event.getAction() == MotionEvent.ACTION_MOVE)
-			{
-				if (mRenderer != null)
-				{
-					float deltaX = (x - mPreviousX) / mDensity / 2f;
-					float deltaY = (y - mPreviousY) / mDensity / 2f;
-					
-					mRenderer.deltaX += deltaX;
-					mRenderer.deltaY += deltaY;
-				}
-			}	
-			
-			mPreviousX = x;
-			mPreviousY = y;
-			
-			return true;
-		}
-		else
-		{
-			return super.onTouchEvent(event);
-		}		
-	}
+public class LessonSixGLSurfaceView extends GLSurfaceView {
 
-	// Hides superclass method.
-	public void setRenderer(TextureFilteringRenderer renderer, float density)
-	{
-		mRenderer = renderer;
-		mDensity = density;
-		super.setRenderer(renderer);
-	}
+    private TextureFilteringRenderer renderer;
+
+    private float previousX;
+    private float previousY;
+
+    private float density;
+
+    public LessonSixGLSurfaceView(Context context) {
+        super(context);
+    }
+
+    public LessonSixGLSurfaceView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event != null) {
+            float x = event.getX();
+            float y = event.getY();
+
+            if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                if (renderer != null) {
+                    float deltaX = (x - previousX) / density / 2f;
+                    float deltaY = (y - previousY) / density / 2f;
+
+                    renderer.deltaX += deltaX;
+                    renderer.deltaY += deltaY;
+                }
+            }
+
+            previousX = x;
+            previousY = y;
+
+            return true;
+        } else {
+            return super.onTouchEvent(event);
+        }
+    }
+
+    public void setRenderer(TextureFilteringRenderer renderer, float density) {
+        this.renderer = renderer;
+        this.density = density;
+        super.setRenderer(adaptToGLSurfaceViewRenderer(renderer));
+    }
 }

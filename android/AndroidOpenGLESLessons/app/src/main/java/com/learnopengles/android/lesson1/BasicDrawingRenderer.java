@@ -1,52 +1,35 @@
 package com.learnopengles.android.lesson1;
 
-import android.opengl.GLSurfaceView;
 import android.os.SystemClock;
 
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.component.ModelMatrix;
-import com.learnopengles.android.component.ModelViewProjectionMatrix;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.component.ViewMatrix;
-import com.learnopengles.android.program.Program;
+import net.scriptgate.opengles.matrix.ModelMatrix;
+import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.RendererBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
-import static android.opengl.GLES20.GL_COLOR_BUFFER_BIT;
-import static android.opengl.GLES20.GL_DEPTH_BUFFER_BIT;
-import static android.opengl.GLES20.glClear;
-import static android.opengl.GLES20.glClearColor;
-import static com.learnopengles.android.common.Color.*;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.component.ViewMatrix.createViewBehindOrigin;
-import static com.learnopengles.android.program.Program.createProgram;
+import static android.opengl.GLES20.*;
+import static net.scriptgate.common.Color.*;
+import static net.scriptgate.opengles.matrix.ViewMatrix.createViewBehindOrigin;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
-import static com.learnopengles.android.program.AttributeVariable.COLOR;
-import static com.learnopengles.android.program.AttributeVariable.POSITION;
-import static java.util.Arrays.asList;
+import static net.scriptgate.opengles.program.AttributeVariable.COLOR;
+import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
 
-public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
+class BasicDrawingRenderer extends RendererBase {
 
     private ModelMatrix modelMatrix = new ModelMatrix();
     private ViewMatrix viewMatrix = createViewBehindOrigin();
-    private ProjectionMatrix projectionMatrix = createProjectionMatrix();
-
     private ModelViewProjectionMatrix mvpMatrix = new ModelViewProjectionMatrix();
 
     private final List<Triangle> triangles = new ArrayList<>();
 
     private Program program;
 
-    /**
-     * Initialize the model data.
-     */
-    public BasicDrawingRenderer() {
-        // Define points for equilateral triangles.
-
+    BasicDrawingRenderer() {
         // Draw the triangle facing straight on.
         triangles.add(triangle()
                 .equilateral(1, RED, GREEN, BLUE)
@@ -55,37 +38,35 @@ public class BasicDrawingRenderer implements GLSurfaceView.Renderer {
         // Draw one translated a bit down and rotated to be flat on the ground.
         triangles.add(triangle()
                 .equilateral(1, YELLOW, CYAN, MAGENTA)
-                .position(new Point3D(0.0f, -1.0f, 0.0f))
+                .position(0.0f, -1.0f, 0.0f)
                 .rotateX(90)
                 .build());
 
         // Draw one translated a bit to the right and rotated to be facing to the left.
         triangles.add(triangle()
                 .equilateral(1, WHITE, GREY, BLACK)
-                .position(new Point3D(1.0f, 0.0f, 0.0f))
+                .position(1.0f, 0.0f, 0.0f)
                 .rotateY(90)
                 .build());
     }
 
     @Override
-    public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-        // Set the background clear color to gray.
-        glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
+    public void onSurfaceCreated() {
+        glClearColor(GREY.red(), GREY.green(), GREY.blue(), GREY.alpha());
 
         viewMatrix.onSurfaceCreated();
 
-        program = createProgram("lesson_one_vertex_shader", "lesson_one_fragment_shader", asList(POSITION, COLOR));
+        program = program()
+                .withVertexShader("lesson_one_vertex_shader")
+                .withFragmentShader("lesson_one_fragment_shader")
+                .withAttributes(POSITION, COLOR)
+                .build();
 
         program.useForRendering();
     }
 
     @Override
-    public void onSurfaceChanged(GL10 unused, int width, int height) {
-        projectionMatrix.onSurfaceChanged(width, height);
-    }
-
-    @Override
-    public void onDrawFrame(GL10 unused) {
+    public void onDrawFrame() {
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         // Do a complete rotation every 10 seconds.

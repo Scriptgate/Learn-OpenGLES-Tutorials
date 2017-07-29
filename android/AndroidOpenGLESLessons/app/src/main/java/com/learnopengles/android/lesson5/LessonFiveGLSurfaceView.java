@@ -4,47 +4,37 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 
-public class LessonFiveGLSurfaceView extends GLSurfaceView 
-{
-	private BlendingRenderer mRenderer;
-	
-	public LessonFiveGLSurfaceView(Context context) 
-	{
-		super(context);	
-	}
+import static net.scriptgate.opengles.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) 
-	{
-		if (event != null)
-		{
-			if (event.getAction() == MotionEvent.ACTION_DOWN)
-			{
-				if (mRenderer != null)
-				{
-					// Ensure we call switchMode() on the OpenGL thread.
-					// queueEvent() is a method of GLSurfaceView that will do this for us.
-					queueEvent(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							mRenderer.switchMode();
-						}
-					});		
-					
-					return true;
-				}
-			}
-		}
-		
-		return super.onTouchEvent(event);
-	}
+public class LessonFiveGLSurfaceView extends GLSurfaceView {
 
-	// Hides superclass method.
-	public void setRenderer(BlendingRenderer renderer)
-	{
-		mRenderer = renderer;
-		super.setRenderer(renderer);
-	}
+    private BlendingRenderer renderer;
+
+    public LessonFiveGLSurfaceView(Context context) {
+        super(context);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event != null && event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (renderer != null) {
+                // Ensure we call switchMode() on the OpenGL thread.
+                // queueEvent() is a method of GLSurfaceView that will do this for us.
+                queueEvent(new Runnable() {
+                    @Override
+                    public void run() {
+                        renderer.switchMode();
+                    }
+                });
+
+                return true;
+            }
+        }
+        return super.onTouchEvent(event);
+    }
+
+    public void setRenderer(BlendingRenderer renderer) {
+        this.renderer = renderer;
+        super.setRenderer(adaptToGLSurfaceViewRenderer(renderer));
+    }
 }

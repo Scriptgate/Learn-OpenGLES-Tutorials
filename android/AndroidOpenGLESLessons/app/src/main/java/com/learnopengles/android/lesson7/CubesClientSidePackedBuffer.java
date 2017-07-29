@@ -1,16 +1,14 @@
 package com.learnopengles.android.lesson7;
 
+import net.scriptgate.opengles.program.AttributeVariable;
+import net.scriptgate.opengles.program.Program;
+
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
+import static android.opengl.GLES20.*;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
-public class CubesClientSidePackedBuffer extends Cubes {
+class CubesClientSidePackedBuffer extends Cubes {
     private FloatBuffer cubeBuffer;
 
     CubesClientSidePackedBuffer(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
@@ -18,27 +16,13 @@ public class CubesClientSidePackedBuffer extends Cubes {
     }
 
     @Override
-    public void render(int programHandle, int actualCubeFactor) {
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+    public void render(Program program, int actualCubeFactor) {
 
-        final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
+        AttributeVariable[] structure = {POSITION, NORMAL, TEXTURE_COORDINATE};
 
-        // Pass in the position information
-        cubeBuffer.position(0);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
-
-        // Pass in the normal information
-        cubeBuffer.position(POSITION_DATA_SIZE);
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
-
-        // Pass in the texture information
-        cubeBuffer.position(POSITION_DATA_SIZE + NORMAL_DATA_SIZE);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, cubeBuffer);
+        program.pass(cubeBuffer, structure).at(0).to(POSITION);
+        program.pass(cubeBuffer, structure).after(POSITION).to(NORMAL);
+        program.pass(cubeBuffer, structure).after(POSITION, NORMAL).to(TEXTURE_COORDINATE);
 
         // Draw the cubes.
         glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);

@@ -1,32 +1,25 @@
 package com.learnopengles.android.lesson8;
 
-import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import com.learnopengles.android.activity.LessonEightActivity;
-import com.learnopengles.android.component.ProjectionMatrix;
-import com.learnopengles.android.common.ShaderHelper;
-import com.learnopengles.android.component.ViewMatrix;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+import net.scriptgate.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.opengles.program.Program;
+import net.scriptgate.opengles.renderer.Renderer;
 
 import static android.opengl.GLES20.*;
-import static com.learnopengles.android.component.ProjectionMatrix.createProjectionMatrix;
-import static com.learnopengles.android.common.RawResourceReader.readTextFileFromRawResource;
-import static com.learnopengles.android.component.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.common.Color.BLACK;
+import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
+import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.opengles.program.UniformVariable.*;
 
-/**
- * This class implements our custom renderer. Note that the GL10 parameter
- * passed in is unused for OpenGL ES 2.0 renderers -- the static class GLES20 is
- * used instead.
- */
-public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
+class IndexBufferObjectRenderer implements Renderer {
 
 	/** References to other main objects. */
-	private final LessonEightActivity lessonEightActivity;
-
+	private final Activity lessonEightActivity;
 
 	/**
 	 * Store the model matrix. This matrix is used to move models from object
@@ -50,22 +43,6 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	private final float[] lightModelMatrix = new float[16];
 	private final float[] temporaryMatrix = new float[16];
 
-	/** OpenGL handles to our program uniforms. */
-	private int mvpMatrixUniform;
-	private int mvMatrixUniform;
-	private int lightPosUniform;
-
-	/** Identifiers for our uniforms and attributes inside the shaders. */
-	private static final String MVP_MATRIX_UNIFORM = "u_MVPMatrix";
-	private static final String MV_MATRIX_UNIFORM = "u_MVMatrix";
-	private static final String LIGHT_POSITION_UNIFORM = "u_LightPos";
-
-	//TODO: These fields are used in both program and heightmap, find where they belong
-	public static final String POSITION_ATTRIBUTE = "a_Position";
-	public static final String NORMAL_ATTRIBUTE = "a_Normal";
-	public static final String COLOR_ATTRIBUTE = "a_Color";
-
-
 	/**
 	 * Used to hold a light centered on the origin in model space. We need a 4th
 	 * coordinate so we can get translations to work when we multiply this by
@@ -85,14 +62,13 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	 */
 	private final float[] lightPosInEyeSpace = new float[4];
 
-	/** This is a handle to our cube shading program. */
-	private int program;
+	private Program program;
 
 	/** Retain the most recent delta for touch events. */
 	// These still work without volatile, but refreshes are not guaranteed to
 	// happen.
-	public volatile float deltaX;
-	public volatile float deltaY;
+	volatile float deltaX;
+	volatile float deltaY;
 
 	/** The current heightmap object. */
 	private HeightMap heightMap;
@@ -100,54 +76,44 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 	/**
 	 * Initialize the model data.
 	 */
-	public IndexBufferObjectRenderer(final LessonEightActivity lessonEightActivity, ErrorHandler errorHandler) {
+	IndexBufferObjectRenderer(final Activity lessonEightActivity, ErrorHandler errorHandler) {
 		this.lessonEightActivity = lessonEightActivity;
 		heightMap = new HeightMap(errorHandler);
 	}
 
 	@Override
-	public void onSurfaceCreated(GL10 glUnused, EGLConfig config) {
+	public void onSurfaceCreated() {
 		heightMap.initialize();
 
-		// Set the background clear color to black.
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(BLACK.red(), BLACK.green(), BLACK.blue(), BLACK.alpha());
 
-		// Enable depth testing
 		glEnable(GL_DEPTH_TEST);
 
 		viewMatrix.onSurfaceCreated();
 
-		final String vertexShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_vertex_shader_no_tex);
-		final String fragmentShader = readTextFileFromRawResource(lessonEightActivity, R.raw.per_pixel_fragment_shader_no_tex);
-
-		final int vertexShaderHandle = ShaderHelper.compileShader(GL_VERTEX_SHADER, vertexShader);
-		final int fragmentShaderHandle = ShaderHelper.compileShader(GL_FRAGMENT_SHADER, fragmentShader);
-
-		program = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle, new String[] {POSITION_ATTRIBUTE, NORMAL_ATTRIBUTE, COLOR_ATTRIBUTE });
+		program = program()
+				.withVertexShader(lessonEightActivity, R.raw.per_pixel_vertex_shader_no_tex)
+				.withFragmentShader(lessonEightActivity, R.raw.per_pixel_fragment_shader_no_tex)
+				.withAttributes(POSITION, NORMAL, COLOR)
+				.build();
 
 		// Initialize the accumulated rotation matrix
 		Matrix.setIdentityM(accumulatedRotation, 0);
 	}
 
 	@Override
-	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
+	public void onSurfaceChanged(int width, int height) {
 		projectionMatrix.onSurfaceChanged(width, height);
 	}
 
 	@Override
-	public void onDrawFrame(GL10 glUnused) {
+	public void onDrawFrame() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Set our per-vertex lighting program.
-		glUseProgram(program);
+        program.useForRendering();
 
-		// Set program handles for cube drawing.
-		mvpMatrixUniform = glGetUniformLocation(program, MVP_MATRIX_UNIFORM);
-		mvMatrixUniform = glGetUniformLocation(program, MV_MATRIX_UNIFORM);
-		lightPosUniform = glGetUniformLocation(program, LIGHT_POSITION_UNIFORM);
-
-
-		// Calculate position of the light. Push into the distance.
+        // Calculate position of the light. Push into the distance.
 		Matrix.setIdentityM(lightModelMatrix, 0);
 		Matrix.translateM(lightModelMatrix, 0, 0.0f, 7.5f, -8.0f);
 
@@ -181,7 +147,7 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
         viewMatrix.multiplyWithMatrixAndStore(modelMatrix, mvpMatrix);
 
 		// Pass in the modelview matrix.
-		glUniformMatrix4fv(mvMatrixUniform, 1, false, mvpMatrix, 0);
+		glUniformMatrix4fv(program.getHandle(MV_MATRIX), 1, false, mvpMatrix, 0);
 
 		// This multiplies the modelview matrix by the projection matrix,
 		// and stores the result in the MVP matrix
@@ -190,10 +156,10 @@ public class IndexBufferObjectRenderer implements GLSurfaceView.Renderer {
 		System.arraycopy(temporaryMatrix, 0, mvpMatrix, 0, 16);
 
 		// Pass in the combined matrix.
-		glUniformMatrix4fv(mvpMatrixUniform, 1, false, mvpMatrix, 0);
+		glUniformMatrix4fv(program.getHandle(MVP_MATRIX), 1, false, mvpMatrix, 0);
 
 		// Pass in the light position in eye space.
-		glUniform3f(lightPosUniform, lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
+		glUniform3f(program.getHandle(LIGHT_POSITION), lightPosInEyeSpace[0], lightPosInEyeSpace[1], lightPosInEyeSpace[2]);
 
 		// Render the heightmap.
 		heightMap.render(program);

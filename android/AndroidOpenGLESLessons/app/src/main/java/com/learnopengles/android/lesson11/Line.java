@@ -1,27 +1,26 @@
 package com.learnopengles.android.lesson11;
 
-import com.learnopengles.android.common.Color;
-import com.learnopengles.android.common.Point3D;
-import com.learnopengles.android.renderer.drawable.Drawable;
+import net.scriptgate.common.Color;
+import net.scriptgate.common.Point3D;
 
 import java.nio.FloatBuffer;
 
-import static com.learnopengles.android.common.Color.RED;
-import static com.learnopengles.android.common.BufferHelper.allocateBuffer;
+import static net.scriptgate.common.Color.RED;
+import static net.scriptgate.nio.BufferHelper.allocateBuffer;
 
-public class Line implements Drawable {
+class Line implements Drawable {
 
     private FloatBuffer vertexBuffer;
 
     private Color color = RED;
 
-    public Line(Color color, Point3D from, Point3D to) {
+    Line(Color color, Point3D from, Point3D to) {
         this.color = color;
         setPoints(from, to);
     }
 
     private void setPoints(Point3D from, Point3D to) {
-        vertexBuffer = allocateBuffer(new float[]{from.x, from.y, from.z, to.x, to.y, to.z});
+        vertexBuffer = allocateBuffer(new float[]{from.x(), from.y(), from.z(), to.x(), to.y(), to.z()});
     }
 
     public void setColor(Color color) {
@@ -30,7 +29,7 @@ public class Line implements Drawable {
 
     @Override
     public float[] getColor() {
-        return color.toArray();
+        return color.toFloatArray();
     }
 
     @Override

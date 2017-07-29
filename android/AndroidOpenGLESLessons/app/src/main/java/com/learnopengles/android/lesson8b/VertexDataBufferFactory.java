@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson8b;
 
-import com.learnopengles.android.common.Point2D;
-import com.learnopengles.android.common.Point3D;
+import net.scriptgate.common.Point2D;
+import net.scriptgate.common.Point3D;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -11,8 +11,8 @@ import java8.util.function.IntFunction;
 import java8.util.stream.IntStream;
 import java8.util.stream.Stream;
 
-import static com.learnopengles.android.common.BufferHelper.putPoint2DIn;
-import static com.learnopengles.android.common.BufferHelper.putPoint3DIn;
+import static net.scriptgate.nio.BufferHelper.putPoint2DIn;
+import static net.scriptgate.nio.BufferHelper.putPoint3DIn;
 import static com.learnopengles.android.lesson8b.Cube.toColorIndex;
 import static com.learnopengles.android.lesson8b.Cube.toPosition;
 import static com.learnopengles.android.lesson8b.IndexBufferObject.allocatePositionDataBuffer;
@@ -22,7 +22,7 @@ import static java.util.Arrays.asList;
 import static java8.util.stream.IntStreams.range;
 import static java8.util.stream.StreamSupport.stream;
 
-public class VertexDataBufferFactory {
+class VertexDataBufferFactory {
 
     static FloatBuffer createPositionData(List<Cube> cubes) {
         Stream<Point3D> positionData = stream(cubes).map(toPosition());
@@ -35,7 +35,7 @@ public class VertexDataBufferFactory {
                 .mapToObj(new IntFunction<Point3D>() {
                     @Override
                     public Point3D apply(int value) {
-                        return new Point3D(offset.x, offset.y + value * 0.2f, offset.z);
+                        return new Point3D(offset.x(), offset.y() + value * 0.2f, offset.z());
                     }
                 });
 
@@ -60,13 +60,13 @@ public class VertexDataBufferFactory {
             @Override
             public Stream<Point3D> apply(Point3D position) {
                 //@formatter:off
-                final Point3D frontA = new Point3D(position.x,         position.y + height, position.z + depth);
-                final Point3D frontB = new Point3D(position.x + width, position.y + height, position.z + depth);
-                final Point3D frontC = new Point3D(position.x,         position.y,          position.z + depth);
-                final Point3D frontD = new Point3D(position.x + width, position.y,          position.z + depth);
-                final Point3D backA  = new Point3D(position.x,         position.y + height, position.z);
-                final Point3D backB  = new Point3D(position.x + width, position.y + height, position.z);
-                final Point3D backD  = new Point3D(position.x + width, position.y,          position.z);
+                final Point3D frontA = new Point3D(position.x(),         position.y() + height, position.z() + depth);
+                final Point3D frontB = new Point3D(position.x() + width, position.y() + height, position.z() + depth);
+                final Point3D frontC = new Point3D(position.x(),         position.y(),          position.z() + depth);
+                final Point3D frontD = new Point3D(position.x() + width, position.y(),          position.z() + depth);
+                final Point3D backA  = new Point3D(position.x(),         position.y() + height, position.z());
+                final Point3D backB  = new Point3D(position.x() + width, position.y() + height, position.z());
+                final Point3D backD  = new Point3D(position.x() + width, position.y(),          position.z());
                 //@formatter:on
 
                 return stream(asList(frontA, frontB, frontC, frontD, backA, backB, backD));

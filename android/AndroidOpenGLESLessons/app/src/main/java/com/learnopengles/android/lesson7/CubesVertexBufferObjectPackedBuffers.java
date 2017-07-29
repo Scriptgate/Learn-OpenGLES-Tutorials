@@ -1,23 +1,17 @@
 package com.learnopengles.android.lesson7;
 
+import net.scriptgate.opengles.program.AttributeVariable;
+import net.scriptgate.opengles.program.Program;
+
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.GL_ARRAY_BUFFER;
-import static android.opengl.GLES20.GL_FLOAT;
-import static android.opengl.GLES20.GL_STATIC_DRAW;
-import static android.opengl.GLES20.GL_TRIANGLES;
-import static android.opengl.GLES20.glBindBuffer;
-import static android.opengl.GLES20.glBufferData;
-import static android.opengl.GLES20.glDeleteBuffers;
-import static android.opengl.GLES20.glDrawArrays;
-import static android.opengl.GLES20.glEnableVertexAttribArray;
-import static android.opengl.GLES20.glGenBuffers;
-import static android.opengl.GLES20.glGetAttribLocation;
-import static android.opengl.GLES20.glVertexAttribPointer;
-import static com.learnopengles.android.common.BufferHelper.BYTES_PER_FLOAT;
+import static android.opengl.GLES20.*;
+import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
+import static net.scriptgate.opengles.program.AttributeVariable.*;
 
-public class CubesVertexBufferObjectPackedBuffers extends Cubes {
-    final int cubeBufferIdx;
+class CubesVertexBufferObjectPackedBuffers extends Cubes {
+
+    private final int bufferIndex;
 
     CubesVertexBufferObjectPackedBuffers(float[] cubePositions, float[] cubeNormals, float[] cubeTextureCoordinates, int generatedCubeFactor) {
         FloatBuffer cubeBuffer = getInterleavedBuffer(cubePositions, cubeNormals, cubeTextureCoordinates, generatedCubeFactor);
@@ -31,34 +25,21 @@ public class CubesVertexBufferObjectPackedBuffers extends Cubes {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        cubeBufferIdx = buffers[0];
+        bufferIndex = buffers[0];
 
         cubeBuffer.limit(0);
         cubeBuffer = null;
     }
 
     @Override
-    public void render(int programHandle, int actualCubeFactor) {
-        int positionHandle = glGetAttribLocation(programHandle, "a_Position");
-        int normalHandle = glGetAttribLocation(programHandle, "a_Normal");
-        int textureCoordinateHandle = glGetAttribLocation(programHandle, "a_TexCoordinate");
+    public void render(Program program, int actualCubeFactor) {
 
-        final int stride = (POSITION_DATA_SIZE + NORMAL_DATA_SIZE + TEXTURE_COORDINATE_DATA_SIZE) * BYTES_PER_FLOAT;
+        AttributeVariable[] structure = {POSITION, NORMAL, TEXTURE_COORDINATE};
 
-        // Pass in the position information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        glEnableVertexAttribArray(positionHandle);
-        glVertexAttribPointer(positionHandle, POSITION_DATA_SIZE, GL_FLOAT, false, stride, 0);
-
-        // Pass in the normal information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        glEnableVertexAttribArray(normalHandle);
-        glVertexAttribPointer(normalHandle, NORMAL_DATA_SIZE, GL_FLOAT, false, stride, POSITION_DATA_SIZE * BYTES_PER_FLOAT);
-
-        // Pass in the texture information
-        glBindBuffer(GL_ARRAY_BUFFER, cubeBufferIdx);
-        glEnableVertexAttribArray(textureCoordinateHandle);
-        glVertexAttribPointer(textureCoordinateHandle, TEXTURE_COORDINATE_DATA_SIZE, GL_FLOAT, false, stride, (POSITION_DATA_SIZE + NORMAL_DATA_SIZE) * BYTES_PER_FLOAT);
+        //FIXME: We can't move structure to program in this example because other implementations of Cubes use the same program
+        program.bind(bufferIndex, structure).at(0).to(POSITION);
+        program.bind(bufferIndex, structure).after(POSITION).to(NORMAL);
+        program.bind(bufferIndex, structure).after(POSITION, NORMAL).to(TEXTURE_COORDINATE);
 
         // Clear the currently bound buffer (so future OpenGL calls do not use this buffer).
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -70,7 +51,7 @@ public class CubesVertexBufferObjectPackedBuffers extends Cubes {
     @Override
     public void release() {
         // Delete buffers from OpenGL's memory
-        final int[] buffersToDelete = new int[] {cubeBufferIdx};
+        final int[] buffersToDelete = new int[]{bufferIndex};
         glDeleteBuffers(buffersToDelete.length, buffersToDelete, 0);
     }
 }
