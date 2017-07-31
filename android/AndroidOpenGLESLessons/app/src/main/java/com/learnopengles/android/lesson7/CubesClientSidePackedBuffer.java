@@ -1,6 +1,5 @@
 package com.learnopengles.android.lesson7;
 
-import net.scriptgate.opengles.program.AttributeVariable;
 import net.scriptgate.opengles.program.Program;
 
 import java.nio.FloatBuffer;
@@ -18,11 +17,7 @@ class CubesClientSidePackedBuffer extends Cubes {
     @Override
     public void render(Program program, int actualCubeFactor) {
 
-        AttributeVariable[] structure = {POSITION, NORMAL, TEXTURE_COORDINATE};
-
-        program.pass(cubeBuffer, structure).at(0).to(POSITION);
-        program.pass(cubeBuffer, structure).after(POSITION).to(NORMAL);
-        program.pass(cubeBuffer, structure).after(POSITION, NORMAL).to(TEXTURE_COORDINATE);
+        program.pass(cubeBuffer).structuredAs(POSITION, NORMAL, TEXTURE_COORDINATE);
 
         // Draw the cubes.
         glDrawArrays(GL_TRIANGLES, 0, actualCubeFactor * actualCubeFactor * actualCubeFactor * 36);

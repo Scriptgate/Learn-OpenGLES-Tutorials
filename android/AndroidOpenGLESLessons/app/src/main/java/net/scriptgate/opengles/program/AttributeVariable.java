@@ -1,5 +1,6 @@
 package net.scriptgate.opengles.program;
 
+import java.util.Collection;
 import java.util.List;
 
 import java8.util.function.ToIntFunction;
@@ -38,6 +39,12 @@ public enum AttributeVariable {
             programAttributes[i] = attributes.get(i).getName();
         }
         return programAttributes;
+    }
+
+    public static int sizeOf(Collection<AttributeVariable> attributeVariables) {
+        return stream(attributeVariables)
+                .mapToInt(toSize())
+                .sum();
     }
 
     public static int sizeOf(AttributeVariable... attributeVariables) {
