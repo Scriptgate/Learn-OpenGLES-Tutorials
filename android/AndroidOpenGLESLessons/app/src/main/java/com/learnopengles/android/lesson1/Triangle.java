@@ -32,8 +32,7 @@ class Triangle {
         modelMatrix.translate(position);
         modelMatrix.rotate(rotation);
 
-        program.pass(vertices).withStructure(POSITION, COLOR).at(0).to(POSITION);
-        program.pass(vertices).withStructure(POSITION, COLOR).after(POSITION).to(COLOR);
+        program.pass(vertices).structuredAs(POSITION, COLOR);
 
         mvpMatrix.multiply(modelMatrix, viewMatrix, projectionMatrix);
         mvpMatrix.passTo(program.getHandle(MVP_MATRIX));

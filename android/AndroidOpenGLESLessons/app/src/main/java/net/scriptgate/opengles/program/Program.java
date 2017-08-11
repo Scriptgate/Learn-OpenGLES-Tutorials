@@ -110,7 +110,7 @@ public class Program {
             return at(sizeOf(attributeVariables));
         }
 
-        public PassDataToAttribute withStructure(AttributeVariable... attributeVariables) {
+        private PassDataToAttribute withStructure(AttributeVariable... attributeVariables) {
             this.stride = sizeOf(attributeVariables) * BYTES_PER_FLOAT;
             return this;
         }
