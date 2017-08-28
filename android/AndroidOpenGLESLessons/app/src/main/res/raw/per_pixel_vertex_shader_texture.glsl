@@ -6,10 +6,8 @@ attribute vec2 a_TexCoordinate; // Per-vertex texture coordinate information we 
 varying vec2 v_TexCoordinate;   // This will be passed into the fragment shader.
 
 void main() {
-
 	// Pass through the texture coordinate.
 	v_TexCoordinate = a_TexCoordinate;
-
 
 	// gl_Position is a special variable used to store the final position.
 	// Multiply the vertex by the matrix to get the final point in normalized screen coordinates.
