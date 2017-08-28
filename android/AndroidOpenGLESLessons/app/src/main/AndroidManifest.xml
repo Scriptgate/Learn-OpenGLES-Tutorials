@@ -63,9 +63,12 @@
         <activity
             android:name=".lesson11.Activity"
             android:label="@string/lesson_eleven" />
+        <activity
+            android:name=".lesson12.Activity"
+            android:label="@string/lesson_twelve" />
 
         <service
-            android:name=".livewallpaper.LessonThreeWallpaperService"
+            android:name=".livewallpaper.LessonTwelveWallpaperService"
             android:label="@string/lesson_three_wallpaper_1"
             android:permission="android.permission.BIND_WALLPAPER" >
             <intent-filter>
