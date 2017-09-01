@@ -7,9 +7,15 @@ import static android.opengl.GLES20.glViewport;
 public class ProjectionMatrix {
 
     protected final float far;
+    private final float near;
+
+    private ProjectionMatrix(float far, float near) {
+        this.far = far;
+        this.near = near;
+    }
 
     public ProjectionMatrix(float far) {
-        this.far = far;
+        this(far, 1);
     }
 
     public static ProjectionMatrix createProjectionMatrix() {
@@ -18,6 +24,10 @@ public class ProjectionMatrix {
 
     public static ProjectionMatrix createProjectionMatrix(float far) {
         return new ProjectionMatrix(far);
+    }
+
+    public static ProjectionMatrix createProjectionMatrix(float far, float near) {
+        return new ProjectionMatrix(far, near);
     }
 
     /**
@@ -36,7 +46,6 @@ public class ProjectionMatrix {
         final float right = ratio;
         final float bottom = -1.0f;
         final float top = 1.0f;
-        final float near = 1.0f;
 
         Matrix.frustumM(projectionMatrix, 0, left, right, bottom, top, near, far);
     }

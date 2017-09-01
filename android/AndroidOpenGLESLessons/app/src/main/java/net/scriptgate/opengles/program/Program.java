@@ -1,8 +1,11 @@
 package net.scriptgate.opengles.program;
 
 import java.nio.FloatBuffer;
+import java.util.Collection;
+import java.util.List;
 
 import static android.opengl.GLES20.*;
+import static java.util.Arrays.asList;
 import static net.scriptgate.nio.BufferHelper.BYTES_PER_FLOAT;
 import static net.scriptgate.opengles.program.AttributeVariable.sizeOf;
 import static net.scriptgate.opengles.program.UniformVariable.TEXTURE;
@@ -103,7 +106,11 @@ public class Program {
             return at(sizeOf(attributeVariables));
         }
 
-        public PassDataToAttribute withStructure(AttributeVariable... attributeVariables) {
+        public PassDataToAttribute after(Collection<AttributeVariable> attributeVariables) {
+            return at(sizeOf(attributeVariables));
+        }
+
+        private PassDataToAttribute withStructure(AttributeVariable... attributeVariables) {
             this.stride = sizeOf(attributeVariables) * BYTES_PER_FLOAT;
             return this;
         }
@@ -112,6 +119,20 @@ public class Program {
             int handle = getHandle(attributeVariable);
             glVertexAttribPointer(handle, attributeVariable.getSize(), GL_FLOAT, false, stride, data);
             glEnableVertexAttribArray(handle);
+        }
+
+        public void structuredAs(AttributeVariable... structure) {
+            List<AttributeVariable> structureList = asList(structure);
+
+            for (AttributeVariable attributeToPassTo : structureList) {
+                int positionInStructure = structureList.indexOf(attributeToPassTo);
+                if(positionInStructure == 0) {
+                    withStructure(structure).at(0).to(attributeToPassTo);
+                } else {
+                    List<AttributeVariable> attributesToSkip = structureList.subList(0, positionInStructure);
+                    withStructure(structure).after(attributesToSkip).to(attributeToPassTo);
+                }
+            }
         }
     }
 }

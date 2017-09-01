@@ -57,4 +57,6 @@
     <string name="lesson_ten_subtitle">This builds on lesson four by adding advanced texturing.</string>
     <string name="lesson_eleven">Lesson Eleven: Polygons</string>
     <string name="lesson_eleven_subtitle">This lesson show how to draw lines and polygons in OpenGL.</string>
+    <string name="lesson_twelve">Lesson Twelve: DankMemes</string>
+    <string name="lesson_twelve_subtitle">This lesson is dank</string>
 </resources>

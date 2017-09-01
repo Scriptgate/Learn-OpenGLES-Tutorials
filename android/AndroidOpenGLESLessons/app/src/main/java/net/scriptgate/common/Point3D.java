@@ -40,6 +40,32 @@ public class Point3D {
         return new Point3D(x(), y(), z);
     }
 
+    public static Point3D minus(Point3D u, Point3D v) {
+        return new Point3D(u.x - v.x, u.y - v.y, u.z - v.z);
+    }
+
+    public static Point3D crossProduct(Point3D u, Point3D v) {
+        return new Point3D(
+                (u.y * v.z) - (v.y * u.z),
+                (v.x * u.z) - (u.x * v.z),
+                (u.x * v.y) - (v.x * u.y)
+        );
+    }
+
+    // dot product (3D) which allows vector operations in arguments
+    public static float dot(Point3D u, Point3D v) {
+        return ((u.x * v.x) + (u.y * v.y) + (u.z * v.z));
+    }
+
+    //scalar product
+    public static Point3D scalarProduct(float r, Point3D u) {
+        return new Point3D(u.x * r, u.y * r, u.z * r);
+    }
+
+    public static Point3D addition(Point3D u, Point3D v) {
+        return new Point3D(u.x + v.x, u.y + v.y, u.z + v.z);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -145,6 +145,14 @@ public class TableOfContents extends ListActivity
 			data.add(item);
 			activityMapping.put(i++, com.learnopengles.android.lesson11.Activity.class);
 		}
+		{
+			final Map<String, Object> item = new HashMap<>();
+			item.put(ITEM_IMAGE, R.drawable.ic_lesson_six);
+			item.put(ITEM_TITLE, getText(R.string.lesson_twelve));
+			item.put(ITEM_SUBTITLE, getText(R.string.lesson_twelve_subtitle));
+			data.add(item);
+			activityMapping.put(i++, com.learnopengles.android.lesson12.Activity.class);
+		}
 
 		
 		final SimpleAdapter dataAdapter = new SimpleAdapter(this, data, R.layout.toc_item, new String[] {ITEM_IMAGE, ITEM_TITLE, ITEM_SUBTITLE}, new int[] {R.id.Image, R.id.Title, R.id.SubTitle});
