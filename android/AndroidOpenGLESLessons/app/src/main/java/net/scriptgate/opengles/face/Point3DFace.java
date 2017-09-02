@@ -18,7 +18,7 @@ public class Point3DFace extends Face<Point3D> {
     }
 
     @Override
-    public void addToArray(Point3D element, float[] data, int offset) {
+    void addToArray(Point3D element, float[] data, int offset) {
         data[offset] = element.x();
         data[offset + 1] = element.y();
         data[offset + 2] = element.z();

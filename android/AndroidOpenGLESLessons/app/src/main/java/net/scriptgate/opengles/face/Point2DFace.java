@@ -18,7 +18,7 @@ public class Point2DFace extends Face<Point2D> {
     }
 
     @Override
-    public void addToArray(Point2D point, float[] data, int offset) {
+    void addToArray(Point2D point, float[] data, int offset) {
         data[offset] = point.x();
         data[offset + 1] = point.y();
     }
