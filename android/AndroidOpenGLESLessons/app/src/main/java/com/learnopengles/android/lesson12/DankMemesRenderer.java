@@ -46,6 +46,8 @@ public class DankMemesRenderer extends RendererBase {
 
     private Context activityContext;
 
+    private float[] deltaRotationVector = new float[4];
+
     public DankMemesRenderer(Context activityContext) {
         super(ProjectionMatrix.createProjectionMatrix(150, 1));
         this.activityContext = activityContext;
@@ -111,7 +113,7 @@ public class DankMemesRenderer extends RendererBase {
         glEnable(GL_BLEND);
 
         viewMatrix.onSurfaceCreated();
-        viewMatrix.translate(new Point3D(0,-1,0));
+        viewMatrix.translate(new Point3D(0, -1, 0));
 
         background.setTexture(loadTexture(activityContext, R.drawable.background));
         grid.setTexture(loadTexture(activityContext, R.drawable.grid));
@@ -145,6 +147,11 @@ public class DankMemesRenderer extends RendererBase {
         background.render(draw);
         grid.render(draw);
         draw.accept(horizon);
+        delorean.transform(deltaRotationVector);
         draw.accept(delorean);
+    }
+
+    void setGyroscopeValues(float[] deltaRotationVector) {
+        this.deltaRotationVector = deltaRotationVector;
     }
 }
