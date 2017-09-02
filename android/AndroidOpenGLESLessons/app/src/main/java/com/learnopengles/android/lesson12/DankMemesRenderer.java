@@ -151,7 +151,7 @@ public class DankMemesRenderer extends RendererBase {
         draw.accept(delorean);
     }
 
-    void setGyroscopeValues(float[] deltaRotationVector) {
+    public void setGyroscopeValues(float[] deltaRotationVector) {
         this.deltaRotationVector = deltaRotationVector;
     }
 }
