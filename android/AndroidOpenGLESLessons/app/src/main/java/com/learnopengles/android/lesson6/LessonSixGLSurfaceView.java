@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import static net.scriptgate.opengles.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
+import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToGLSurfaceViewRenderer;
 
 public class LessonSixGLSurfaceView extends GLSurfaceView {
 

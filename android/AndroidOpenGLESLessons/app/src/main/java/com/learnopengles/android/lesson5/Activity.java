@@ -4,9 +4,12 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.learnopengles.android.R;
-import net.scriptgate.opengles.activity.ActivityWithViewBase;
 
-public class Activity extends ActivityWithViewBase<LessonFiveGLSurfaceView> {
+import net.scriptgate.opengles.activity.ComponentActivity;
+
+import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToResumable;
+
+public class Activity extends ComponentActivity {
 
     private static final String SHOWED_TOAST = "showed_toast";
 
@@ -14,7 +17,7 @@ public class Activity extends ActivityWithViewBase<LessonFiveGLSurfaceView> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        glSurfaceView = new LessonFiveGLSurfaceView(this);
+        LessonFiveGLSurfaceView glSurfaceView = new LessonFiveGLSurfaceView(this);
 
         if (supportsOpenGLES20()) {
             glSurfaceView.setEGLContextClientVersion(2);
@@ -24,6 +27,7 @@ public class Activity extends ActivityWithViewBase<LessonFiveGLSurfaceView> {
         }
 
         setContentView(glSurfaceView);
+        addComponent(adaptToResumable(glSurfaceView));
 
         if (shouldShowHelpMessage(savedInstanceState)) {
             Toast.makeText(this, R.string.lesson_five_startup_toast, Toast.LENGTH_SHORT).show();

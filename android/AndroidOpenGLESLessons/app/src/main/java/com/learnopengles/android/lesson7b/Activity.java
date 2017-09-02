@@ -2,23 +2,27 @@ package com.learnopengles.android.lesson7b;
 
 import android.os.Bundle;
 
-import net.scriptgate.opengles.activity.ActivityWithViewBase;
+import net.scriptgate.opengles.activity.ComponentActivity;
 
-public class Activity extends ActivityWithViewBase<LessonSevenBGLSurfaceView> {
+import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToResumable;
+
+
+public class Activity extends ComponentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        glSurfaceView = new LessonSevenBGLSurfaceView(this);
+        LessonSevenBGLSurfaceView surfaceView = new LessonSevenBGLSurfaceView(this);
 
         if (supportsOpenGLES20()) {
-            glSurfaceView.setEGLContextClientVersion(2);
-            glSurfaceView.setRenderer(new VertexBufferObjectRenderer(this, glSurfaceView));
+            surfaceView.setEGLContextClientVersion(2);
+            surfaceView.setRenderer(new VertexBufferObjectRenderer(this, surfaceView));
         } else {
             throw new UnsupportedOperationException("This activity requires OpenGL ES 2.0");
         }
 
-        setContentView(glSurfaceView);
+        setContentView(surfaceView);
+        addComponent(adaptToResumable(surfaceView));
     }
 }

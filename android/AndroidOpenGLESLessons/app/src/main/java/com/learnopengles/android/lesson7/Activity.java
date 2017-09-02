@@ -7,11 +7,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.learnopengles.android.R;
-import net.scriptgate.opengles.activity.ActivityWithViewBase;
+import net.scriptgate.opengles.activity.ComponentActivity;
 
-public class Activity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
+import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToResumable;
+
+public class Activity extends ComponentActivity {
 
     private VertexBufferObjectRenderer renderer;
+    private LessonSevenGLSurfaceView surfaceView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -19,16 +22,17 @@ public class Activity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
 
         setContentView(R.layout.lesson_seven);
 
-        glSurfaceView = (LessonSevenGLSurfaceView) findViewById(R.id.gl_surface_view);
+        surfaceView = (LessonSevenGLSurfaceView) findViewById(R.id.gl_surface_view);
 
         if (supportsOpenGLES20()) {
-            glSurfaceView.setEGLContextClientVersion(2);
+            surfaceView.setEGLContextClientVersion(2);
 
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-            renderer = new VertexBufferObjectRenderer(this, glSurfaceView);
-            glSurfaceView.setRenderer(renderer, displayMetrics.density);
+            renderer = new VertexBufferObjectRenderer(this, surfaceView);
+            surfaceView.setRenderer(renderer, displayMetrics.density);
+            addComponent(adaptToResumable(surfaceView));
         } else {
             throw new UnsupportedOperationException("This activity requires OpenGL ES 2.0");
         }
@@ -63,7 +67,7 @@ public class Activity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
     }
 
     private void decreaseCubeCount() {
-        glSurfaceView.queueEvent(new Runnable() {
+        surfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
                 renderer.decreaseCubeCount();
@@ -72,7 +76,7 @@ public class Activity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
     }
 
     private void increaseCubeCount() {
-        glSurfaceView.queueEvent(new Runnable() {
+        surfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
                 renderer.increaseCubeCount();
@@ -81,7 +85,7 @@ public class Activity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
     }
 
     private void toggleVBOs() {
-        glSurfaceView.queueEvent(new Runnable() {
+        surfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
                 renderer.toggleVBOs();
@@ -90,7 +94,7 @@ public class Activity extends ActivityWithViewBase<LessonSevenGLSurfaceView> {
     }
 
     protected void toggleStride() {
-        glSurfaceView.queueEvent(new Runnable() {
+        surfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
                 renderer.toggleStride();

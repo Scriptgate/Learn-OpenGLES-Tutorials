@@ -10,11 +10,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.learnopengles.android.R;
-import net.scriptgate.opengles.activity.ActivityWithViewBase;
 
-public class Activity extends ActivityWithViewBase<LessonSixGLSurfaceView> {
+import net.scriptgate.opengles.activity.ComponentActivity;
+
+import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToResumable;
+
+public class Activity extends ComponentActivity {
 
     private TextureFilteringRenderer renderer;
+    private LessonSixGLSurfaceView surfaceView;
 
     private static final int MIN_DIALOG = 1;
     private static final int MAG_DIALOG = 2;
@@ -31,19 +35,20 @@ public class Activity extends ActivityWithViewBase<LessonSixGLSurfaceView> {
 
         setContentView(R.layout.lesson_six);
 
-        glSurfaceView = (LessonSixGLSurfaceView) findViewById(R.id.gl_surface_view);
+        surfaceView = (LessonSixGLSurfaceView) findViewById(R.id.gl_surface_view);
 
 
         if (supportsOpenGLES20()) {
 
-            glSurfaceView.setEGLContextClientVersion(2);
+            surfaceView.setEGLContextClientVersion(2);
 
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
             // Set the renderer to our demo renderer, defined below.
             renderer = new TextureFilteringRenderer(this);
-            glSurfaceView.setRenderer(renderer, displayMetrics.density);
+            surfaceView.setRenderer(renderer, displayMetrics.density);
+            addComponent(adaptToResumable(surfaceView));
         } else {
             throw new UnsupportedOperationException("This activity requires OpenGL ES 2.0");
         }
@@ -85,7 +90,7 @@ public class Activity extends ActivityWithViewBase<LessonSixGLSurfaceView> {
     private void setMinSetting(final int item) {
         minSetting = item;
 
-        glSurfaceView.queueEvent(new Runnable() {
+        surfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
                 final int filter;
@@ -120,7 +125,7 @@ public class Activity extends ActivityWithViewBase<LessonSixGLSurfaceView> {
     private void setMagSetting(final int item) {
         magSetting = item;
 
-        glSurfaceView.queueEvent(new Runnable() {
+        surfaceView.queueEvent(new Runnable() {
             @Override
             public void run() {
                 final int filter;

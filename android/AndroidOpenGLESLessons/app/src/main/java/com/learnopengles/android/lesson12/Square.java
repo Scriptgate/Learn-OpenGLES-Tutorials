@@ -79,4 +79,18 @@ public class Square {
     public Point3D getPosition() {
         return position;
     }
+
+    void transform(float[] deltaRotationVector) {
+        float x = position.x() + deltaRotationVector[1]/7.0f;
+
+        float MINIMUM = -1.1f;
+        float MAXIMUM = -0.4f;
+
+        if(x < MINIMUM) {
+            x = MINIMUM;
+        } else if(x > MAXIMUM) {
+            x = MAXIMUM;
+        }
+        position = position.x(x);
+    }
 }

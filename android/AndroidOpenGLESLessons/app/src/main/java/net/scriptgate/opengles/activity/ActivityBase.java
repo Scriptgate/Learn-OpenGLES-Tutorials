@@ -5,15 +5,16 @@ import android.os.Bundle;
 
 import net.scriptgate.opengles.renderer.Renderer;
 
-import static net.scriptgate.opengles.renderer.RendererAdapter.adaptToGLSurfaceViewRenderer;
+import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToGLSurfaceViewRenderer;
+import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToResumable;
 
-public abstract class ActivityBase extends ActivityWithViewBase<GLSurfaceView> {
+public abstract class ActivityBase extends ComponentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        glSurfaceView = new GLSurfaceView(this);
+        GLSurfaceView glSurfaceView = new GLSurfaceView(this);
 
         if (supportsOpenGLES20()) {
             glSurfaceView.setEGLContextClientVersion(2);
@@ -23,6 +24,7 @@ public abstract class ActivityBase extends ActivityWithViewBase<GLSurfaceView> {
         }
 
         setContentView(glSurfaceView);
+        addComponent(adaptToResumable(glSurfaceView));
     }
 
     public GLSurfaceView.Renderer getRendererAdapter() {

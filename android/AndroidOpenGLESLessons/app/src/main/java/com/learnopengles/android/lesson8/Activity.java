@@ -3,27 +3,31 @@ package com.learnopengles.android.lesson8;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 
-import net.scriptgate.opengles.activity.ActivityWithViewBase;
+import net.scriptgate.opengles.activity.ComponentActivity;
 
-public class Activity extends ActivityWithViewBase<LessonEightGLSurfaceView> {
+import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToResumable;
+
+
+public class Activity extends ComponentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        glSurfaceView = new LessonEightGLSurfaceView(this);
+        LessonEightGLSurfaceView surfaceView = new LessonEightGLSurfaceView(this);
 
         if (supportsOpenGLES20()) {
-            glSurfaceView.setEGLContextClientVersion(2);
+            surfaceView.setEGLContextClientVersion(2);
 
             final DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-            glSurfaceView.setRenderer(new IndexBufferObjectRenderer(this, glSurfaceView), displayMetrics.density);
+            surfaceView.setRenderer(new IndexBufferObjectRenderer(this, surfaceView), displayMetrics.density);
         } else {
             throw new UnsupportedOperationException("This activity requires OpenGL ES 2.0");
         }
 
-        setContentView(glSurfaceView);
+        setContentView(surfaceView);
+        addComponent(adaptToResumable(surfaceView));
     }
 }

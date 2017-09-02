@@ -1,11 +1,14 @@
-package net.scriptgate.opengles.renderer;
+package net.scriptgate.opengles.activity.adapter;
 
 import android.opengl.GLSurfaceView;
+
+import net.scriptgate.opengles.activity.Resumable;
+import net.scriptgate.opengles.renderer.Renderer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class RendererAdapter {
+public class GLSurfaceViewAdapter {
 
     public static GLSurfaceView.Renderer adaptToGLSurfaceViewRenderer(final Renderer renderer) {
         return new GLSurfaceView.Renderer() {
@@ -25,4 +28,21 @@ public class RendererAdapter {
             }
         };
     }
+
+    public static Resumable adaptToResumable(final GLSurfaceView glSurfaceView) {
+        return new Resumable() {
+
+            @Override
+            public void onResume() {
+                glSurfaceView.onResume();
+            }
+
+            @Override
+            public void onPause() {
+                glSurfaceView.onPause();
+            }
+        };
+    }
+
+
 }

@@ -38,6 +38,7 @@ public class Light {
     /**
      * Draws a point representing the position of the light.
      */
+    @Deprecated
     public void drawLight(Program program, ModelViewProjectionMatrix mvpMatrix, ViewMatrix viewMatrix, ProjectionMatrix projectionMatrix, float[] temporaryMatrix) {
 
         int handle = program.getHandle(POSITION);
