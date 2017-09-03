@@ -24,3 +24,12 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.4.3'
 }
 
+task createScriptgateJar(type: Jar) {
+    archiveName 'scriptgate-android-common.jar'
+    from "$project.buildDir/intermediates/classes/debug"
+    include 'net/scriptgate/**/*.class'
+}
+
+artifacts {
+    archives createScriptgateJar
+}
