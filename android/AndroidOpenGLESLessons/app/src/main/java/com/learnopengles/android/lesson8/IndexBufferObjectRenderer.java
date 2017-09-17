@@ -3,18 +3,18 @@ package com.learnopengles.android.lesson8;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import net.scriptgate.opengles.matrix.ProjectionMatrix;
-import net.scriptgate.opengles.matrix.ViewMatrix;
-import net.scriptgate.opengles.program.Program;
-import net.scriptgate.opengles.renderer.Renderer;
+import net.scriptgate.android.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ViewMatrix;
+import net.scriptgate.android.opengles.program.Program;
+import net.scriptgate.android.opengles.renderer.Renderer;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.common.Color.BLACK;
-import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
-import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
-import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.ProgramBuilder.program;
-import static net.scriptgate.opengles.program.UniformVariable.*;
+import static net.scriptgate.android.common.Color.BLACK;
+import static net.scriptgate.android.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
+import static net.scriptgate.android.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.android.opengles.program.AttributeVariable.*;
+import static net.scriptgate.android.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.android.opengles.program.UniformVariable.*;
 
 class IndexBufferObjectRenderer implements Renderer {
 

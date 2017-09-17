@@ -2,22 +2,22 @@ package com.learnopengles.android.lesson1;
 
 import android.os.SystemClock;
 
-import net.scriptgate.opengles.matrix.ModelMatrix;
-import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
-import net.scriptgate.opengles.matrix.ViewMatrix;
-import net.scriptgate.opengles.program.Program;
-import net.scriptgate.opengles.renderer.RendererBase;
+import net.scriptgate.android.opengles.matrix.ModelMatrix;
+import net.scriptgate.android.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ViewMatrix;
+import net.scriptgate.android.opengles.program.Program;
+import net.scriptgate.android.opengles.renderer.RendererBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.common.Color.*;
-import static net.scriptgate.opengles.matrix.ViewMatrix.createViewBehindOrigin;
+import static net.scriptgate.android.common.Color.*;
+import static net.scriptgate.android.opengles.matrix.ViewMatrix.createViewBehindOrigin;
 import static com.learnopengles.android.lesson1.TriangleBuilder.triangle;
-import static net.scriptgate.opengles.program.AttributeVariable.COLOR;
-import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
-import static net.scriptgate.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.android.opengles.program.AttributeVariable.COLOR;
+import static net.scriptgate.android.opengles.program.AttributeVariable.POSITION;
+import static net.scriptgate.android.opengles.program.ProgramBuilder.program;
 
 class BasicDrawingRenderer extends RendererBase {
 

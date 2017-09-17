@@ -7,9 +7,7 @@ import android.view.SurfaceHolder;
 
 import com.learnopengles.android.lesson12.*;
 
-import net.scriptgate.opengles.activity.Resumable;
-
-import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToGLSurfaceViewRenderer;
+import static net.scriptgate.android.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToGLSurfaceViewRenderer;
 
 public class LessonTwelveWallpaperService extends GLWallpaperService {
 

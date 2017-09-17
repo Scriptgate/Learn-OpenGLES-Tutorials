@@ -8,7 +8,7 @@ import android.hardware.SensorManager;
 
 import com.learnopengles.android.lesson12.DankMemesRenderer;
 
-import net.scriptgate.opengles.activity.Resumable;
+import net.scriptgate.android.component.Resumable;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;

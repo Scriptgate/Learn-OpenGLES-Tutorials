@@ -1,13 +1,13 @@
 package com.learnopengles.android.lesson8b;
 
-import net.scriptgate.common.Point3D;
-import net.scriptgate.opengles.program.Program;
+import net.scriptgate.android.common.Point3D;
+import net.scriptgate.android.opengles.program.Program;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.opengles.program.UniformVariable.TEXTURE;
+import static net.scriptgate.android.opengles.program.UniformVariable.TEXTURE;
 
 class IndexBufferObjects {
 

@@ -3,20 +3,20 @@ package com.learnopengles.android.lesson8b;
 import android.content.Context;
 
 import com.learnopengles.android.R;
-import net.scriptgate.common.Point3D;
-import net.scriptgate.opengles.matrix.ModelMatrix;
-import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
-import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.android.common.Point3D;
+import net.scriptgate.android.opengles.matrix.ModelMatrix;
+import net.scriptgate.android.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 
-import net.scriptgate.opengles.program.Program;
-import net.scriptgate.opengles.renderer.RendererBase;
+import net.scriptgate.android.opengles.program.Program;
+import net.scriptgate.android.opengles.renderer.RendererBase;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.opengles.program.ProgramBuilder.program;
-import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
-import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.UniformVariable.*;
+import static net.scriptgate.android.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.android.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.android.opengles.program.AttributeVariable.*;
+import static net.scriptgate.android.opengles.program.UniformVariable.*;
 
 class IndexBufferObjectRenderer extends RendererBase {
 

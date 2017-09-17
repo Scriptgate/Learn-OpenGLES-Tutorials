@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson3;
 
-import net.scriptgate.opengles.activity.ActivityBase;
-import net.scriptgate.opengles.renderer.Renderer;
+import net.scriptgate.android.opengles.activity.ActivityBase;
+import net.scriptgate.android.opengles.renderer.Renderer;
 
 public class Activity extends ActivityBase {
 

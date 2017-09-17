@@ -19,12 +19,14 @@ android {
 
 dependencies {
     compile 'net.sourceforge.streamsupport:streamsupport:1.5.3'
+    compile project(':scriptgate-android-common')
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.4.3'
 }
 
 task createScriptgateJar(type: Jar) {
+    group = 'scriptgate'
     archiveName 'scriptgate-android-common.jar'
     from "$project.buildDir/intermediates/classes/debug"
     include 'net/scriptgate/**/*.class'

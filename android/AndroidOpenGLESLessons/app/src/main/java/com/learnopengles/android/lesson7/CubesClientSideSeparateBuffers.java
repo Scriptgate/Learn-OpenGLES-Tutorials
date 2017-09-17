@@ -1,11 +1,11 @@
 package com.learnopengles.android.lesson7;
 
-import net.scriptgate.opengles.program.Program;
+import net.scriptgate.android.opengles.program.Program;
 
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.android.opengles.program.AttributeVariable.*;
 
 class CubesClientSideSeparateBuffers extends Cubes {
     private FloatBuffer cubePositions;

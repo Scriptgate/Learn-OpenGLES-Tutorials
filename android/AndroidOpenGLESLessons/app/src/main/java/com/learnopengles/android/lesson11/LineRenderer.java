@@ -1,27 +1,27 @@
 package com.learnopengles.android.lesson11;
 
-import net.scriptgate.common.Color;
-import net.scriptgate.common.Point3D;
-import net.scriptgate.opengles.matrix.ModelMatrix;
-import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
-import net.scriptgate.opengles.matrix.ViewMatrix;
+import net.scriptgate.android.common.Color;
+import net.scriptgate.android.common.Point3D;
+import net.scriptgate.android.opengles.matrix.ModelMatrix;
+import net.scriptgate.android.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ViewMatrix;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 
-import net.scriptgate.opengles.program.Program;
-import net.scriptgate.opengles.renderer.RendererBase;
+import net.scriptgate.android.opengles.program.Program;
+import net.scriptgate.android.opengles.renderer.RendererBase;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.common.Color.*;
+import static net.scriptgate.android.common.Color.*;
 import static com.learnopengles.android.lesson11.Circle.createCircleInXPlane;
 import static com.learnopengles.android.lesson11.Circle.createCircleInYPlane;
 import static com.learnopengles.android.lesson11.Circle.createCircleInZPlane;
 import static com.learnopengles.android.lesson11.DrawableRenderer.createBasicLineRenderer;
 import static com.learnopengles.android.lesson11.DrawableRenderer.createCircleRenderer;
-import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.android.opengles.program.AttributeVariable.*;
+import static net.scriptgate.android.opengles.program.ProgramBuilder.program;
 
 class LineRenderer extends RendererBase {
 

@@ -1,19 +1,19 @@
 package com.learnopengles.android.lesson1;
 
-import net.scriptgate.common.Point3D;
-import net.scriptgate.opengles.matrix.ModelMatrix;
-import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
-import net.scriptgate.opengles.matrix.ProjectionMatrix;
-import net.scriptgate.opengles.matrix.ViewMatrix;
-import net.scriptgate.opengles.program.Program;
+import net.scriptgate.android.common.Point3D;
+import net.scriptgate.android.opengles.matrix.ModelMatrix;
+import net.scriptgate.android.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ViewMatrix;
+import net.scriptgate.android.opengles.program.Program;
 
 import java.nio.FloatBuffer;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.nio.BufferHelper.allocateBuffer;
-import static net.scriptgate.opengles.program.AttributeVariable.COLOR;
-import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
-import static net.scriptgate.opengles.program.UniformVariable.MVP_MATRIX;
+import static net.scriptgate.android.nio.BufferHelper.allocateBuffer;
+import static net.scriptgate.android.opengles.program.AttributeVariable.COLOR;
+import static net.scriptgate.android.opengles.program.AttributeVariable.POSITION;
+import static net.scriptgate.android.opengles.program.UniformVariable.MVP_MATRIX;
 
 
 class Triangle {

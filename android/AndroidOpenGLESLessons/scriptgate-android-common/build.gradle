@@ -1,0 +1,9 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('scriptgate-android-common.aar'))
+
+task copyFromRepository(type: Copy) {
+    group = 'scriptgate'
+    from 'C:/android/scriptgate-repo'
+    into "$project.projectDir"
+    include "scriptgate-android-common.aar"
+}

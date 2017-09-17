@@ -2,9 +2,9 @@ package com.learnopengles.android.lesson7b;
 
 import android.os.Bundle;
 
-import net.scriptgate.opengles.activity.ComponentActivity;
+import net.scriptgate.android.opengles.activity.ComponentActivity;
 
-import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToResumable;
+import static net.scriptgate.android.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToResumable;
 
 
 public class Activity extends ComponentActivity {

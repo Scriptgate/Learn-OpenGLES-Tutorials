@@ -6,7 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import net.scriptgate.opengles.activity.Resumable;
+import net.scriptgate.android.component.Resumable;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;

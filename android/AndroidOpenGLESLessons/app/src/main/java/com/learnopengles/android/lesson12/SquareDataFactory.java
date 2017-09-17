@@ -1,9 +1,7 @@
 package com.learnopengles.android.lesson12;
 
-import net.scriptgate.common.Point2D;
-import net.scriptgate.common.Point3D;
-import net.scriptgate.opengles.face.Point2DFace;
-import net.scriptgate.opengles.face.Point3DFace;
+import net.scriptgate.android.common.Point2D;
+import net.scriptgate.android.opengles.face.Point2DFace;
 
 import static com.learnopengles.android.lesson12.Square.ELEMENTS_PER_FACE;
 

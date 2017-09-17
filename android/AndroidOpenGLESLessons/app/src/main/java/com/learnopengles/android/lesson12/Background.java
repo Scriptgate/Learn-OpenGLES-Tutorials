@@ -3,8 +3,8 @@ package com.learnopengles.android.lesson12;
 
 import android.os.SystemClock;
 
-import net.scriptgate.common.Point3D;
-import net.scriptgate.opengles.face.Point3DFace;
+import net.scriptgate.android.common.Point3D;
+import net.scriptgate.android.opengles.face.Point3DFace;
 
 import java.util.ArrayList;
 import java.util.List;

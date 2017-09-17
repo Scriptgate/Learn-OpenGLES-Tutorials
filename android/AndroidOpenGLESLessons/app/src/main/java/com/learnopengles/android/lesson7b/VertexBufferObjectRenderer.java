@@ -5,16 +5,16 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.learnopengles.android.R;
-import net.scriptgate.common.Point3D;
-import net.scriptgate.opengles.matrix.ModelMatrix;
-import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
-import net.scriptgate.opengles.matrix.ProjectionMatrix;
-import net.scriptgate.opengles.matrix.ViewMatrix;
-import net.scriptgate.opengles.cube.CubeDataFactory;
+import net.scriptgate.android.common.Point3D;
+import net.scriptgate.android.opengles.matrix.ModelMatrix;
+import net.scriptgate.android.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ViewMatrix;
+import net.scriptgate.android.opengles.cube.CubeDataFactory;
 import com.learnopengles.android.lesson9.IsometricProjectionMatrix;
 
-import net.scriptgate.opengles.program.Program;
-import net.scriptgate.opengles.renderer.Renderer;
+import net.scriptgate.android.opengles.program.Program;
+import net.scriptgate.android.opengles.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +22,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.common.Color.BLACK;
-import static net.scriptgate.opengles.program.ProgramBuilder.program;
-import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
-import static net.scriptgate.opengles.cube.CubeDataFactory.generateNormalData;
-import static net.scriptgate.opengles.cube.CubeDataFactory.generateTextureData;
-import static net.scriptgate.opengles.program.AttributeVariable.*;
-import static net.scriptgate.opengles.program.UniformVariable.*;
+import static net.scriptgate.android.common.Color.BLACK;
+import static net.scriptgate.android.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.android.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.android.opengles.cube.CubeDataFactory.generateNormalData;
+import static net.scriptgate.android.opengles.cube.CubeDataFactory.generateTextureData;
+import static net.scriptgate.android.opengles.program.AttributeVariable.*;
+import static net.scriptgate.android.opengles.program.UniformVariable.*;
 import static java.util.Arrays.asList;
 
 class VertexBufferObjectRenderer implements Renderer {

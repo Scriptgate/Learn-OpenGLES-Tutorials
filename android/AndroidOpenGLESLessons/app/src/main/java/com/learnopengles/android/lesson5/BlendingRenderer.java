@@ -2,28 +2,28 @@ package com.learnopengles.android.lesson5;
 
 import android.os.SystemClock;
 
-import net.scriptgate.opengles.matrix.ModelMatrix;
-import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
-import net.scriptgate.opengles.matrix.ProjectionMatrix;
-import net.scriptgate.opengles.matrix.ViewMatrix;
-import net.scriptgate.opengles.cube.Cube;
-import net.scriptgate.opengles.cube.CubeFactory;
-import net.scriptgate.opengles.program.Program;
-import net.scriptgate.opengles.renderer.Renderer;
+import net.scriptgate.android.opengles.matrix.ModelMatrix;
+import net.scriptgate.android.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ViewMatrix;
+import net.scriptgate.android.opengles.cube.Cube;
+import net.scriptgate.android.opengles.cube.CubeFactory;
+import net.scriptgate.android.opengles.program.Program;
+import net.scriptgate.android.opengles.renderer.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.common.Color.*;
-import static net.scriptgate.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
-import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
-import static net.scriptgate.opengles.cube.CubeDataFactory.generateColorData;
-import static net.scriptgate.opengles.cube.CubeDataFactory.generatePositionDataCentered;
-import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
-import static net.scriptgate.opengles.program.AttributeVariable.COLOR;
-import static net.scriptgate.opengles.program.AttributeVariable.POSITION;
-import static net.scriptgate.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.android.common.Color.*;
+import static net.scriptgate.android.opengles.matrix.ProjectionMatrix.createProjectionMatrix;
+import static net.scriptgate.android.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.android.opengles.cube.CubeDataFactory.generateColorData;
+import static net.scriptgate.android.opengles.cube.CubeDataFactory.generatePositionDataCentered;
+import static net.scriptgate.android.opengles.cube.CubeFactoryBuilder.createCubeFactory;
+import static net.scriptgate.android.opengles.program.AttributeVariable.COLOR;
+import static net.scriptgate.android.opengles.program.AttributeVariable.POSITION;
+import static net.scriptgate.android.opengles.program.ProgramBuilder.program;
 
 class BlendingRenderer implements Renderer {
     /**

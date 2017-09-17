@@ -1,6 +1,6 @@
 package com.learnopengles.android.lesson8b;
 
-import net.scriptgate.common.Point2D;
+import net.scriptgate.android.common.Point2D;
 
 import java8.util.function.IntFunction;
 

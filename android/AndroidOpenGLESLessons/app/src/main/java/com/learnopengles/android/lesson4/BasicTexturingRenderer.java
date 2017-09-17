@@ -4,28 +4,28 @@ import android.content.Context;
 import android.os.SystemClock;
 
 import com.learnopengles.android.R;
-import net.scriptgate.opengles.light.Light;
-import net.scriptgate.common.Point3D;
-import net.scriptgate.opengles.matrix.ModelMatrix;
-import net.scriptgate.opengles.matrix.ModelViewProjectionMatrix;
-import net.scriptgate.opengles.matrix.ViewMatrix;
-import net.scriptgate.opengles.cube.Cube;
-import net.scriptgate.opengles.cube.CubeFactory;
-import net.scriptgate.opengles.program.Program;
-import net.scriptgate.opengles.renderer.RendererBase;
-import net.scriptgate.opengles.light.renderer.LightRenderer;
+import net.scriptgate.android.opengles.light.Light;
+import net.scriptgate.android.common.Point3D;
+import net.scriptgate.android.opengles.matrix.ModelMatrix;
+import net.scriptgate.android.opengles.matrix.ModelViewProjectionMatrix;
+import net.scriptgate.android.opengles.matrix.ViewMatrix;
+import net.scriptgate.android.opengles.cube.Cube;
+import net.scriptgate.android.opengles.cube.CubeFactory;
+import net.scriptgate.android.opengles.program.Program;
+import net.scriptgate.android.opengles.renderer.RendererBase;
+import net.scriptgate.android.opengles.light.renderer.LightRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.opengl.GLES20.*;
-import static net.scriptgate.common.Color.*;
-import static net.scriptgate.opengles.program.ProgramBuilder.program;
-import static net.scriptgate.opengles.texture.TextureHelper.loadTexture;
-import static net.scriptgate.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
-import static net.scriptgate.opengles.cube.CubeDataFactory.*;
-import static net.scriptgate.opengles.cube.CubeFactoryBuilder.createCubeFactory;
-import static net.scriptgate.opengles.program.AttributeVariable.*;
+import static net.scriptgate.android.common.Color.*;
+import static net.scriptgate.android.opengles.program.ProgramBuilder.program;
+import static net.scriptgate.android.opengles.texture.TextureHelper.loadTexture;
+import static net.scriptgate.android.opengles.matrix.ViewMatrix.createViewInFrontOrigin;
+import static net.scriptgate.android.opengles.cube.CubeDataFactory.*;
+import static net.scriptgate.android.opengles.cube.CubeFactoryBuilder.createCubeFactory;
+import static net.scriptgate.android.opengles.program.AttributeVariable.*;
 
 class BasicTexturingRenderer extends RendererBase {
     /**

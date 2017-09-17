@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.learnopengles.android.R;
 
-import static net.scriptgate.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToGLSurfaceViewRenderer;
+import static net.scriptgate.android.opengles.activity.adapter.GLSurfaceViewAdapter.adaptToGLSurfaceViewRenderer;
 
 public class LessonEightGLSurfaceView extends GLSurfaceView implements ErrorHandler {
     private IndexBufferObjectRenderer renderer;

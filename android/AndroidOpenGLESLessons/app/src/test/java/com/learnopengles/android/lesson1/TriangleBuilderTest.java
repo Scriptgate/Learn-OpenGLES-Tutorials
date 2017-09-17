@@ -1,7 +1,7 @@
 package com.learnopengles.android.lesson1;
 
-import net.scriptgate.common.ColorPoint3D;
-import net.scriptgate.common.Point3D;
+import net.scriptgate.android.common.ColorPoint3D;
+import net.scriptgate.android.common.Point3D;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,9 +9,9 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.scriptgate.common.Color.BLUE;
-import static net.scriptgate.common.Color.GREEN;
-import static net.scriptgate.common.Color.RED;
+import static net.scriptgate.android.common.Color.BLUE;
+import static net.scriptgate.android.common.Color.GREEN;
+import static net.scriptgate.android.common.Color.RED;
 import static com.learnopengles.android.lesson1.TriangleBuilder.generateData;
 
 public class TriangleBuilderTest {

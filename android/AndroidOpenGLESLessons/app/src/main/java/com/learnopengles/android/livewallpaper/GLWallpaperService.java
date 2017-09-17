@@ -3,14 +3,13 @@ package com.learnopengles.android.livewallpaper;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
-import android.os.Build;
 import android.service.wallpaper.WallpaperService;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.learnopengles.android.util.LoggerConfig;
 
-import net.scriptgate.opengles.activity.Resumable;
+import net.scriptgate.android.component.Resumable;
 
 import java.util.ArrayList;
 import java.util.Collection;
